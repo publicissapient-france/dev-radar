@@ -65,7 +65,7 @@
 		<developer>
 			<id>jlmorlhon</id>
 			<name>Jean-Laurent De Morlhon</name>
-			<email>jlmorlhon@xebia.rr</email>
+			<email>jlmorlhon@xebia.fr</email>
 		</developer>
 		<developer>
 			<id>njozwiak</id>
@@ -200,6 +200,11 @@
 						</goals>
 					</execution>
 				</executions>
+				<configuration>
+					<excludes>
+						<exclude>.git/**/*</exclude>
+					</excludes>
+				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
