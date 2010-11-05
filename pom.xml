@@ -235,6 +235,7 @@
         <configuration>
           <excludes>
             <exclude>.git/**/*</exclude>
+            <exclude>.gitignore</exclude>
           </excludes>
         </configuration>
       </plugin>
