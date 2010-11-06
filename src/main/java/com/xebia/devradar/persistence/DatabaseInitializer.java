@@ -16,26 +16,13 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.xebia.devradar.domain;
+package com.xebia.devradar.persistence;
 
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
+public interface DatabaseInitializer {
 
-import org.junit.Test;
+    @Transactional
+    public abstract void initDatabase();
 
-public class EventTest
-{
-    private static final String SOME_TYPE = "type";
-
-    private static final String SOME_MESSAGE = "message";
-
-    @Test
-    public void should_set_param_at_the_right_place()
-    {
-        Event event = new Event(SOME_TYPE, SOME_MESSAGE, new Date());
-        assertThat(event.getType(), equalTo(SOME_TYPE));
-        assertThat(event.getMessage(), equalTo(SOME_MESSAGE));
-    }
 }

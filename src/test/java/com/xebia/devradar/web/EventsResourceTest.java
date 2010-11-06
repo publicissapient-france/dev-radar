@@ -18,13 +18,18 @@
  */
 package com.xebia.devradar.web;
 
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.*;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
-import java.util.List;
+import java.util.Date;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -53,13 +58,16 @@ public class EventsResourceTest
         assertThat(mav.getViewName(), equalTo("workspace"));
         assertThat((String) mav.getModel().get("workspace"), equalTo("workspace"));
         @SuppressWarnings("unchecked")
-        List<Event> events = (List<Event>) mav.getModel().get("events");
+        Set<Event> events = (Set<Event>) mav.getModel().get("events");
         assertThat(events, notNullValue());
         assertThat(events.size(), is(2));
     }
 
-    private List<Event> someEventList()
+    private Set<Event> someEventList()
     {
-        return Arrays.asList(new Event("svn", "Fix bug FOOBAR-42"), new Event("svn", "Introducing Google Guava"));
+        return new LinkedHashSet<Event>(
+            Arrays.asList(
+                new Event("svn", "Fix bug FOOBAR-42", new Date()), 
+                new Event("svn", "Introducing Google Guava", new Date())));
     }
 }

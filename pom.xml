@@ -146,12 +146,24 @@
       <groupId>javax.servlet</groupId>
       <artifactId>jstl</artifactId>
       <version>1.2</version>
-      <scope>provided</scope>
+      <!--<scope>provided</scope>-->
    </dependency>
 
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-webmvc</artifactId>
+      <version>${spring-version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-tx</artifactId>
+      <version>${spring-version}</version>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-orm</artifactId>
       <version>${spring-version}</version>
     </dependency>
 
@@ -168,6 +180,18 @@
     </dependency>
 
     <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-api</artifactId>
+        <version>1.6.1</version>
+    </dependency>
+
+    <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-log4j12</artifactId>
+        <version>1.6.1</version>
+    </dependency>
+    
+    <dependency>
       <groupId>org.tmatesoft.svnkit</groupId>
       <artifactId>svnkit</artifactId>
       <version>1.3.4</version>
@@ -178,7 +202,13 @@
       <artifactId>commons-lang</artifactId>
       <version>2.5</version>
     </dependency>
-    
+  
+    <dependency>
+        <groupId>log4j</groupId>
+        <artifactId>log4j</artifactId>
+        <version>1.2.16</version>
+    </dependency>
+      
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
@@ -238,7 +268,7 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>rat-maven-plugin</artifactId>
-        <version>1.0-alpha-3</version>
+        <!--<version>1.0-alpha-3</version>-->
         <executions>
           <execution>
             <phase>verify</phase>

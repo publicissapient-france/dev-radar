@@ -1,3 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -16,26 +18,20 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.xebia.devradar.domain;
+ -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="
+        http://www.springframework.org/schema/beans    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+       	http://www.springframework.org/schema/tx       http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+        ">
 
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
+    <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+        <property name="entityManagerFactory" ref="entityManagerFactory" />
+        <property name="dataSource" ref="dataSource" />
+    </bean>
 
-import java.util.Date;
+    <tx:annotation-driven transaction-manager="transactionManager"/>
 
-import org.junit.Test;
-
-public class EventTest
-{
-    private static final String SOME_TYPE = "type";
-
-    private static final String SOME_MESSAGE = "message";
-
-    @Test
-    public void should_set_param_at_the_right_place()
-    {
-        Event event = new Event(SOME_TYPE, SOME_MESSAGE, new Date());
-        assertThat(event.getType(), equalTo(SOME_TYPE));
-        assertThat(event.getMessage(), equalTo(SOME_MESSAGE));
-    }
-}
+</beans>

@@ -40,8 +40,9 @@ public class SvnEventCollectorImpl implements SvnEventCollector {
     public void handleLogEntry(final SVNLogEntry logEntry) throws SVNException {
         //FIXME some log entries are apparently "dummy entries" with revision -1
         if(logEntry.getRevision() != -1L) {
+            //TODO trim
             final String message = logEntry.toString();
-            final Event event = new Event("Subversion", message);
+            final Event event = new Event("Subversion", message, logEntry.getDate());
             this.events.add(event);
         }
     }

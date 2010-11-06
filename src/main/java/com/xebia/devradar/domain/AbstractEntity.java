@@ -18,24 +18,30 @@
  */
 package com.xebia.devradar.domain;
 
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
+import javax.persistence.Access;
+import javax.persistence.AccessType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.MappedSuperclass;
+import javax.persistence.Version;
 
-import java.util.Date;
+@MappedSuperclass
+@Access(AccessType.FIELD)
+public class AbstractEntity {
 
-import org.junit.Test;
+    @Id
+    @GeneratedValue
+    private Long id;
 
-public class EventTest
-{
-    private static final String SOME_TYPE = "type";
+    @Version
+    private Integer version;
 
-    private static final String SOME_MESSAGE = "message";
-
-    @Test
-    public void should_set_param_at_the_right_place()
-    {
-        Event event = new Event(SOME_TYPE, SOME_MESSAGE, new Date());
-        assertThat(event.getType(), equalTo(SOME_TYPE));
-        assertThat(event.getMessage(), equalTo(SOME_MESSAGE));
+    public final Long getId() {
+        return id;
     }
+    
+    public Integer getVersion() {
+        return version;
+    }
+    
 }

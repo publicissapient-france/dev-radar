@@ -18,63 +18,56 @@
  */
 package com.xebia.devradar.domain;
 
-import java.util.Date;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 
 @Entity
 @Access(AccessType.FIELD)
-public class Event extends AbstractEntity {
+@NamedQuery(name="workspaceByName", query="from Workspace where name = :name")
+public class Workspace extends AbstractEntity {
 
     @Basic(optional = false)
-    @Column(length = 50)
-    private String type;
+    @Column(length = 50, unique=true)
+    private String name;
 
-    @Basic(optional = false)
-    @Column(length = 500)
-    private String message;
-
-    @Basic(optional = false)
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date date;
+    @OneToMany(cascade=CascadeType.ALL,orphanRemoval=true)
+    private Set<Event> events = new LinkedHashSet<Event>();
     
-    public Event() {
+    public Workspace() {
     }
 
-    public Event(String type, String message, Date date) {
-        this.type = type;
-        this.message = message;
-        this.date = date;
-    }
     
-    public String getType() {
-        return this.type;
+    public String getName() {
+        return name;
     }
 
-    public void setType(String type) {
-        this.type = type;
-    }
     
-    public String getMessage() {
-        return this.message;
+    public void setName(String name) {
+        this.name = name;
     }
+
     
-    public void setMessage(String message) {
-        this.message = message;
+    public Set<Event> getEvents() {
+        return events;
     }
+
     
-    public Date getDate() {
-        return date;
+    public void setEvents(Set<Event> events) {
+        this.events = events;
     }
-    
-    public void setDate(Date date) {
-        this.date = date;
+
+
+    public void addEvent(Event e) {
+        events.add(e);
     }
 
 

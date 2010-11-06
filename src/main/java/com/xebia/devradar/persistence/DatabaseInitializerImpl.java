@@ -16,37 +16,46 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.xebia.devradar.web;
+package com.xebia.devradar.persistence;
 
-import java.util.Set;
+import java.util.Date;
+import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.PersistenceContextType;
 
-import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.xebia.devradar.domain.Event;
 import com.xebia.devradar.domain.Workspace;
 
 /**
- * Repository for Event
- * 
- * @author Jean-Laurent de Morlhon
+ * @author Alexandre Dutra
  */
-@Repository
-public class EventRepository {
+public class DatabaseInitializerImpl implements DatabaseInitializer {
 
-    @PersistenceContext(type = PersistenceContextType.EXTENDED)
+    @PersistenceContext
     private EntityManager entityManager;
 
-    public Set<Event> getEventsForWorkspace(String workspaceName) {
+    @Override
+    @Transactional
+    public void initDatabase() {
 
-        Workspace workspace = (Workspace) entityManager
+        @SuppressWarnings("unchecked")
+        List<Workspace> results = (List<Workspace>) entityManager
             .createNamedQuery("workspaceByName")
-            .setParameter("name", workspaceName).getSingleResult();
+            .setParameter("name", "default").getResultList();
 
-        return workspace.getEvents();
+        if (results.isEmpty()) {
+
+            Workspace defaultWorkspace = new Workspace();
+            defaultWorkspace.setName("default");
+            defaultWorkspace.addEvent(new Event("Example", "This is a dummy event!", new Date()));
+            defaultWorkspace.addEvent(new Event("Example 2", "This is another dummy event!", new Date()));
+            
+            entityManager.persist(defaultWorkspace);
+
+        }
 
     }
 }

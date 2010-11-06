@@ -18,7 +18,7 @@
  */
 package com.xebia.devradar.web;
 
-import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -49,7 +49,7 @@ public class EventsResource
     @RequestMapping(value = "/{workspace}", method = RequestMethod.GET)
     public ModelAndView getAllEvents(@PathVariable String workspace)
     {
-        List<Event> eventList = eventRepository.getEventsForWorkspace(workspace);
+        Set<Event> eventList = eventRepository.getEventsForWorkspace(workspace);
         ModelAndView mav = new ModelAndView("workspace");
         mav.addObject("events", eventList);
         mav.addObject("workspace", workspace);

@@ -28,6 +28,6 @@ import com.xebia.devradar.domain.Event;
  */
 public interface Poller {
 
-    public abstract List<Event> poll() throws PollException;
+    List<Event> poll() throws PollException;
 
 }
