@@ -18,30 +18,22 @@
  */
 package com.xebia.devradar.domain;
 
-import javax.persistence.Entity;
+import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.*;
 
-@Entity
-public class Event
+import org.junit.Test;
+
+public class EventTest
 {
+    private static final String SOME_TYPE = "type";
 
-    private String type;
+    private static final String SOME_MESSAGE = "message";
 
-    private String message;
-
-    public Event(String type, String message)
+    @Test
+    public void should_set_param_at_the_right_place()
     {
-        this.type = type;
-        this.message = message;
+        Event event = new Event(SOME_TYPE, SOME_MESSAGE);
+        assertThat(event.getType(), equalTo(SOME_TYPE));
+        assertThat(event.getMessage(), equalTo(SOME_MESSAGE));
     }
-
-    public String getType()
-    {
-        return this.type;
-    }
-
-    public String getMessage()
-    {
-        return this.message;
-    }
-
 }

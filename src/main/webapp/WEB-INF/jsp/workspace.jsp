@@ -1,3 +1,4 @@
+<%--
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -16,32 +17,20 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.xebia.devradar.domain;
+--%>
+<%@page contentType="text/html"%>
+<%@page pageEncoding="UTF-8"%>
 
-import javax.persistence.Entity;
+<%@ taglib uri='http://java.sun.com/jsp/jstl/core' prefix='c'%>
 
-@Entity
-public class Event
-{
-
-    private String type;
-
-    private String message;
-
-    public Event(String type, String message)
-    {
-        this.type = type;
-        this.message = message;
-    }
-
-    public String getType()
-    {
-        return this.type;
-    }
-
-    public String getMessage()
-    {
-        return this.message;
-    }
-
-}
+<html>
+<head><title>Workspace Event List</title></head>
+<body>
+   Event for workspace <c:out value="${workspace}" /><br/>
+   <ul>
+   <c:forEach var="event" items="${events}">
+      <li><c:out value="${event.type}" /> : <c:out value="${event.message}"/></li>
+   </c:forEach>
+   </ul>
+</body>
+</html>

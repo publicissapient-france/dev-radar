@@ -16,32 +16,27 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.xebia.devradar.domain;
+package com.xebia.devradar.web;
 
-import javax.persistence.Entity;
+import java.util.Arrays;
+import java.util.List;
 
-@Entity
-public class Event
+import org.springframework.stereotype.Repository;
+
+import com.xebia.devradar.domain.Event;
+
+/**
+ * Repository for Event
+ * 
+ * @author Jean-Laurent de Morlhon
+ */
+@Repository
+public class EventRepository
 {
 
-    private String type;
-
-    private String message;
-
-    public Event(String type, String message)
+    public List<Event> getEventsForWorkspace(String workspace)
     {
-        this.type = type;
-        this.message = message;
+        // dummy impl replace with real db code.
+        return Arrays.asList(new Event("svn", "Fix JIRA-42"), new Event("build", "Build Sucess"), new Event("jira", "JIRA-42 is closed"));
     }
-
-    public String getType()
-    {
-        return this.type;
-    }
-
-    public String getMessage()
-    {
-        return this.message;
-    }
-
 }
