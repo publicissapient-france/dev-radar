@@ -49,6 +49,10 @@
       <level value="trace"/> 
     </logger>
 
+    <logger name="org.dbunit">
+      <level value="info"/> 
+    </logger>
+    
     <root>
         <priority value="debug" />
         <appender-ref ref="console" />
