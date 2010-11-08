@@ -224,6 +224,12 @@
     </dependency>  
     
     <dependency>
+      <groupId>org.apache.derby</groupId>
+      <artifactId>derby</artifactId>
+      <version>10.6.2.1</version>
+   </dependency>
+   
+   <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-test</artifactId>
       <version>${spring-version}</version>
@@ -314,6 +320,9 @@
           <excludes>
             <exclude>.git/**/*</exclude>
             <exclude>.gitignore</exclude>
+            <exclude>test/**/*</exclude>
+            <exclude>**/*MANIFEST.MF</exclude>
+            <exclude>**/*.log</exclude>
           </excludes>
         </configuration>
       </plugin>
@@ -349,6 +358,10 @@
          <groupId>org.mortbay.jetty</groupId>
          <artifactId>maven-jetty-plugin</artifactId>
          <version>6.1.10</version>
+         <configuration>
+	         <jettyEnvXml>${basedir}/src/jetty/jetty-env.xml</jettyEnvXml>
+         </configuration>
+         
       </plugin>
 
     </plugins>
