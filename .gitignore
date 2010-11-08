@@ -1,5 +1,7 @@
 .classpath
 .settings
 .project
+.idea
 target
-derby.log
+dev-radar.iml
+derby.lo
