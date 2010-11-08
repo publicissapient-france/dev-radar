@@ -25,7 +25,7 @@ import org.junit.runner.Description;
 import org.junit.runner.notification.RunListener;
 
 /**
- * {@link RunListener} allowing to retrieve the test method currently being
+ * <code>{@link RunListener}</code> allowing to retrieve the test method currently being
  * executed.
  * Based on code by Joshua.Graham@thoughtworks.com.
  * @see "http://tech.groups.yahoo.com/group/junit/message/18728"

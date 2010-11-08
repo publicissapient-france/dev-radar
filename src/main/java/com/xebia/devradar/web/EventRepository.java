@@ -22,7 +22,6 @@ import java.util.Set;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.PersistenceContextType;
 
 import org.springframework.stereotype.Repository;
 
@@ -37,16 +36,17 @@ import com.xebia.devradar.domain.Workspace;
 @Repository
 public class EventRepository {
 
-    @PersistenceContext(type = PersistenceContextType.EXTENDED)
+    @PersistenceContext
     private EntityManager entityManager;
 
-    public Set<Event> getEventsForWorkspace(String workspaceName) {
+    public Set<Event> getEventsForWorkspace(final String workspaceName) {
 
-        Workspace workspace = (Workspace) entityManager
-            .createNamedQuery("workspaceByName")
-            .setParameter("name", workspaceName).getSingleResult();
+        final Workspace workspace = (Workspace) this.entityManager
+        .createNamedQuery("workspaceByName")
+        .setParameter("name", workspaceName).getSingleResult();
 
         return workspace.getEvents();
 
     }
+
 }

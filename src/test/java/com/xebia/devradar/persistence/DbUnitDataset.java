@@ -29,6 +29,8 @@ import java.lang.annotation.Target;
 /**
  * Annotates a test class or a test method as requiring the injection
  * of DbUnit datasets.
+ * 
+ * @see DbUnitDatabasePopulator
  * @author Alexandre Dutra
  *
  */

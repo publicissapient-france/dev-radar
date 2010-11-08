@@ -47,7 +47,7 @@
 			<props>
 				<!--<prop key="hibernate.ejb.naming_strategy">org.hibernate.cfg.ImprovedNamingStrategy</prop>-->
                 <prop key="hibernate.hbm2ddl.auto">create</prop>
-                <prop key="hibernate.dialect">org.hibernate.dialect.HSQLDialect</prop>
+                <prop key="hibernate.dialect">org.hibernate.dialect.H2Dialect</prop>
 			</props>
 		</property>
 
@@ -57,5 +57,8 @@
 
     <!-- traduction des exceptions --> 
     <bean class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor" />
+
+    <!-- easy access to Hibernate Sessionfactory -->
+    <!--<bean id="sessionFactory" factory-bean="entityManagerFactory" factory-method="getSessionFactory" />-->
 
 </beans>

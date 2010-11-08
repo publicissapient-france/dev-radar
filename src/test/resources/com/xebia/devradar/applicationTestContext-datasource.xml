@@ -27,10 +27,20 @@
         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
         ">
 
-    <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-        <property name="driverClassName" value="org.hsqldb.jdbcDriver" />
-        <property name="url" value="jdbc:hsqldb:mem:test" />
-        <property name="username" value="sa" />
-        <property name="password" value="" />
+    <bean id="dataSource" class="org.springframework.jdbc.datasource.LazyConnectionDataSourceProxy">
+        <constructor-arg>
+            <bean class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+                <property name="driverClassName" value="org.h2.Driver" />
+                <property name="url" value="jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;MODE=Oracle;TRACE_LEVEL_SYSTEM_OUT=2" />
+                <property name="username" value="sa" />
+                <property name="password" value="" />
+            </bean>
+        </constructor-arg>
     </bean>
+    
+    <!-- provides a H2 console to look into the db if necessary -->
+    <bean class="org.h2.tools.Server" factory-method="createWebServer" depends-on="dataSource" init-method="start" lazy-init="false">
+        <constructor-arg value="-web,-webPort,11111" />
+    </bean>
+        
 </beans>

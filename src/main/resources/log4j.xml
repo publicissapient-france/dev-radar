@@ -52,6 +52,7 @@
     <logger name="org.dbunit">
       <level value="info"/> 
     </logger>
+
     
     <root>
         <priority value="debug" />
