@@ -21,6 +21,7 @@ package com.xebia.devradar.pollers.svn;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.xebia.devradar.domain.Type;
 import org.tmatesoft.svn.core.SVNException;
 import org.tmatesoft.svn.core.SVNLogEntry;
 
@@ -42,7 +43,7 @@ public class SvnEventCollectorImpl implements SvnEventCollector {
         if(logEntry.getRevision() != -1L) {
             //TODO trim
             final String message = logEntry.toString();
-            final Event event = new Event("Subversion", message, logEntry.getDate());
+            final Event event = new Event(Type.SVN, message, logEntry.getDate());
             this.events.add(event);
         }
     }

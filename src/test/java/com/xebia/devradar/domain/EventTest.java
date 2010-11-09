@@ -27,15 +27,14 @@ import org.junit.Test;
 
 public class EventTest
 {
-    private static final String SOME_TYPE = "type";
 
     private static final String SOME_MESSAGE = "message";
 
     @Test
     public void should_set_param_at_the_right_place()
     {
-        Event event = new Event(SOME_TYPE, SOME_MESSAGE, new Date());
-        assertThat(event.getType(), equalTo(SOME_TYPE));
+        Event event = new Event(Type.SVN, SOME_MESSAGE, new Date());
+        assertThat(event.getType(), equalTo(Type.SVN));
         assertThat(event.getMessage(), equalTo(SOME_MESSAGE));
     }
 }

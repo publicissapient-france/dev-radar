@@ -20,21 +20,15 @@ package com.xebia.devradar.domain;
 
 import java.util.Date;
 
-import javax.persistence.Access;
-import javax.persistence.AccessType;
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import javax.persistence.*;
 
 @Entity
 @Access(AccessType.FIELD)
 public class Event extends AbstractEntity {
 
     @Basic(optional = false)
-    @Column(length = 50)
-    private String type;
+    @Enumerated(EnumType.STRING)
+    private Type type;
 
     @Basic(optional = false)
     @Column(length = 500)
@@ -47,17 +41,17 @@ public class Event extends AbstractEntity {
     public Event() {
     }
 
-    public Event(String type, String message, Date date) {
+    public Event(Type type, String message, Date date) {
         this.type = type;
         this.message = message;
         this.date = date;
     }
     
-    public String getType() {
+    public Type getType() {
         return this.type;
     }
 
-    public void setType(String type) {
+    public void setType(Type type) {
         this.type = type;
     }
     

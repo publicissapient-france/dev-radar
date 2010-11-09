@@ -31,6 +31,7 @@ import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import com.xebia.devradar.domain.Type;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.web.servlet.ModelAndView;
@@ -67,7 +68,7 @@ public class EventsResourceTest
     {
         return new LinkedHashSet<Event>(
             Arrays.asList(
-                new Event("svn", "Fix bug FOOBAR-42", new Date()), 
-                new Event("svn", "Introducing Google Guava", new Date())));
+                new Event(Type.SVN, "Fix bug FOOBAR-42", new Date()),
+                new Event(Type.SVN, "Introducing Google Guava", new Date())));
     }
 }

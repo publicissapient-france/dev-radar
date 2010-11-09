@@ -24,6 +24,7 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
+import com.xebia.devradar.domain.Type;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.xebia.devradar.domain.Event;
@@ -50,8 +51,8 @@ public class DatabaseInitializerImpl implements DatabaseInitializer {
 
             Workspace defaultWorkspace = new Workspace();
             defaultWorkspace.setName("default");
-            defaultWorkspace.addEvent(new Event("Example", "This is a dummy event!", new Date()));
-            defaultWorkspace.addEvent(new Event("Example 2", "This is another dummy event!", new Date()));
+            defaultWorkspace.addEvent(new Event(Type.HUDSON, "This is a dummy event!", new Date()));
+            defaultWorkspace.addEvent(new Event(Type.JIRA, "This is another dummy event!", new Date()));
             
             entityManager.persist(defaultWorkspace);
 
