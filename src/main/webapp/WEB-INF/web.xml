@@ -62,10 +62,6 @@
     <filter>
         <filter-name>OpenEntityManagerInViewFilter</filter-name>
         <filter-class>org.springframework.orm.jpa.support.OpenEntityManagerInViewFilter</filter-class>
-        <init-param>
-            <param-name>singleSession</param-name>
-            <param-value>false</param-value>
-        </init-param>
     </filter>
     
     <filter-mapping>
