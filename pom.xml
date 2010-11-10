@@ -32,6 +32,12 @@
   <url>http://www.xebia.fr/devradar/</url>
   <inceptionYear>2010</inceptionYear>
 
+  <parent>
+    <groupId>org.sonatype.oss</groupId>
+    <artifactId>oss-parent</artifactId>
+    <version>5</version>
+  </parent>
+
   <licenses>
     <license>
       <name>The Apache Software License, Version 2.0</name>
@@ -249,7 +255,7 @@
   <repositories>
     <repository>
       <id>JBoss Repo</id>
-      <url>http://repository.jboss.com/maven2</url>
+      <url>http://repository.jboss.org/nexus/content/groups/public-jboss/</url>
     </repository>
   </repositories>
 
