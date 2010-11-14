@@ -30,6 +30,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.xebia.devradar.domain.Event;
+import com.xebia.devradar.domain.Type;
 import com.xebia.devradar.pollers.PollException;
 
 
@@ -60,7 +61,7 @@ public class SvnPollerTest {
         for (final Event event : events) {
             //TODO delete this
             System.out.println(event.getMessage());
-            Assert.assertEquals("Event type should be Subversion", "Subversion", event.getType());
+            Assert.assertEquals("Event type should be Subversion",  Type.SVN, event.getType());
             Assert.assertNotNull("Event message should not be null", event.getMessage());
         }
     }
