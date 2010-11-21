@@ -36,7 +36,7 @@ import com.xebia.devradar.domain.Event;
  * @author Jean-Laurent de Morlhon
  */
 @Controller
-@RequestMapping("/workspace")
+@RequestMapping("/events")
 @Transactional
 public class EventsResource
 {
@@ -56,7 +56,7 @@ public class EventsResource
     public ModelAndView getAllEvents(@PathVariable String workspace)
     {
         Set<Event> eventList = eventRepository.getEventsForWorkspace(workspace);
-        ModelAndView mav = new ModelAndView("workspace");
+        ModelAndView mav = new ModelAndView("events");
         mav.addObject("events", eventList);
         mav.addObject("workspace", workspace);
         return mav;

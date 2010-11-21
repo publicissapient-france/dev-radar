@@ -48,8 +48,11 @@ public class Workspace extends AbstractEntity {
     
     public Workspace() {
     }
-
     
+    public Workspace(String name) {
+        this.name = name;
+    }
+
     public String getName() {
         return name;
     }

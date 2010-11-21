@@ -18,6 +18,8 @@
  */
 package com.xebia.devradar.web;
 
+import java.util.List;
+
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
@@ -36,14 +38,21 @@ public class WorkspaceRepository {
     @PersistenceContext
     private EntityManager entityManager;
 
-    public Workspace createWorkspace(final String workspaceName) {
-        final Workspace w = new Workspace();
-        w.setName(workspaceName);
+    public Workspace createWorkspace(Workspace w) {
         this.entityManager.persist(w);
         return w;
     }
 
     public void deleteWorkspace(final Workspace workspace) {
         this.entityManager.remove(workspace);
+    }
+
+    public Workspace findWorkspaceByName(String workspaceName) {
+        return (Workspace) this.entityManager.createNamedQuery("workspaceByName").setParameter("name", workspaceName).getSingleResult();
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<Workspace> getAll() {
+        return this.entityManager.createQuery("from Workspace").getResultList();
     }
 }

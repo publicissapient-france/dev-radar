@@ -21,24 +21,28 @@
 <%@page contentType="text/html"%>
 <%@page pageEncoding="UTF-8"%>
 
-<%@ taglib uri='http://java.sun.com/jsp/jstl/core' prefix='c'%>
+<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
 <html>
-<head><title>Workspace : <c:out value="${workspace.name}" /></title></head>
+<head><title>New Event Source for Workspace: ${workspaceName}</title></head>
 <body>
-   <h1>Workspace : <c:out value="${workspace.name}" /></h1>
-   
-   <a href="../index.html">Workspaces index page</a>
-   <br />
-   
-   <a href="delete.html">Delete this workspace</a>
-   
-   <h2>Configured Event sources</h2>
-   <ul>
-   <c:forEach var="eventSource" items="${workspace.eventSources}">
-      <li><c:out value="${eventSource.type}" /> : <a href="<c:out value='${eventSource.url}'/>"><c:out value="${eventSource.url}"/></a></li>
-   </c:forEach>
-   </ul>
-   <a href="eventSources/create.html">Create new Event Source</a>
+   <h1>New Event Source for Workspace: ${workspaceName}</h1>
+
+<form:form method="post" commandName="eventSource" action="onCreate.html">
+	
+	<table>
+	    <tr>
+	        <td><form:label path="type">Type</form:label></td>
+	        <td><form:radiobuttons path="type" /><form:errors path="type" cssClass="error" /></td>
+	    </tr>
+	    <tr>
+            <td><form:label path="url">URL</form:label></td>
+            <td><form:input path="url" /><form:errors path="url" cssClass="error" /></td>
+	    </tr>
+	</table>  
+    <input type="submit" value="Create Event Source"/>
+
+</form:form>
 </body>
 </html>

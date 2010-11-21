@@ -24,21 +24,15 @@
 <%@ taglib uri='http://java.sun.com/jsp/jstl/core' prefix='c'%>
 
 <html>
-<head><title>Workspace : <c:out value="${workspace.name}" /></title></head>
+<head><title>Workspaces</title></head>
 <body>
-   <h1>Workspace : <c:out value="${workspace.name}" /></h1>
-   
-   <a href="../index.html">Workspaces index page</a>
-   <br />
-   
-   <a href="delete.html">Delete this workspace</a>
-   
-   <h2>Configured Event sources</h2>
+   <h1>Workspaces</h1>
+   <a href="create.html">Create new workspace</a>
+   <h2>Configured workspaces</h2>
    <ul>
-   <c:forEach var="eventSource" items="${workspace.eventSources}">
-      <li><c:out value="${eventSource.type}" /> : <a href="<c:out value='${eventSource.url}'/>"><c:out value="${eventSource.url}"/></a></li>
+   <c:forEach var="workspace" items="${workspaces}">
+      <li><c:out value="${workspace.name}" /> (<a href="${workspace.name}/index.html">view details</a>)</li>
    </c:forEach>
    </ul>
-   <a href="eventSources/create.html">Create new Event Source</a>
 </body>
 </html>

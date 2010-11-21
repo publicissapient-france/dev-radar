@@ -38,7 +38,8 @@ public class WorkspaceRepositoryTest extends AbstractRepositoryTests {
     @Test
     public void createWorkspaceShouldInsertOneRow() throws MalformedURLException {
         final String workspaceName = "TEST";
-        final Workspace w = this.repository.createWorkspace(workspaceName);
+        Workspace w = new Workspace(workspaceName);
+        w = this.repository.createWorkspace(w);
         Assert.assertThat(w, CoreMatchers.not(CoreMatchers.nullValue()));
         Assert.assertThat(w.getName(), CoreMatchers.is(workspaceName));
         w.addEventSource(new EventSource(Type.SVN, new URL("http://test.com/svn")));
