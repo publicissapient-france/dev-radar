@@ -1,0 +1,9 @@
+<!-- 
+Place this in src/main/webapp/META-INF to let Tomcat configure the devradar DataSource according to
+the information below.
+ -->
+<Context>
+          
+    <ResourceLink name="jdbc/devradar-ds" global="jdbc/devradar-ds" type="javax.sql.DataSource" />
+   
+</Context>
