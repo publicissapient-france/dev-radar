@@ -92,6 +92,6 @@ public class ShowWorkspaces {
             SessionStatus status) {
         workspaceRepository.deleteWorkspace(workspace);
         status.setComplete();
-        return "redirect:/workspaces/list/list.html";
+        return "redirect:/workspaces/list.html";
     }
 }
