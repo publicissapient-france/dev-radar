@@ -29,6 +29,8 @@ import org.dom4j.DocumentHelper;
 
 public class PomLoaderUtils {
 
+    private PomLoaderUtils() {}
+    
     public static Pom create(URL url) throws Exception {
         URLConnection urlconnection = url.openConnection();
         InputStream is = urlconnection.getInputStream();

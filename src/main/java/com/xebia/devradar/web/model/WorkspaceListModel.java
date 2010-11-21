@@ -18,8 +18,8 @@
  */
 package com.xebia.devradar.web.model;
 
-public class WorkspaceListModel {
+public interface WorkspaceListModel {
 
-    public static final String WORKSPACES = "workspaces";
-    public static final String NAME = "workspaces/list";
+    String WORKSPACES = "workspaces";
+    String NAME = "workspaces/list";
 }

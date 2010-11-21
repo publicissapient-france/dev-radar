@@ -59,27 +59,30 @@ public class ShowWorkspaces {
     @RequestMapping(method = RequestMethod.GET)
     public String setup(@PathVariable("workspaceId") Long workspaceId, Model model) {
         Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
-        try {
-            addEvents(workspace);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        addEvents(workspace);
         
         model.addAttribute("workspace", workspace);
         return "workspaces/show";
     }
 
-    private void addEvents(Workspace workspace) throws Exception {
-        SvnPoller poller = new SvnPoller();
-        final Date end = new Date();
-        Date start = DateUtils.addMonths(end, -1);
-        poller.setUrl(new URL(workspace.getScm()));
-        poller.setStartDate(start);
-        poller.setEndDate(end);
-        poller.init();
-        List<Event> events = poller.poll();
-        for (final Event event : events) {
-            workspace.addEvent(event);
+    /**
+     * WARN: Will be deleted after the real implementation of events processing
+     */
+    private void addEvents(Workspace workspace) {
+        try {
+            SvnPoller poller = new SvnPoller();
+            final Date end = new Date();
+            Date start = DateUtils.addMonths(end, -1);
+            poller.setUrl(new URL(workspace.getScm()));
+            poller.setStartDate(start);
+            poller.setEndDate(end);
+            poller.init();
+            List<Event> events = poller.poll();
+            for (final Event event : events) {
+                workspace.addEvent(event);
+            }
+        } catch(Exception e) {
+            e.printStackTrace();
         }
     }
 

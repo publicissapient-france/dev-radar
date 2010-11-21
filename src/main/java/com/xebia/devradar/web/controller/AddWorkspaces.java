@@ -84,7 +84,6 @@ public class AddWorkspaces {
         if (StringUtils.hasLength(workspace.getPomUrl())) {
             try {
                 Pom pom = PomLoaderUtils.create(new URL(workspace.getPomUrl()));
-                System.err.println(pom.getName()+" "+pom.getScm()+" "+pom.getCiManagement()+" "+pom.getDescription()+" "+pom.getIssueManagement());
                 workspace.setName(pom.getName());
                 workspace.setScm(pom.getScm());
                 workspace.setCiManagement(pom.getCiManagement());
