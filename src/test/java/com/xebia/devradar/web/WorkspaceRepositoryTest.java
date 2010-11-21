@@ -16,6 +16,8 @@
  */
 package com.xebia.devradar.web;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.List;
 
 import org.hamcrest.CoreMatchers;
@@ -23,6 +25,8 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.xebia.devradar.domain.EventSource;
+import com.xebia.devradar.domain.Type;
 import com.xebia.devradar.domain.Workspace;
 import com.xebia.devradar.persistence.AbstractRepositoryTests;
 import com.xebia.devradar.persistence.DbUnitDataset;
@@ -33,14 +37,16 @@ public class WorkspaceRepositoryTest extends AbstractRepositoryTests {
     private WorkspaceRepository repository;
 
     @Test
-    public void createWorkspaceShouldInsertOneRow() {
+    public void createWorkspaceShouldInsertOneRow() throws MalformedURLException {
         final String workspaceName = "TEST";
         final Workspace w = this.repository.createWorkspace(workspaceName);
         Assert.assertThat(w, CoreMatchers.not(CoreMatchers.nullValue()));
         Assert.assertThat(w.getName(), CoreMatchers.is(workspaceName));
+        w.addEventSource(new EventSource(Type.SVN, new URL("http://test.com/svn")));
+        w.addEventSource(new EventSource(Type.JIRA, new URL("http://test.com/jira")));
         this.entityManager.flush();
-        final int rows = this.countRowsInTable("WORKSPACE");
-        Assert.assertThat(rows, CoreMatchers.is(1));
+        Assert.assertThat(this.countRowsInTable("WORKSPACE"), CoreMatchers.is(1));
+        Assert.assertThat(this.countRowsInTable("WORKSPACE_EVENTSOURCES"), CoreMatchers.is(2));
     }
 
     @Test
@@ -50,6 +56,7 @@ public class WorkspaceRepositoryTest extends AbstractRepositoryTests {
         this.repository.deleteWorkspace(w);
         this.entityManager.flush();
         Assert.assertThat(this.countRowsInTable("WORKSPACE"), CoreMatchers.is(0));
+        Assert.assertThat(this.countRowsInTable("WORKSPACE_EVENTSOURCES"), CoreMatchers.is(0));
         Assert.assertThat(this.countRowsInTable("EVENT"), CoreMatchers.is(0));
     }
     
