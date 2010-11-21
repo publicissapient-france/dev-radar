@@ -2,7 +2,7 @@
 .settings
 .project
 .idea
-target
+/target
 dev-radar.iml
 derby.log
-test
+/test
