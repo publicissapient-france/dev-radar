@@ -1,3 +1,4 @@
+<%--
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -16,35 +17,16 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.xebia.devradar.domain;
+--%>
+<%@ include file="/WEB-INF/jsp/includes.jsp"%>
+<%@ include file="/WEB-INF/jsp/header.jsp"%>
 
-import javax.persistence.Access;
-import javax.persistence.AccessType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.MappedSuperclass;
-import javax.persistence.Version;
+<h2>List of workspaces (${ fn:length(workspaces) })</h2>
+   <ul>
+   <c:forEach var="workspace" items="${workspaces}">
+       <c:url value="/workspaces/${workspace.id}.html" var="viewWorkspaceUrl"/>
+       <li><a href="${viewWorkspaceUrl}"><c:out value="${workspace.name}" /></a></li>
+   </c:forEach>
+   </ul>
 
-@MappedSuperclass
-@Access(AccessType.FIELD)
-public class AbstractEntity {
-
-    @Id
-    @GeneratedValue
-    private Long id;
-
-    @Version
-    private Integer version;
-
-    public final Long getId() {
-        return id;
-    }
-    
-    public Integer getVersion() {
-        return version;
-    }
-    
-    public boolean isNew() {
-        return (this.id == null);
-    }
-}
+<%@ include file="/WEB-INF/jsp/footer.jsp"%>

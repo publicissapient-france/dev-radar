@@ -16,49 +16,34 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.xebia.devradar.web;
+package com.xebia.devradar.web.controller;
 
-import java.util.Set;
-
+import com.xebia.devradar.domain.Workspace;
+import com.xebia.devradar.web.WorkspaceRepository;
+import com.xebia.devradar.web.model.WorkspaceListModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.xebia.devradar.domain.Event;
+import java.util.List;
 
-/**
- * Basic EventResource/Controller
- * 
- * @author Jean-Laurent de Morlhon
- */
 @Controller
-@RequestMapping("/events")
-@Transactional
-public class EventsResource
-{
+@RequestMapping("/workspaces/list")
+public class ListWorkspaces {
+    private final WorkspaceRepository workspaceRepository;
 
     @Autowired
-    private EventRepository eventRepository;
-    
-    public EventsResource() {
-    }
-    
-    public EventsResource(EventRepository eventRepository) {
-        this.eventRepository = eventRepository;
+    public ListWorkspaces(WorkspaceRepository workspaceRepository) {
+        this.workspaceRepository = workspaceRepository;
     }
 
-
-    @RequestMapping(value = "/{workspace}", method = RequestMethod.GET)
-    public ModelAndView getAllEvents(@PathVariable String workspace)
-    {
-        Set<Event> eventList = eventRepository.getEventsForWorkspace(workspace);
-        ModelAndView mav = new ModelAndView("events");
-        mav.addObject("events", eventList);
-        mav.addObject("workspace", workspace);
+    @RequestMapping(method = RequestMethod.GET)
+    public ModelAndView getAllWorkspaces() {
+        List<Workspace> workspaces = workspaceRepository.getAllWorkspaces();
+        ModelAndView mav = new ModelAndView(WorkspaceListModel.NAME);
+        mav.addObject(WorkspaceListModel.WORKSPACES, workspaces);
         return mav;
     }
 }

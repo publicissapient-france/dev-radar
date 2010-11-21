@@ -46,7 +46,6 @@ public class EventRepository {
         .setParameter("name", workspaceName).getSingleResult();
 
         return workspace.getEvents();
-
     }
 
 }

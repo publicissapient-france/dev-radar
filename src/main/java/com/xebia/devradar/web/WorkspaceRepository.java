@@ -22,6 +22,7 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 
 import org.springframework.stereotype.Repository;
 
@@ -30,7 +31,6 @@ import com.xebia.devradar.domain.Workspace;
 /**
  * Repository for <code>{@link Workspace}</code> instances.
  * 
- * @author Alexandre Dutra
  */
 @Repository
 public class WorkspaceRepository {
@@ -38,13 +38,20 @@ public class WorkspaceRepository {
     @PersistenceContext
     private EntityManager entityManager;
 
-    public Workspace createWorkspace(Workspace w) {
-        this.entityManager.persist(w);
-        return w;
+    public Workspace createWorkspace(Workspace workspace) {
+        entityManager.persist(workspace);
+        return workspace;
     }
 
     public void deleteWorkspace(final Workspace workspace) {
-        this.entityManager.remove(workspace);
+        entityManager.remove(getWorkspaceById(workspace.getId()));
+    }
+    
+    public Workspace getWorkspaceByName(String name) {
+        Query query = entityManager.createNamedQuery("workspaceByName");
+
+        query.setParameter("name", name);
+        return (Workspace) query.getSingleResult();
     }
 
     public Workspace findWorkspaceByName(String workspaceName) {
@@ -55,4 +62,19 @@ public class WorkspaceRepository {
     public List<Workspace> getAll() {
         return this.entityManager.createQuery("from Workspace").getResultList();
     }
+    
+    @SuppressWarnings("unchecked")
+    public List<Workspace> getAllWorkspaces() {
+        Query query = entityManager.createNamedQuery("orderByName");
+        return query.getResultList();
+    }
+    
+    public Workspace getWorkspaceById(Long id) {
+        return entityManager.find(Workspace.class, id);
+    }
+    
+    public Workspace updateWorkspace(Workspace workspace) {
+        return entityManager.merge(workspace);
+    }
+    
 }

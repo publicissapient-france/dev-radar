@@ -30,7 +30,6 @@
    
    <a href="../index.html">Workspaces index page</a>
    <br />
-   
    <a href="delete.html">Delete this workspace</a>
    
    <h2>Configured Event sources</h2>

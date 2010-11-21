@@ -16,35 +16,23 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.xebia.devradar.domain;
+package com.xebia.devradar.validation;
 
-import javax.persistence.Access;
-import javax.persistence.AccessType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.MappedSuperclass;
-import javax.persistence.Version;
+import org.springframework.util.StringUtils;
+import org.springframework.validation.Errors;
 
-@MappedSuperclass
-@Access(AccessType.FIELD)
-public class AbstractEntity {
+import com.xebia.devradar.domain.Workspace;
 
-    @Id
-    @GeneratedValue
-    private Long id;
+public class WorkspaceValidator {
 
-    @Version
-    private Integer version;
-
-    public final Long getId() {
-        return id;
+    public void validate(Workspace workspace, Errors errors) {
+        String name = workspace.getName();
+        String pomUrl = workspace.getPomUrl();
+        
+        if (!StringUtils.hasLength(pomUrl) && !StringUtils.hasLength(name)) {
+            errors.rejectValue("pomUrl", "required", "required");
+            errors.rejectValue("name", "required", "required");
+        }
     }
-    
-    public Integer getVersion() {
-        return version;
-    }
-    
-    public boolean isNew() {
-        return (this.id == null);
-    }
+
 }

@@ -28,18 +28,37 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 
 @Entity
 @Access(AccessType.FIELD)
-@NamedQuery(name="workspaceByName", query="from Workspace where name = :name")
+@NamedQueries({
+@NamedQuery(name="workspaceByName", query="from Workspace where name = :name"),
+@NamedQuery(name="orderByName", query="from Workspace w order by w.name")
+})
 public class Workspace extends AbstractEntity {
 
     @Basic(optional = false)
-    @Column(length = 50, unique=true)
+    @Column(length = 50)
     private String name;
 
+    @Column(length = 256)
+    private String pomUrl;
+    
+    @Column(length = 512)
+    private String description;
+    
+    @Column(length = 256)
+    private String issueManagement;
+    
+    @Column(length = 256)
+    private String ciManagement;
+    
+    @Column(length = 256)
+    private String scm;
+    
     @OneToMany(cascade=CascadeType.ALL,orphanRemoval=true)
     private Set<Event> events = new LinkedHashSet<Event>();
     
@@ -85,5 +104,52 @@ public class Workspace extends AbstractEntity {
         eventSources.add(e);
     }
 
+    public String getPomUrl() {
+        return pomUrl;
+    }
+
+    public void setPomUrl(String pomUrl) {
+        this.pomUrl = pomUrl;
+    }
+
+
+    public String getDescription() {
+        return description;
+    }
+
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+
+    public String getIssueManagement() {
+        return issueManagement;
+    }
+
+
+    public void setIssueManagement(String issueManagement) {
+        this.issueManagement = issueManagement;
+    }
+
+
+    public String getCiManagement() {
+        return ciManagement;
+    }
+
+
+    public void setCiManagement(String ciManagement) {
+        this.ciManagement = ciManagement;
+    }
+
+
+    public String getScm() {
+        return scm;
+    }
+
+
+    public void setScm(String scm) {
+        this.scm = scm;
+    }
 
 }
