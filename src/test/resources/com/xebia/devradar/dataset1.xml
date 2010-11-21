@@ -23,6 +23,10 @@
 
     <WORKSPACE ID="1" VERSION="5" NAME="TEST"  />
 
+    <WORKSPACE_EVENTSOURCES WORKSPACE_ID="1" TYPE="SVN" URL="http://svn.test.com"  />
+    
+    <WORKSPACE_EVENTSOURCES WORKSPACE_ID="1" TYPE="JIRA" URL="http://jira.test.com"  />
+
     <EVENT ID="1" VERSION="45" TYPE="SVN" MESSAGE="Dummy SVN event" DATE="2010-09-25 15:46:23"  />
 
     <EVENT ID="2" VERSION="21" TYPE="JIRA" MESSAGE="Dummy JIRA event" DATE="2010-10-31 18:31:22"  />

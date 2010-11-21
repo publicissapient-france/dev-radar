@@ -26,6 +26,7 @@ import javax.persistence.AccessType;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -42,6 +43,9 @@ public class Workspace extends AbstractEntity {
     @OneToMany(cascade=CascadeType.ALL,orphanRemoval=true)
     private Set<Event> events = new LinkedHashSet<Event>();
     
+    @ElementCollection
+    private Set<EventSource> eventSources = new LinkedHashSet<EventSource>();
+    
     public Workspace() {
     }
 
@@ -49,25 +53,33 @@ public class Workspace extends AbstractEntity {
     public String getName() {
         return name;
     }
-
     
     public void setName(String name) {
         this.name = name;
     }
-
     
     public Set<Event> getEvents() {
         return events;
     }
-
     
     public void setEvents(Set<Event> events) {
         this.events = events;
     }
 
-
     public void addEvent(Event e) {
         events.add(e);
+    }
+    
+    public Set<EventSource> getEventSources() {
+        return eventSources;
+    }
+    
+    public void setEventSources(Set<EventSource> eventSources) {
+        this.eventSources = eventSources;
+    }
+
+    public void addEventSource(EventSource e) {
+        eventSources.add(e);
     }
 
 
