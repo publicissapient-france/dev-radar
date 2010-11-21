@@ -21,10 +21,10 @@ package com.xebia.devradar.pollers.svn;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang.time.DateUtils;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -45,10 +45,8 @@ public class SvnPollerTest {
     @Before
     public void setUp() throws PollException, MalformedURLException {
         this.poller = new SvnPoller();
-        final Calendar cal = Calendar.getInstance();
-        final Date end = cal.getTime();
-        cal.add(Calendar.MONTH, -1);
-        final Date start = cal.getTime();
+        final Date end = new Date();
+        Date start = DateUtils.addMonths(end, -1);
         this.poller.setUrl(new URL("http://svn.svnkit.com/repos/svnkit/branches/1.3.x"));
         this.poller.setStartDate(start);
         this.poller.setEndDate(end);
