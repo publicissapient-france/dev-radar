@@ -1,3 +1,4 @@
+<%--
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -16,35 +17,14 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.xebia.devradar.domain;
+ --%>
+  <table class="footer">
+    <tr>
+      <td align="center">Xebia 2010</td>
+    </tr>
+  </table>
 
-import javax.persistence.Access;
-import javax.persistence.AccessType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.MappedSuperclass;
-import javax.persistence.Version;
+  </div>
+</body>
 
-@MappedSuperclass
-@Access(AccessType.FIELD)
-public class AbstractEntity {
-
-    @Id
-    @GeneratedValue
-    private Long id;
-
-    @Version
-    private Integer version;
-
-    public final Long getId() {
-        return id;
-    }
-    
-    public Integer getVersion() {
-        return version;
-    }
-    
-    public boolean isNew() {
-        return (this.id == null);
-    }
-}
+</html>

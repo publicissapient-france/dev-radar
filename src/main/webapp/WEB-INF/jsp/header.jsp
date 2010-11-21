@@ -1,3 +1,4 @@
+<%--
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -16,35 +17,24 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.xebia.devradar.domain;
+ --%>
+ <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 
-import javax.persistence.Access;
-import javax.persistence.AccessType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.MappedSuperclass;
-import javax.persistence.Version;
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <link rel="stylesheet" href="<spring:url value="/styles/devradar.css" htmlEscape="true" />" type="text/css"/>
+  <title>Dev Radar :: Description</title>	
+</head>
 
-@MappedSuperclass
-@Access(AccessType.FIELD)
-public class AbstractEntity {
+<body>
+<h1>Dev Radar</h1>
+  <div id="main">
 
-    @Id
-    @GeneratedValue
-    private Long id;
-
-    @Version
-    private Integer version;
-
-    public final Long getId() {
-        return id;
-    }
-    
-    public Integer getVersion() {
-        return version;
-    }
-    
-    public boolean isNew() {
-        return (this.id == null);
-    }
-}
+    <table class="footer">
+    <tr>
+      <td><a href="<spring:url value="/workspaces/list.html" htmlEscape="true" />">Home</a></td>
+      <td><a href="<spring:url value="/workspaces/new.html" htmlEscape="true" />">Create a new workspace</a></td>
+      <td><a href="<spring:url value="/workspaces/list.html" htmlEscape="true" />">View workspaces</a></td>
+      <td align="right">Xebia</td>
+    </tr>
+  </table>

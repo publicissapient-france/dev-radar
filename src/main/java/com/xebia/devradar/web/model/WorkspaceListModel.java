@@ -16,35 +16,10 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.xebia.devradar.domain;
+package com.xebia.devradar.web.model;
 
-import javax.persistence.Access;
-import javax.persistence.AccessType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.MappedSuperclass;
-import javax.persistence.Version;
+public class WorkspaceListModel {
 
-@MappedSuperclass
-@Access(AccessType.FIELD)
-public class AbstractEntity {
-
-    @Id
-    @GeneratedValue
-    private Long id;
-
-    @Version
-    private Integer version;
-
-    public final Long getId() {
-        return id;
-    }
-    
-    public Integer getVersion() {
-        return version;
-    }
-    
-    public boolean isNew() {
-        return (this.id == null);
-    }
+    public static final String WORKSPACES = "workspaces";
+    public static final String NAME = "workspaces/list";
 }

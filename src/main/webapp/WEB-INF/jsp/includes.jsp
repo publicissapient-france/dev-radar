@@ -1,3 +1,4 @@
+<%--
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -16,35 +17,9 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.xebia.devradar.domain;
-
-import javax.persistence.Access;
-import javax.persistence.AccessType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.MappedSuperclass;
-import javax.persistence.Version;
-
-@MappedSuperclass
-@Access(AccessType.FIELD)
-public class AbstractEntity {
-
-    @Id
-    @GeneratedValue
-    private Long id;
-
-    @Version
-    private Integer version;
-
-    public final Long getId() {
-        return id;
-    }
-    
-    public Integer getVersion() {
-        return version;
-    }
-    
-    public boolean isNew() {
-        return (this.id == null);
-    }
-}
+ --%>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>

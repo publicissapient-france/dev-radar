@@ -16,6 +16,8 @@
  */
 package com.xebia.devradar.web;
 
+import java.util.List;
+
 import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
 import org.junit.Test;
@@ -49,5 +51,17 @@ public class WorkspaceRepositoryTest extends AbstractRepositoryTests {
         this.entityManager.flush();
         Assert.assertThat(this.countRowsInTable("WORKSPACE"), CoreMatchers.is(0));
         Assert.assertThat(this.countRowsInTable("EVENT"), CoreMatchers.is(0));
+    }
+    
+    @Test
+    @DbUnitDataset("com/xebia/devradar/workspaceShouldGetWorkspacesOrdered.xml")
+    public void shouldGetWorkspacesOrdered() {
+        List<Workspace> workspaces = this.repository.getAllWorkspaces();
+        Assert.assertThat(workspaces.size(), CoreMatchers.is(5));
+        Assert.assertThat(workspaces.get(0).getName(), CoreMatchers.is("WORKSPACE A"));
+        Assert.assertThat(workspaces.get(1).getName(), CoreMatchers.is("WORKSPACE B"));
+        Assert.assertThat(workspaces.get(2).getName(), CoreMatchers.is("WORKSPACE C"));
+        Assert.assertThat(workspaces.get(3).getName(), CoreMatchers.is("WORKSPACE D"));
+        Assert.assertThat(workspaces.get(4).getName(), CoreMatchers.is("WORKSPACE E"));
     }
 }
