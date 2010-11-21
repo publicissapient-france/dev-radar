@@ -43,6 +43,14 @@ public class EventsResource
 
     @Autowired
     private EventRepository eventRepository;
+    
+    public EventsResource() {
+    }
+    
+    public EventsResource(EventRepository eventRepository) {
+        this.eventRepository = eventRepository;
+    }
+
 
     @RequestMapping(value = "/{workspace}", method = RequestMethod.GET)
     public ModelAndView getAllEvents(@PathVariable String workspace)
