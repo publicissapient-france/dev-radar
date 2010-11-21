@@ -22,6 +22,7 @@ import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -36,15 +37,12 @@ import com.xebia.devradar.domain.Event;
  */
 @Controller
 @RequestMapping("/workspace")
+@Transactional
 public class EventsResource
 {
-    private final EventRepository eventRepository;
 
     @Autowired
-    public EventsResource(EventRepository eventRepository)
-    {
-        this.eventRepository = eventRepository;
-    }
+    private EventRepository eventRepository;
 
     @RequestMapping(value = "/{workspace}", method = RequestMethod.GET)
     public ModelAndView getAllEvents(@PathVariable String workspace)
