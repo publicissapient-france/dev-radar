@@ -40,12 +40,12 @@ import org.springframework.web.bind.support.SessionStatus;
 
 import com.xebia.devradar.domain.EventSource;
 import com.xebia.devradar.domain.PollerDescriptor;
-import com.xebia.devradar.domain.Workspace;
+import com.xebia.devradar.web.EventSourceRepository;
 import com.xebia.devradar.web.PollerDescriptorRepository;
 import com.xebia.devradar.web.WorkspaceRepository;
 
 @Controller
-@RequestMapping("/workspaces/{workspaceId}/eventSources/edit")
+@RequestMapping("/workspaces/{workspaceId}/eventSources/{eventSourceId}/edit")
 @SessionAttributes("eventSource")
 @Transactional
 public class EditEventSources {
@@ -53,6 +53,9 @@ public class EditEventSources {
     @Autowired
     private PollerDescriptorRepository pollerDescriptorRepository;
 
+    @Autowired
+    private EventSourceRepository eventSourceRepository;
+    
     @Autowired
     private WorkspaceRepository workspaceRepository;
 
@@ -73,27 +76,27 @@ public class EditEventSources {
     }
 
     @RequestMapping(method = RequestMethod.GET)
-    public String setupForm(Model model) {
-        EventSource eventSource = new EventSource();
+    public String setupForm(@PathVariable("workspaceId") Long workspaceId, @PathVariable("eventSourceId") Long eventSourceId, Model model) {
+        EventSource eventSource = eventSourceRepository.getEventSourceById(eventSourceId);
         model.addAttribute("eventSource", eventSource);
         final List<PollerDescriptor> pollerDescriptors = pollerDescriptorRepository.getAll();
         model.addAttribute("pollerDescriptors", pollerDescriptors);
         return "workspaces/eventSources/form";
     }
 
-    @RequestMapping(method = RequestMethod.POST)
+    @RequestMapping(method = { RequestMethod.PUT, RequestMethod.POST })
     public String processSubmit(
         @PathVariable("workspaceId") Long workspaceId, 
         @ModelAttribute("eventSource") EventSource eventSource, 
         BindingResult result, SessionStatus status) {
+        
         //new WorkspaceValidator().validate(eventSource, result);
         if (result.hasErrors()) {
             return "workspaces/eventSources/form";
         } else {
-            Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
-            workspace.addEventSource(eventSource);
+            eventSourceRepository.updateEventSource(eventSource);
             status.setComplete();
-            return "redirect:/workspaces/" + workspace.getId()+".html";
+            return "redirect:/workspaces/" + workspaceId +".html";
         }
     }
 
