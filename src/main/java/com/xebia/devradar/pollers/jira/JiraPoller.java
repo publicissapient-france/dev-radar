@@ -16,22 +16,40 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.xebia.devradar.pollers;
+package com.xebia.devradar.pollers.jira;
 
 import java.util.Date;
 import java.util.List;
 
 import com.xebia.devradar.domain.Event;
 import com.xebia.devradar.domain.EventSource;
+import com.xebia.devradar.pollers.PollException;
+import com.xebia.devradar.pollers.Poller;
 
 /**
  * @author Alexandre Dutra
  *
  */
-public interface Poller {
+public class JiraPoller implements Poller {
 
-    void setSource(EventSource source);
+    private EventSource source;
 
-    List<Event> poll(Date startDate, Date endDate) throws PollException;
+    public JiraPoller() {
+        super();
+    }
+
+    public JiraPoller(final EventSource source) {
+        super();
+        this.source = source;
+    }
+
+    public void setSource(final EventSource source) {
+        this.source = source;
+    }
+
+    public List<Event> poll(final Date startDate, final Date endDate) throws PollException {
+        //TODO implement
+        return null;
+    }
 
 }

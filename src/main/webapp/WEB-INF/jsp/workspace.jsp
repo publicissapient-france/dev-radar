@@ -35,7 +35,7 @@
    <h2>Configured Event sources</h2>
    <ul>
    <c:forEach var="eventSource" items="${workspace.eventSources}">
-      <li><c:out value="${eventSource.type}" /> : <a href="<c:out value='${eventSource.url}'/>"><c:out value="${eventSource.url}"/></a></li>
+      <li><c:out value="${eventSource.description}" /> : <a href="<c:out value='${eventSource.url}'/>"><c:out value="${eventSource.url}"/></a></li>
    </c:forEach>
    </ul>
    <a href="eventSources/create.html">Create new Event Source</a>

@@ -1,6 +1,7 @@
-package com.xebia.devradar.web;
+package com.xebia.devradar.web.controller;
 
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -15,36 +16,39 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.xebia.devradar.domain.EventSource;
 import com.xebia.devradar.domain.Workspace;
+import com.xebia.devradar.pollers.PollerDescriptor;
+import com.xebia.devradar.pollers.PollerServiceLocator;
+import com.xebia.devradar.web.WorkspaceRepository;
 
 @Controller
 @RequestMapping("/workspaces")
-@SessionAttributes
+@SessionAttributes({"workspace","eventSource"})
 @Transactional
-public class WorkspacesResource {
+public class WorkspaceController {
 
     @Autowired
     private WorkspaceRepository workspaceRepository;
 
     @RequestMapping(value = "/index", method = RequestMethod.GET)
     public ModelAndView showWorkspaces() {
-        List<Workspace> workspaces = workspaceRepository.getAll();
-        ModelAndView mav = new ModelAndView("workspaces");
+        final List<Workspace> workspaces = this.workspaceRepository.getAll();
+        final ModelAndView mav = new ModelAndView("workspaces");
         mav.addObject("workspaces", workspaces);
         return mav;
     }
 
     @RequestMapping(value = "/{workspaceName}/index", method = RequestMethod.GET)
-    public ModelAndView showWorkspace(@PathVariable String workspaceName) {
-        Workspace workspace = workspaceRepository.findWorkspaceByName(workspaceName);
-        ModelAndView mav = new ModelAndView("workspace");
+    public ModelAndView showWorkspace(@PathVariable final String workspaceName) {
+        final Workspace workspace = this.workspaceRepository.findWorkspaceByName(workspaceName);
+        final ModelAndView mav = new ModelAndView("workspace");
         mav.addObject("workspace", workspace);
         return mav;
     }
-    
+
     @RequestMapping(value = "/{workspaceName}/delete", method = RequestMethod.GET)
-    public String deleteWorkspace(@PathVariable String workspaceName) {
-        Workspace workspace = workspaceRepository.findWorkspaceByName(workspaceName);
-        workspaceRepository.deleteWorkspace(workspace);
+    public String deleteWorkspace(@PathVariable final String workspaceName) {
+        final Workspace workspace = this.workspaceRepository.findWorkspaceByName(workspaceName);
+        this.workspaceRepository.deleteWorkspace(workspace);
         return "redirect:../index.html";
     }
 
@@ -54,22 +58,24 @@ public class WorkspacesResource {
     }
 
     @RequestMapping(value = "/onCreate", method = RequestMethod.POST)
-    public String createWorkspace(@ModelAttribute("workspace") Workspace workspace, BindingResult result) {
-        workspaceRepository.createWorkspace(workspace);
+    public String createWorkspace(@ModelAttribute("workspace") final Workspace workspace, final BindingResult result) {
+        this.workspaceRepository.createWorkspace(workspace);
         return "redirect:" + workspace.getName() + "/index.html";
     }
 
     @RequestMapping(value = "/{workspaceName}/eventSources/create", method = RequestMethod.GET)
-    public ModelAndView createEventSource(@PathVariable String workspaceName) {
-        ModelAndView mav = new ModelAndView("createEventSource");
-        mav.addObject("workspaceName", workspaceName);
+    public ModelAndView createEventSource(@PathVariable final String workspaceName)  {
+        final ModelAndView mav = new ModelAndView("createEventSource");
+        final Set<PollerDescriptor> pollerDescriptors = PollerServiceLocator.getSupportedPollers();
         mav.addObject("eventSource", new EventSource());
+        mav.addObject("workspaceName", workspaceName);
+        mav.addObject("pollerDescriptors", pollerDescriptors);
         return mav;
     }
 
     @RequestMapping(value = "/{workspaceName}/eventSources/onCreate", method = RequestMethod.POST)
-    public String createWorkspace(@PathVariable String workspaceName, @ModelAttribute("eventSource") EventSource eventSource, BindingResult result) {
-        Workspace workspace = workspaceRepository.findWorkspaceByName(workspaceName);
+    public String createWorkspace(@PathVariable final String workspaceName, @ModelAttribute("eventSource") final EventSource eventSource, final BindingResult result) {
+        final Workspace workspace = this.workspaceRepository.findWorkspaceByName(workspaceName);
         workspace.addEventSource(eventSource);
         return "redirect:../index.html";
     }

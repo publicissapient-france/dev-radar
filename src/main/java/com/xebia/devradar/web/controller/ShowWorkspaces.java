@@ -36,6 +36,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
 
 import com.xebia.devradar.domain.Event;
+import com.xebia.devradar.domain.EventSource;
 import com.xebia.devradar.domain.Workspace;
 import com.xebia.devradar.pollers.svn.SvnPoller;
 import com.xebia.devradar.web.WorkspaceRepository;
@@ -43,24 +44,25 @@ import com.xebia.devradar.web.WorkspaceRepository;
 @Controller
 @RequestMapping("/workspaces/{workspaceId}")
 @SessionAttributes("workspace")
+@Transactional(readOnly=true)
 public class ShowWorkspaces {
 
     private WorkspaceRepository workspaceRepository;
 
     public ShowWorkspaces() {
-        
+
     }
-    
+
     @Autowired
-    public ShowWorkspaces(WorkspaceRepository workspaceRepository) {
+    public ShowWorkspaces(final WorkspaceRepository workspaceRepository) {
         this.workspaceRepository = workspaceRepository;
     }
 
     @RequestMapping(method = RequestMethod.GET)
-    public String setup(@PathVariable("workspaceId") Long workspaceId, Model model) {
-        Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
-        addEvents(workspace);
-        
+    public String setup(@PathVariable("workspaceId") final Long workspaceId, final Model model) {
+        final Workspace workspace = this.workspaceRepository.getWorkspaceById(workspaceId);
+        this.addEvents(workspace);
+
         model.addAttribute("workspace", workspace);
         return "workspaces/show";
     }
@@ -68,29 +70,26 @@ public class ShowWorkspaces {
     /**
      * WARN: Will be deleted after the real implementation of events processing
      */
-    private void addEvents(Workspace workspace) {
+    private void addEvents(final Workspace workspace) {
         try {
-            SvnPoller poller = new SvnPoller();
+            final SvnPoller poller = new SvnPoller(new EventSource(new URL(workspace.getScm())));
             final Date end = new Date();
-            Date start = DateUtils.addMonths(end, -1);
-            poller.setUrl(new URL(workspace.getScm()));
-            poller.setStartDate(start);
-            poller.setEndDate(end);
+            final Date start = DateUtils.addMonths(end, -1);
             poller.init();
-            List<Event> events = poller.poll();
+            final List<Event> events = poller.poll(start, end);
             for (final Event event : events) {
                 workspace.addEvent(event);
             }
-        } catch(Exception e) {
+        } catch(final Exception e) {
             e.printStackTrace();
         }
     }
 
     @RequestMapping(method = { RequestMethod.PUT, RequestMethod.POST })
-    @Transactional
-    public String processSubmit(@ModelAttribute("workspace") Workspace workspace, BindingResult result,
-            SessionStatus status) {
-        workspaceRepository.deleteWorkspace(workspace);
+    @Transactional(readOnly=false)
+    public String processSubmit(@ModelAttribute("workspace") final Workspace workspace, final BindingResult result,
+        final SessionStatus status) {
+        this.workspaceRepository.deleteWorkspace(workspace);
         status.setComplete();
         return "redirect:/workspaces/list.html";
     }

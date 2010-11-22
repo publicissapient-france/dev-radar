@@ -63,6 +63,24 @@
 	</tr>
 </table>
 
+<h2>Event Sources</h2>
+<table>
+    <tr>
+        <td><b>Description</b></td>
+        <td><b>Poller</b></td>
+        <td><b>URL</b></td>
+        <td><b>Proxy</b></td>
+    </tr>
+    <c:forEach var="eventSource" items="${workspace.eventSources}">
+        <tr>
+            <td><c:out value="${eventSource.description}" /></td>
+            <td><c:out value="${eventSource.pollerDescriptor.name}" /></td>
+            <td><c:out value="${eventSource.url}" /></td>
+            <td><c:out value="${eventSource.proxyUrl}" /></td>
+        </tr>
+    </c:forEach>
+</table>
+
 <h2>Events</h2>
 <table>
 	<tr>
@@ -72,7 +90,7 @@
 	</tr>
 	<c:forEach var="event" items="${workspace.events}">
 		<tr>
-			<td><c:out value="${event.type}" /></td>
+			<td><c:out value="${event.source.description}" /></td>
 			<td><c:out value="${event.message}" /></td>
 			<td><c:out value="${event.date}" /></td>
 		</tr>

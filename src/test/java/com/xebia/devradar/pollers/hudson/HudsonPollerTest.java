@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.xebia.devradar.pollers.svn;
+package com.xebia.devradar.pollers.hudson;
 
 
 import java.net.MalformedURLException;
@@ -39,9 +39,9 @@ import com.xebia.devradar.pollers.PollException;
  * @author Alexandre Dutra
  *
  */
-public class SvnPollerTest {
+public class HudsonPollerTest {
 
-    private SvnPoller poller;
+    private HudsonPoller poller;
 
     private final Date end = new Date();
 
@@ -49,12 +49,11 @@ public class SvnPollerTest {
 
     @Before
     public void setUp() throws PollException, MalformedURLException {
-        this.poller = new SvnPoller(new EventSource(new URL("http://svn.svnkit.com/repos/svnkit/branches/1.3.x")));
-        this.poller.init();
+        this.poller = new HudsonPoller(new EventSource(new URL("http://continuum-procapital.gicm.net:9090/job/aaa/")));
     }
 
     @Test @Ignore
-    public void testSvnKitOneMonth() throws PollException {
+    public void testHudson() throws PollException {
         final List<Event> events = this.poller.poll(this.start, this.end);
         for (final Event event : events) {
             //TODO delete this

@@ -21,6 +21,7 @@ package com.xebia.devradar.utils;
 import java.io.File;
 import java.net.URL;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -30,7 +31,7 @@ import static org.junit.Assert.assertThat;
 
 public class PomLoaderUtilsTest {
 
-    @Test
+    @Test @Ignore
     public void should_load_a_valid_pom_from_an_url() throws Exception {
         String url = "https://github.com/xebia-france/dev-radar/raw/master/pom.xml";
         Pom pom = PomLoaderUtils.create(new URL(url));

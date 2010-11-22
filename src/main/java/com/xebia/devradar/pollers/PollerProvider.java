@@ -16,20 +16,32 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.xebia.devradar.pollers.svn;
+package com.xebia.devradar.pollers;
 
-import java.util.List;
-
-import org.tmatesoft.svn.core.ISVNLogEntryHandler;
-
-import com.xebia.devradar.domain.Event;
+import java.util.Set;
 
 /**
  * @author Alexandre Dutra
  *
  */
-public interface SvnEventCollector extends ISVNLogEntryHandler {
+public interface PollerProvider {
 
-    List<Event> getCollectedEvents();
+    /**
+     * @return a {@link Set} of all supported {@link Poller}s.
+     */
+    Set<PollerDescriptor> getSupportedPollers();
+
+    /**
+     * @param pollerClass
+     * @return true if the supplied pollerClass is supported, false otherwise.
+     */
+    boolean isPollerSupported(Class<? extends Poller> pollerClass);
+
+    /**
+     * @param pollerClass
+     * @return a {@link PollerDescriptor} describing the {@link Poller}, or null
+     * if the given {@link Poller} is not supported by this {@link PollerProvider}.
+     */
+    PollerDescriptor getPollerDescriptor(Class<? extends Poller> pollerClass);
 
 }

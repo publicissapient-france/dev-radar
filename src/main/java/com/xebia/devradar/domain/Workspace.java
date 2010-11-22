@@ -18,7 +18,10 @@
  */
 package com.xebia.devradar.domain;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.Access;
@@ -26,17 +29,19 @@ import javax.persistence.AccessType;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
-import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 
+import com.xebia.devradar.pollers.PollException;
+
+
 @Entity
 @Access(AccessType.FIELD)
 @NamedQueries({
-@NamedQuery(name="workspaceByName", query="from Workspace where name = :name"),
-@NamedQuery(name="orderByName", query="from Workspace w order by w.name")
+    @NamedQuery(name="workspaceByName", query="from Workspace where name = :name"),
+    @NamedQuery(name="orderByName", query="from Workspace w order by w.name")
 })
 public class Workspace extends AbstractEntity {
 
@@ -46,110 +51,118 @@ public class Workspace extends AbstractEntity {
 
     @Column(length = 256)
     private String pomUrl;
-    
+
     @Column(length = 512)
     private String description;
-    
+
     @Column(length = 256)
     private String issueManagement;
-    
+
     @Column(length = 256)
     private String ciManagement;
-    
+
     @Column(length = 256)
     private String scm;
-    
+
     @OneToMany(cascade=CascadeType.ALL,orphanRemoval=true)
     private Set<Event> events = new LinkedHashSet<Event>();
-    
-    @ElementCollection
+
+    @OneToMany(cascade=CascadeType.ALL,orphanRemoval=true)
     private Set<EventSource> eventSources = new LinkedHashSet<EventSource>();
-    
+
     public Workspace() {
     }
-    
-    public Workspace(String name) {
+
+    public Workspace(final String name) {
         this.name = name;
     }
 
     public String getName() {
-        return name;
+        return this.name;
     }
-    
-    public void setName(String name) {
+
+    public void setName(final String name) {
         this.name = name;
     }
-    
+
     public Set<Event> getEvents() {
-        return events;
+        return this.events;
     }
-    
-    public void setEvents(Set<Event> events) {
+
+    public void setEvents(final Set<Event> events) {
         this.events = events;
     }
 
-    public void addEvent(Event e) {
-        events.add(e);
+    public void addEvent(final Event e) {
+        this.events.add(e);
     }
-    
+
     public Set<EventSource> getEventSources() {
-        return eventSources;
+        return this.eventSources;
     }
-    
-    public void setEventSources(Set<EventSource> eventSources) {
+
+    public void setEventSources(final Set<EventSource> eventSources) {
         this.eventSources = eventSources;
     }
 
-    public void addEventSource(EventSource e) {
-        eventSources.add(e);
+    public void addEventSource(final EventSource e) {
+        this.eventSources.add(e);
     }
 
     public String getPomUrl() {
-        return pomUrl;
+        return this.pomUrl;
     }
 
-    public void setPomUrl(String pomUrl) {
+    public void setPomUrl(final String pomUrl) {
         this.pomUrl = pomUrl;
     }
 
 
     public String getDescription() {
-        return description;
+        return this.description;
     }
 
 
-    public void setDescription(String description) {
+    public void setDescription(final String description) {
         this.description = description;
     }
 
 
     public String getIssueManagement() {
-        return issueManagement;
+        return this.issueManagement;
     }
 
 
-    public void setIssueManagement(String issueManagement) {
+    public void setIssueManagement(final String issueManagement) {
         this.issueManagement = issueManagement;
     }
 
 
     public String getCiManagement() {
-        return ciManagement;
+        return this.ciManagement;
     }
 
 
-    public void setCiManagement(String ciManagement) {
+    public void setCiManagement(final String ciManagement) {
         this.ciManagement = ciManagement;
     }
 
 
     public String getScm() {
-        return scm;
+        return this.scm;
     }
 
 
-    public void setScm(String scm) {
+    public void setScm(final String scm) {
         this.scm = scm;
+    }
+
+    public List<Event> poll(final Date startDate, final Date endDate) throws PollException {
+        final List<Event> events = new ArrayList<Event>();
+        for (final EventSource source : this.eventSources) {
+            events.addAll(source.poll(startDate, endDate));
+        }
+        return events;
     }
 
 }

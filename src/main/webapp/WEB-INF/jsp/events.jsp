@@ -29,7 +29,7 @@
    Event for workspace <c:out value="${workspace}" /><br/>
    <ul>
    <c:forEach var="event" items="${events}">
-      <li><c:out value="${event.type}" /> : <c:out value="${event.message}"/></li>
+      <li><c:out value="${event.source.description}" /> : <c:out value="${event.message}"/></li>
    </c:forEach>
    </ul>
 </body>

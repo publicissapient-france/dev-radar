@@ -33,13 +33,35 @@
 	
 	<table>
 	    <tr>
-	        <td><form:label path="type">Type</form:label></td>
-	        <td><form:radiobuttons path="type" /><form:errors path="type" cssClass="error" /></td>
+	        <td><form:label path="pollerClass">Poller</form:label></td>
+	        <td>
+	           <table>
+		           <c:forEach items="${pollerDescriptors}" var="pollerDescriptor">
+			           <tr>
+				           <td>
+			                 <form:radiobutton path="pollerClass" value="${pollerDescriptor.pollerClass.name}" label="${pollerDescriptor.name}"/>
+			               </td>
+			               <td>
+			                 ${pollerDescriptor.description}
+			               </td>
+			           </tr>
+		           </c:forEach>
+	           </table>
+	           <form:errors path="pollerClass" cssClass="error" />
+	        </td>
 	    </tr>
-	    <tr>
+        <tr>
+            <td><form:label path="description">Description</form:label></td>
+            <td><form:input path="description" /><form:errors path="description" cssClass="error" /></td>
+        </tr>
+        <tr>
             <td><form:label path="url">URL</form:label></td>
             <td><form:input path="url" /><form:errors path="url" cssClass="error" /></td>
-	    </tr>
+        </tr>
+        <tr>
+            <td><form:label path="proxyUrl">Proxy URL</form:label></td>
+            <td><form:input path="proxyUrl" /><form:errors path="proxyUrl" cssClass="error" /></td>
+        </tr>
 	</table>  
     <input type="submit" value="Create Event Source"/>
 

@@ -19,59 +19,106 @@
 package com.xebia.devradar.domain;
 
 import java.net.URL;
+import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Basic;
 import javax.persistence.Column;
-import javax.persistence.Embeddable;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
+import javax.persistence.Entity;
+
+import com.xebia.devradar.pollers.PollException;
+import com.xebia.devradar.pollers.Poller;
+import com.xebia.devradar.pollers.PollerDescriptor;
+import com.xebia.devradar.pollers.PollerServiceLocator;
 
 /**
  * Describes an Event Source for a {@link Workspace}.
  * @author Alexandre Dutra
  *
  */
-@Embeddable
+@Entity
 @Access(AccessType.FIELD)
-public class EventSource {
+public class EventSource extends AbstractEntity {
 
     @Basic(optional = false)
-    @Enumerated(EnumType.STRING)
-    private Type type;
+    @Column(length = 100)
+    private Class<? extends Poller> pollerClass;
 
     @Basic(optional = false)
     @Column(length = 500)
+    private String description;
+
+    @Basic(optional = false)
+    @Column(length = 4096)
     private URL url;
-    
+
+    @Basic(optional = true)
+    @Column(length = 4096)
+    private URL proxyUrl;
+
     //TODO proxy settings, authentication, etc.
 
     public EventSource() {
     }
-    
-    public EventSource(Type type, URL url) {
+
+    public EventSource(final URL url) {
         super();
-        this.type = type;
         this.url = url;
     }
 
-    public Type getType() {
-        return this.type;
+    public EventSource(final Class<? extends Poller> pollerClass, final String description, final URL url) {
+        super();
+        this.pollerClass = pollerClass;
+        this.description = description;
+        this.url = url;
     }
 
-    public void setType(Type type) {
-        this.type = type;
-    }
-    
     public URL getUrl() {
-        return url;
+        return this.url;
     }
-    
-    public void setUrl(URL url) {
+
+    public void setUrl(final URL url) {
         this.url = url;
     }
-    
 
+
+    public Class<? extends Poller> getPollerClass() {
+        return this.pollerClass;
+    }
+
+
+    public void setPollerClass(final Class<? extends Poller> pollerClass) {
+        this.pollerClass = pollerClass;
+    }
+
+
+    public String getDescription() {
+        return this.description;
+    }
+
+
+    public void setDescription(final String description) {
+        this.description = description;
+    }
+
+
+    public URL getProxyUrl() {
+        return this.proxyUrl;
+    }
+
+
+    public void setProxyUrl(final URL proxyUrl) {
+        this.proxyUrl = proxyUrl;
+    }
+
+    public List<Event> poll(final Date startDate, final Date endDate) throws PollException{
+        return this.getPollerDescriptor().createPoller(this).poll(startDate, endDate);
+    }
+
+    public PollerDescriptor getPollerDescriptor() {
+        return PollerServiceLocator.getPollerDescriptor(this.getPollerClass());
+    }
 
 }

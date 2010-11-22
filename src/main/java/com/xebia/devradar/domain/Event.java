@@ -20,15 +20,19 @@ package com.xebia.devradar.domain;
 
 import java.util.Date;
 
-import javax.persistence.*;
+import javax.persistence.Access;
+import javax.persistence.AccessType;
+import javax.persistence.Basic;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+
 
 @Entity
 @Access(AccessType.FIELD)
 public class Event extends AbstractEntity {
-
-    @Basic(optional = false)
-    @Enumerated(EnumType.STRING)
-    private Type type;
 
     @Basic(optional = false)
     @Column(length = 500)
@@ -37,39 +41,48 @@ public class Event extends AbstractEntity {
     @Basic(optional = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date date;
-    
+
+    @ManyToOne(optional=true)
+    private EventSource source;
+
     public Event() {
     }
 
-    public Event(Type type, String message, Date date) {
-        this.type = type;
+    public Event(final EventSource source, final String message, final Date date) {
+        this.source = source;
         this.message = message;
         this.date = date;
     }
-    
-    public Type getType() {
-        return this.type;
-    }
 
-    public void setType(Type type) {
-        this.type = type;
-    }
-    
     public String getMessage() {
         return this.message;
     }
-    
-    public void setMessage(String message) {
+
+    public void setMessage(final String message) {
         this.message = message;
     }
-    
+
     public Date getDate() {
-        return date;
+        return this.date;
     }
-    
-    public void setDate(Date date) {
+
+    public void setDate(final Date date) {
         this.date = date;
     }
+
+    public EventSource getSource() {
+        return this.source;
+    }
+
+    public void setSource(final EventSource source) {
+        this.source = source;
+    }
+
+    @Override
+    public String toString() {
+        return "Event [date=" + this.date + ", message=" + this.message + ", source=" + this.source + "]";
+    }
+
 
 
 }

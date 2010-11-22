@@ -46,7 +46,7 @@
 
     <!-- Checks the JNDI / JDBC connection -->
     <listener>
-        <listener-class>com.xebia.devradar.web.DatasourceCheckListener</listener-class>
+        <listener-class>com.xebia.devradar.web.listener.DatasourceCheckListener</listener-class>
     </listener>
 
     <!-- Loads Spring Context -->
@@ -56,7 +56,7 @@
     
     <!-- Initializes the DB -->
     <listener>
-        <listener-class>com.xebia.devradar.web.DatabaseInitializerListener</listener-class>
+        <listener-class>com.xebia.devradar.web.listener.DatabaseInitializerListener</listener-class>
     </listener>
 
     <filter>

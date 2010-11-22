@@ -18,12 +18,13 @@
  */
 package com.xebia.devradar.domain;
 
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.assertThat;
 
 import java.util.Date;
 
 import org.junit.Test;
+
 
 public class EventTest
 {
@@ -33,8 +34,7 @@ public class EventTest
     @Test
     public void should_set_param_at_the_right_place()
     {
-        Event event = new Event(Type.SVN, SOME_MESSAGE, new Date());
-        assertThat(event.getType(), equalTo(Type.SVN));
+        final Event event = new Event(new EventSource(), SOME_MESSAGE, new Date());
         assertThat(event.getMessage(), equalTo(SOME_MESSAGE));
     }
 }

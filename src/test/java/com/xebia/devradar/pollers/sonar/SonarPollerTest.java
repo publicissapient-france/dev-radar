@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.xebia.devradar.pollers.svn;
+package com.xebia.devradar.pollers.sonar;
 
 
 import java.net.MalformedURLException;
@@ -39,9 +39,19 @@ import com.xebia.devradar.pollers.PollException;
  * @author Alexandre Dutra
  *
  */
-public class SvnPollerTest {
+public class SonarPollerTest {
 
-    private SvnPoller poller;
+
+    private static final String SONAR_API_URL = "http://sonar-procapital.gicm.net:8080/api/resources?" +
+    "format=xml&" +
+    "resource=30729&" +
+    "metrics=public_documented_api_density,blocker_violations,critical_violations,major_violations," +
+    "tests,test_errors,test_failures,skipped_tests,coverage&" +
+    "verbose=true&" +
+    "includealerts=true&" +
+    "includetrends=true";
+
+    private SonarPoller poller;
 
     private final Date end = new Date();
 
@@ -49,12 +59,11 @@ public class SvnPollerTest {
 
     @Before
     public void setUp() throws PollException, MalformedURLException {
-        this.poller = new SvnPoller(new EventSource(new URL("http://svn.svnkit.com/repos/svnkit/branches/1.3.x")));
-        this.poller.init();
+        this.poller = new SonarPoller(new EventSource(new URL(SONAR_API_URL)));
     }
 
     @Test @Ignore
-    public void testSvnKitOneMonth() throws PollException {
+    public void testSonar() throws PollException {
         final List<Event> events = this.poller.poll(this.start, this.end);
         for (final Event event : events) {
             //TODO delete this

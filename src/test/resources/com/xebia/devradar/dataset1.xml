@@ -23,13 +23,17 @@
 
     <WORKSPACE ID="1" VERSION="5" NAME="TEST"  />
 
-    <WORKSPACE_EVENTSOURCES WORKSPACE_ID="1" TYPE="SVN" URL="http://svn.test.com"  />
+    <EVENTSOURCE ID="1" VERSION="3" DESCRIPTION="Foo Project Trunk" POLLERCLASS="com.xebia.devradar.pollers.svn.SvnPoller" URL="http://svn.test.com"  />
     
-    <WORKSPACE_EVENTSOURCES WORKSPACE_ID="1" TYPE="JIRA" URL="http://jira.test.com"  />
+    <EVENTSOURCE ID="2" VERSION="8" DESCRIPTION="Foo Project Jira Issues" POLLERCLASS="com.xebia.devradar.pollers.jira.JiraPoller" URL="http://jira.test.com"  />
 
-    <EVENT ID="1" VERSION="45" TYPE="SVN" MESSAGE="Dummy SVN event" DATE="2010-09-25 15:46:23"  />
+    <WORKSPACE_EVENTSOURCE WORKSPACE_ID="1" EVENTSOURCES_ID="1"  />
+    
+    <WORKSPACE_EVENTSOURCE WORKSPACE_ID="1" EVENTSOURCES_ID="2"  />
 
-    <EVENT ID="2" VERSION="21" TYPE="JIRA" MESSAGE="Dummy JIRA event" DATE="2010-10-31 18:31:22"  />
+    <EVENT ID="1" SOURCE_ID="1" VERSION="45" MESSAGE="Dummy SVN event" DATE="2010-09-25 15:46:23"  />
+
+    <EVENT ID="2" SOURCE_ID="2" VERSION="21" MESSAGE="Dummy JIRA event" DATE="2010-10-31 18:31:22"  />
 
     <WORKSPACE_EVENT WORKSPACE_ID="1" EVENTS_ID="1"  />
 

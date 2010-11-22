@@ -18,11 +18,13 @@
  */
 package com.xebia.devradar.pollers.svn;
 
-import java.net.URL;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.tmatesoft.svn.core.ISVNLogEntryHandler;
 import org.tmatesoft.svn.core.SVNException;
+import org.tmatesoft.svn.core.SVNLogEntry;
 import org.tmatesoft.svn.core.SVNURL;
 import org.tmatesoft.svn.core.internal.io.dav.DAVRepositoryFactory;
 import org.tmatesoft.svn.core.wc.SVNClientManager;
@@ -30,6 +32,7 @@ import org.tmatesoft.svn.core.wc.SVNLogClient;
 import org.tmatesoft.svn.core.wc.SVNRevision;
 
 import com.xebia.devradar.domain.Event;
+import com.xebia.devradar.domain.EventSource;
 import com.xebia.devradar.pollers.PollException;
 import com.xebia.devradar.pollers.Poller;
 
@@ -39,11 +42,7 @@ import com.xebia.devradar.pollers.Poller;
  */
 public class SvnPoller implements Poller {
 
-    private URL url;
-
-    private Date startDate;
-
-    private Date endDate;
+    private EventSource source;
 
     /**
      * FIXME is this client thread-safe?
@@ -52,55 +51,60 @@ public class SvnPoller implements Poller {
 
     private SVNURL svnUrl;
 
-
-    public void setUrl(final URL url) {
-        this.url = url;
+    public SvnPoller() {
+        super();
     }
 
-    public void setStartDate(final Date startDate) {
-        this.startDate = startDate;
+    public SvnPoller(final EventSource source) {
+        super();
+        this.source = source;
     }
 
-    public void setEndDate(final Date endDate) {
-        this.endDate = endDate;
+    public void setSource(final EventSource source) {
+        this.source = source;
     }
 
     public void init() throws PollException {
         DAVRepositoryFactory.setup();
+        //TODO proxy, authentication
         this.logClient = SVNClientManager.newInstance().getLogClient();
         try {
-            this.svnUrl = SVNURL.parseURIDecoded(this.url.toExternalForm());
+            this.svnUrl = SVNURL.parseURIDecoded(this.source.getUrl().toExternalForm());
         } catch (final SVNException e) {
-            throw new PollException("Bad url: " + this.url.toExternalForm(), e);
+            throw new PollException("Bad url: " + this.source.getUrl().toExternalForm(), e);
         }
     }
 
-    /* (non-Javadoc)
-     * @see com.xebia.devradar.pollers.svn.Poller#poll()
-     */
-    public List<Event> poll() throws PollException {
+    public List<Event> poll(final Date startDate, final Date endDate) throws PollException {
         try {
-            final SvnEventCollector handler = this.newEventCollector();
+            final List<Event> events = new ArrayList<Event>();
             this.logClient.doLog(
                 this.svnUrl, //repository URL
                 null, //array of paths relative to <code>url</code>
                 SVNRevision.HEAD, //a revision in which <code>paths</code> are first looked up in the repository
-                SVNRevision.create(this.startDate),
-                SVNRevision.create(this.endDate),
+                SVNRevision.create(startDate),
+                SVNRevision.create(endDate),
                 false, //stopOnCopy
                 true, //discoverChangedPaths
                 true, //includeMergedRevisions
                 -1, //limit
                 null, //revisionProperties
-                handler);
-            return handler.getCollectedEvents();
+                new ISVNLogEntryHandler() {
+                    @Override
+                    public void handleLogEntry(final SVNLogEntry logEntry) throws SVNException {
+                        //FIXME some log entries are apparently "dummy entries" with revision -1
+                        if(logEntry.getRevision() != -1L) {
+                            //TODO trim
+                            final String message = logEntry.toString();
+                            final Event event = new Event(SvnPoller.this.source, message, logEntry.getDate());
+                            events.add(event);
+                        }
+                    }
+                });
+            return events;
         } catch (final SVNException e) {
-            throw new PollException("Could not poll url: " + this.url.toExternalForm(), e);
+            throw new PollException("Could not poll url: " + this.source.getUrl().toExternalForm(), e);
         }
-    }
-
-    protected SvnEventCollector newEventCollector() {
-        return new SvnEventCollectorImpl();
     }
 
 }

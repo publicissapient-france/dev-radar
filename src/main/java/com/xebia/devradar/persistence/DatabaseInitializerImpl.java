@@ -18,17 +18,22 @@
  */
 package com.xebia.devradar.persistence;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Date;
 import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
-import com.xebia.devradar.domain.Type;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.xebia.devradar.domain.Event;
+import com.xebia.devradar.domain.EventSource;
 import com.xebia.devradar.domain.Workspace;
+import com.xebia.devradar.pollers.hudson.HudsonPoller;
+import com.xebia.devradar.pollers.jira.JiraPoller;
+import com.xebia.devradar.pollers.svn.SvnPoller;
 
 /**
  * @author Alexandre Dutra
@@ -43,18 +48,39 @@ public class DatabaseInitializerImpl implements DatabaseInitializer {
     public void initDatabase() {
 
         @SuppressWarnings("unchecked")
-        List<Workspace> results = (List<Workspace>) entityManager
-            .createNamedQuery("workspaceByName")
-            .setParameter("name", "default").getResultList();
+        final
+        List<Workspace> results = this.entityManager
+        .createNamedQuery("workspaceByName")
+        .setParameter("name", "default").getResultList();
 
         if (results.isEmpty()) {
 
-            Workspace defaultWorkspace = new Workspace();
+            final Workspace defaultWorkspace = new Workspace();
             defaultWorkspace.setName("default");
-            defaultWorkspace.addEvent(new Event(Type.HUDSON, "This is a dummy event!", new Date()));
-            defaultWorkspace.addEvent(new Event(Type.JIRA, "This is another dummy event!", new Date()));
-            
-            entityManager.persist(defaultWorkspace);
+
+            EventSource hudsonSource;
+            EventSource svnSource;
+            EventSource jiraSource;
+            try {
+                hudsonSource = new EventSource(HudsonPoller.class, "Hudson Job for Foo Project (trunk)", new URL("http://hudson.example/com"));
+                svnSource = new EventSource(SvnPoller.class, "Trunk of Foo Project", new URL("http://svn.example/com"));
+                jiraSource = new EventSource(JiraPoller.class, "JIRA Issues for Foo Project", new URL("http://jira.example/com"));
+            } catch (final MalformedURLException e) {
+                throw new IllegalStateException(e);
+            }
+
+            defaultWorkspace.addEventSource(hudsonSource);
+            defaultWorkspace.addEventSource(svnSource);
+            defaultWorkspace.addEventSource(jiraSource);
+
+            final Event hudsonEvent = new Event(hudsonSource, "Build #58 failed!", new Date());
+            defaultWorkspace.addEvent(hudsonEvent);
+            final Event svnEvent = new Event(svnSource, "User Joe commited Service.java", new Date());
+            defaultWorkspace.addEvent(svnEvent);
+            final Event jiraEvent = new Event(jiraSource, "User Joe closed Jira FOO-123", new Date());
+            defaultWorkspace.addEvent(jiraEvent);
+
+            this.entityManager.persist(defaultWorkspace);
 
         }
 

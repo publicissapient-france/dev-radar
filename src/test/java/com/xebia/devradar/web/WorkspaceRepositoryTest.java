@@ -26,10 +26,11 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.xebia.devradar.domain.EventSource;
-import com.xebia.devradar.domain.Type;
 import com.xebia.devradar.domain.Workspace;
 import com.xebia.devradar.persistence.AbstractRepositoryTests;
 import com.xebia.devradar.persistence.DbUnitDataset;
+import com.xebia.devradar.pollers.jira.JiraPoller;
+import com.xebia.devradar.pollers.svn.SvnPoller;
 
 public class WorkspaceRepositoryTest extends AbstractRepositoryTests {
 
@@ -43,11 +44,11 @@ public class WorkspaceRepositoryTest extends AbstractRepositoryTests {
         w = this.repository.createWorkspace(w);
         Assert.assertThat(w, CoreMatchers.not(CoreMatchers.nullValue()));
         Assert.assertThat(w.getName(), CoreMatchers.is(workspaceName));
-        w.addEventSource(new EventSource(Type.SVN, new URL("http://test.com/svn")));
-        w.addEventSource(new EventSource(Type.JIRA, new URL("http://test.com/jira")));
+        w.addEventSource(new EventSource(SvnPoller.class, "Foo Project Trunk", new URL("http://test.com/svn")));
+        w.addEventSource(new EventSource(JiraPoller.class, "Foo Project Jira Issues", new URL("http://test.com/jira")));
         this.entityManager.flush();
         Assert.assertThat(this.countRowsInTable("WORKSPACE"), CoreMatchers.is(1));
-        Assert.assertThat(this.countRowsInTable("WORKSPACE_EVENTSOURCES"), CoreMatchers.is(2));
+        Assert.assertThat(this.countRowsInTable("WORKSPACE_EVENTSOURCE"), CoreMatchers.is(2));
     }
 
     @Test
@@ -57,14 +58,14 @@ public class WorkspaceRepositoryTest extends AbstractRepositoryTests {
         this.repository.deleteWorkspace(w);
         this.entityManager.flush();
         Assert.assertThat(this.countRowsInTable("WORKSPACE"), CoreMatchers.is(0));
-        Assert.assertThat(this.countRowsInTable("WORKSPACE_EVENTSOURCES"), CoreMatchers.is(0));
+        Assert.assertThat(this.countRowsInTable("WORKSPACE_EVENTSOURCE"), CoreMatchers.is(0));
         Assert.assertThat(this.countRowsInTable("EVENT"), CoreMatchers.is(0));
     }
-    
+
     @Test
     @DbUnitDataset("com/xebia/devradar/workspaceShouldGetWorkspacesOrdered.xml")
     public void shouldGetWorkspacesOrdered() {
-        List<Workspace> workspaces = this.repository.getAllWorkspaces();
+        final List<Workspace> workspaces = this.repository.getAllWorkspaces();
         Assert.assertThat(workspaces.size(), CoreMatchers.is(5));
         Assert.assertThat(workspaces.get(0).getName(), CoreMatchers.is("WORKSPACE A"));
         Assert.assertThat(workspaces.get(1).getName(), CoreMatchers.is("WORKSPACE B"));
