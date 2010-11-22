@@ -42,7 +42,7 @@ public class EventRepositoryTest extends AbstractRepositoryTests {
     }
 
     @Test
-    @DbUnitDataset("com/xebia/devradar/dataset1.xml")
+    @DbUnitDataset("com/xebia/devradar/getEventsForWorkspaceShouldReturnTwoEvents.xml")
     public void getEventsForWorkspaceShouldReturnTwoEvents() {
         final Set<Event> eventsForWorkspace = this.repository.getEventsForWorkspace("TEST");
         Assert.assertThat(eventsForWorkspace, CoreMatchers.not(CoreMatchers.nullValue()));

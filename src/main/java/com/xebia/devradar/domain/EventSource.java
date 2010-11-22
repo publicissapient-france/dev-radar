@@ -27,14 +27,21 @@ import javax.persistence.AccessType;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
 
 import com.xebia.devradar.pollers.PollException;
 import com.xebia.devradar.pollers.Poller;
-import com.xebia.devradar.pollers.PollerDescriptor;
-import com.xebia.devradar.pollers.PollerServiceLocator;
 
 /**
- * Describes an Event Source for a {@link Workspace}.
+ * Describes an Event Source for a <code>{@link Workspace}</code>.
+ * An Event Source object basically encapsulates:
+ * <ol>
+ * <li>A <code>{@link PollerDescriptor}</code> object describing which <code>{@link Poller}</code> 
+ * should be used to poll the source;<li>
+ * <li>Any network connection information necessary to interrogate the source, 
+ * such as the source URL, proxy settings, authentication, etc.</li>
+ * </ol>
+ * 
  * @author Alexandre Dutra
  *
  */
@@ -42,17 +49,16 @@ import com.xebia.devradar.pollers.PollerServiceLocator;
 @Access(AccessType.FIELD)
 public class EventSource extends AbstractEntity {
 
-    @Basic(optional = false)
-    @Column(length = 100)
-    private Class<? extends Poller> pollerClass;
-
-    @Basic(optional = false)
-    @Column(length = 500)
-    private String description;
+    @ManyToOne(optional=false)
+    private PollerDescriptor pollerDescriptor;
 
     @Basic(optional = false)
     @Column(length = 4096)
     private URL url;
+    
+    @Basic(optional = false)
+    @Column(length = 500)
+    private String description;
 
     @Basic(optional = true)
     @Column(length = 4096)
@@ -63,16 +69,24 @@ public class EventSource extends AbstractEntity {
     public EventSource() {
     }
 
-    public EventSource(final URL url) {
+    
+    public EventSource(
+        PollerDescriptor pollerDescriptor,
+        URL url,
+        String description) {
         super();
+        this.pollerDescriptor = pollerDescriptor;
         this.url = url;
+        this.description = description;
     }
 
-    public EventSource(final Class<? extends Poller> pollerClass, final String description, final URL url) {
-        super();
-        this.pollerClass = pollerClass;
-        this.description = description;
-        this.url = url;
+
+    public PollerDescriptor getPollerDescriptor() {
+        return pollerDescriptor;
+    }
+
+    public void setPollerDescriptor(PollerDescriptor pollerDescriptor) {
+        this.pollerDescriptor = pollerDescriptor;
     }
 
     public URL getUrl() {
@@ -83,42 +97,24 @@ public class EventSource extends AbstractEntity {
         this.url = url;
     }
 
-
-    public Class<? extends Poller> getPollerClass() {
-        return this.pollerClass;
-    }
-
-
-    public void setPollerClass(final Class<? extends Poller> pollerClass) {
-        this.pollerClass = pollerClass;
-    }
-
-
     public String getDescription() {
         return this.description;
     }
-
 
     public void setDescription(final String description) {
         this.description = description;
     }
 
-
     public URL getProxyUrl() {
         return this.proxyUrl;
     }
-
 
     public void setProxyUrl(final URL proxyUrl) {
         this.proxyUrl = proxyUrl;
     }
 
     public List<Event> poll(final Date startDate, final Date endDate) throws PollException{
-        return this.getPollerDescriptor().createPoller(this).poll(startDate, endDate);
-    }
-
-    public PollerDescriptor getPollerDescriptor() {
-        return PollerServiceLocator.getPollerDescriptor(this.getPollerClass());
+        return this.getPollerDescriptor().createPoller().poll(this, startDate, endDate);
     }
 
 }

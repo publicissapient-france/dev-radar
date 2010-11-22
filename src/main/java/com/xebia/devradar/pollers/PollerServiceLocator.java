@@ -8,6 +8,8 @@ import java.util.Iterator;
 import java.util.ServiceLoader;
 import java.util.Set;
 
+import com.xebia.devradar.domain.PollerDescriptor;
+
 
 
 /**

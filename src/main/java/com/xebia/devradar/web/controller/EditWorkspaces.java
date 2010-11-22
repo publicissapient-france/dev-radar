@@ -54,7 +54,6 @@ public class EditWorkspaces {
     @RequestMapping(method = RequestMethod.GET)
     public String setupForm(@PathVariable("workspaceId") Long workspaceId, Model model) {
         Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
-
         model.addAttribute("workspace", workspace);
         return "workspaces/form";
     }

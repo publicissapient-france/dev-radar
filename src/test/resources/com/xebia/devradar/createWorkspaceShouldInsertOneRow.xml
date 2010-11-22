@@ -1,3 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -16,29 +18,10 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.xebia.devradar.pollers;
+ -->
+<dataset>
 
-import java.util.Date;
-import java.util.List;
+    <POLLERDESCRIPTOR ID="1" VERSION="3" NAME="Svn Poller" POLLERCLASS="com.xebia.devradar.pollers.svn.SvnPoller"  />
+    <POLLERDESCRIPTOR ID="2" VERSION="8" NAME="Jira Poller" POLLERCLASS="com.xebia.devradar.pollers.jira.JiraPoller"  />
 
-import com.xebia.devradar.domain.Event;
-import com.xebia.devradar.domain.EventSource;
-
-/**
- * @author Alexandre Dutra
- *
- */
-public interface Poller {
-
-    /**
-     * Poll the specified <code>{@link EventSource}</code> and return all <code>{@link Event}</code>s occurred
-     * between <code>startDate</code> and <code>endDate</code>.
-     * @param source
-     * @param startDate
-     * @param endDate
-     * @return
-     * @throws PollException
-     */
-    List<Event> poll(final EventSource source, Date startDate, Date endDate) throws PollException;
-
-}
+</dataset>

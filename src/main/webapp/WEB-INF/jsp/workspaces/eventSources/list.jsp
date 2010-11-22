@@ -1,3 +1,4 @@
+<%--
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -16,29 +17,16 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.xebia.devradar.pollers;
+--%>
+<%@ include file="/WEB-INF/jsp/includes.jsp"%>
+<%@ include file="/WEB-INF/jsp/header.jsp"%>
 
-import java.util.Date;
-import java.util.List;
+<h2>List of workspaces (${ fn:length(workspaces) })</h2>
+   <ul>
+   <c:forEach var="workspace" items="${workspaces}">
+       <c:url value="/workspaces/${workspace.id}.html" var="viewWorkspaceUrl"/>
+       <li><a href="${viewWorkspaceUrl}"><c:out value="${workspace.name}" /></a></li>
+   </c:forEach>
+   </ul>
 
-import com.xebia.devradar.domain.Event;
-import com.xebia.devradar.domain.EventSource;
-
-/**
- * @author Alexandre Dutra
- *
- */
-public interface Poller {
-
-    /**
-     * Poll the specified <code>{@link EventSource}</code> and return all <code>{@link Event}</code>s occurred
-     * between <code>startDate</code> and <code>endDate</code>.
-     * @param source
-     * @param startDate
-     * @param endDate
-     * @return
-     * @throws PollException
-     */
-    List<Event> poll(final EventSource source, Date startDate, Date endDate) throws PollException;
-
-}
+<%@ include file="/WEB-INF/jsp/footer.jsp"%>

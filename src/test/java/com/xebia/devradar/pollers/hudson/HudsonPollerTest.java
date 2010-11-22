@@ -43,18 +43,22 @@ public class HudsonPollerTest {
 
     private HudsonPoller poller;
 
+    private EventSource eventSource;
+
     private final Date end = new Date();
 
     private final Date start = DateUtils.addMonths(this.end, -1);
 
     @Before
     public void setUp() throws PollException, MalformedURLException {
-        this.poller = new HudsonPoller(new EventSource(new URL("http://continuum-procapital.gicm.net:9090/job/aaa/")));
+        eventSource = new EventSource();
+        eventSource.setUrl(new URL("http://continuum-procapital.gicm.net:9090/job/aaa/"));
+        this.poller = new HudsonPoller();
     }
 
     @Test @Ignore
     public void testHudson() throws PollException {
-        final List<Event> events = this.poller.poll(this.start, this.end);
+        final List<Event> events = this.poller.poll(eventSource, this.start, this.end);
         for (final Event event : events) {
             //TODO delete this
             System.out.println(event.getMessage());

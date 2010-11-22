@@ -44,34 +44,19 @@ import com.xebia.devradar.pollers.Poller;
  */
 public class SonarPoller implements Poller {
 
-    private static ThreadLocal<SimpleDateFormat> sonarDateFormat = new ThreadLocal<SimpleDateFormat>(){
+    private static final ThreadLocal<SimpleDateFormat> SONAR_DATE_FORMAT = new ThreadLocal<SimpleDateFormat>(){
         @Override
         protected SimpleDateFormat initialValue() {
             //2010-09-08T00:04:26+0200
             return new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
         }
     };
-
-    private EventSource source;
-
-    public SonarPoller() {
-        super();
-    }
-
-    public SonarPoller(final EventSource source) {
-        super();
-        this.source = source;
-    }
-
-    public void setSource(final EventSource source) {
-        this.source = source;
-    }
-
-    public List<Event> poll(final Date startDate, final Date endDate) throws PollException {
+    
+    public List<Event> poll(final EventSource source, final Date startDate, final Date endDate) throws PollException {
 
         try {
 
-            final Document jobDocument = this.buildDocument(this.source.getUrl());
+            final Document jobDocument = this.buildDocument(source.getUrl());
 
             if(jobDocument == null) {
                 return null;
@@ -81,7 +66,7 @@ public class SonarPoller implements Poller {
 
             final Element dateElement = (Element) XPath.selectSingleNode(root, "/resources/resource/date");
             final String dateStr = dateElement.getTextNormalize();
-            final Date date = sonarDateFormat.get().parse(dateStr);
+            final Date date = SONAR_DATE_FORMAT.get().parse(dateStr);
 
             final List<Event> events = new ArrayList<Event>();
 
@@ -103,7 +88,7 @@ public class SonarPoller implements Poller {
                      */
                     final String name = measure.getChildTextNormalize("name");
                     final String alertText = measure.getChildTextNormalize("alert_text");
-                    final Event event = new Event(this.source, name + " " + alertText, date);
+                    final Event event = new Event(source, name + " " + alertText, date);
                     events.add(event);
                 }
 

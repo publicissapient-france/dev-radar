@@ -22,6 +22,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -30,9 +31,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.xebia.devradar.domain.Event;
 import com.xebia.devradar.domain.EventSource;
+import com.xebia.devradar.domain.PollerDescriptor;
 import com.xebia.devradar.domain.Workspace;
+import com.xebia.devradar.pollers.PollerServiceLocator;
 import com.xebia.devradar.pollers.hudson.HudsonPoller;
 import com.xebia.devradar.pollers.jira.JiraPoller;
+import com.xebia.devradar.pollers.sonar.SonarPoller;
 import com.xebia.devradar.pollers.svn.SvnPoller;
 
 /**
@@ -57,28 +61,38 @@ public class DatabaseInitializerImpl implements DatabaseInitializer {
 
             final Workspace defaultWorkspace = new Workspace();
             defaultWorkspace.setName("default");
-
-            EventSource hudsonSource;
-            EventSource svnSource;
-            EventSource jiraSource;
-            try {
-                hudsonSource = new EventSource(HudsonPoller.class, "Hudson Job for Foo Project (trunk)", new URL("http://hudson.example/com"));
-                svnSource = new EventSource(SvnPoller.class, "Trunk of Foo Project", new URL("http://svn.example/com"));
-                jiraSource = new EventSource(JiraPoller.class, "JIRA Issues for Foo Project", new URL("http://jira.example/com"));
-            } catch (final MalformedURLException e) {
-                throw new IllegalStateException(e);
+            
+            Set<PollerDescriptor> supportedPollers = PollerServiceLocator.getSupportedPollers();
+            for (PollerDescriptor pollerDescriptor : supportedPollers) {
+                
+                entityManager.persist(pollerDescriptor);
+                
+                EventSource source = null;
+                Event event = null;
+                try {
+                    if(pollerDescriptor.getPollerClass().equals(HudsonPoller.class)){
+                        source = new EventSource(pollerDescriptor, new URL("http://hudson.example.com/jobs/foo"), "Hudson Job for trunk of project Foo");
+                        event = new Event(source, "Build #58 failed!", new Date());
+                    } else if(pollerDescriptor.getPollerClass().equals(SvnPoller.class)){
+                        source = new EventSource(pollerDescriptor, new URL("http://hudson.example.com/foo/trunk"), "Subversion repository of project Foo (trunk)");
+                        event = new Event(source, "User Joe commited Service.java", new Date());
+                    } else if(pollerDescriptor.getPollerClass().equals(JiraPoller.class)){
+                        source = new EventSource(pollerDescriptor, new URL("http://jira.example.com/foo"), "JIRA issues for project Foo");
+                        event = new Event(source, "User Joe closed Jira FOO-123", new Date());
+                    } else if(pollerDescriptor.getPollerClass().equals(SonarPoller.class)){
+                        source = new EventSource(pollerDescriptor, new URL("http://sonar.example.com/foo"), "Sonar metrics for project Foo");
+                        event = new Event(source, "Code coverage alert < 40%", new Date());
+                    }
+                } catch (MalformedURLException e) {
+                    throw new IllegalStateException(e);
+                }
+                if(source != null){
+                    defaultWorkspace.addEventSource(source);
+                    defaultWorkspace.addEvent(event);
+                } else {
+                    //TODO warning
+                }
             }
-
-            defaultWorkspace.addEventSource(hudsonSource);
-            defaultWorkspace.addEventSource(svnSource);
-            defaultWorkspace.addEventSource(jiraSource);
-
-            final Event hudsonEvent = new Event(hudsonSource, "Build #58 failed!", new Date());
-            defaultWorkspace.addEvent(hudsonEvent);
-            final Event svnEvent = new Event(svnSource, "User Joe commited Service.java", new Date());
-            defaultWorkspace.addEvent(svnEvent);
-            final Event jiraEvent = new Event(jiraSource, "User Joe closed Jira FOO-123", new Date());
-            defaultWorkspace.addEvent(jiraEvent);
 
             this.entityManager.persist(defaultWorkspace);
 

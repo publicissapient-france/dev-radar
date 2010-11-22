@@ -16,29 +16,35 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.xebia.devradar.pollers;
+package com.xebia.devradar.web;
 
-import java.util.Date;
 import java.util.List;
 
-import com.xebia.devradar.domain.Event;
-import com.xebia.devradar.domain.EventSource;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
+import org.springframework.stereotype.Repository;
+
+import com.xebia.devradar.domain.PollerDescriptor;
+import com.xebia.devradar.domain.Workspace;
 
 /**
- * @author Alexandre Dutra
- *
+ * Repository for <code>{@link Workspace}</code> instances.
+ * 
  */
-public interface Poller {
+@Repository
+public class PollerDescriptorRepository {
 
-    /**
-     * Poll the specified <code>{@link EventSource}</code> and return all <code>{@link Event}</code>s occurred
-     * between <code>startDate</code> and <code>endDate</code>.
-     * @param source
-     * @param startDate
-     * @param endDate
-     * @return
-     * @throws PollException
-     */
-    List<Event> poll(final EventSource source, Date startDate, Date endDate) throws PollException;
+    @PersistenceContext
+    private EntityManager entityManager;
 
+    @SuppressWarnings("unchecked")
+    public List<PollerDescriptor> getAll() {
+        return this.entityManager.createQuery("from PollerDescriptor").getResultList();
+    }
+    
+    public PollerDescriptor getPollerDescriptorById(Long id) {
+        return entityManager.find(PollerDescriptor.class, id);
+    }
+    
 }

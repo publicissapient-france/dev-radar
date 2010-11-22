@@ -16,22 +16,52 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.xebia.devradar.pollers;
+package com.xebia.devradar.domain;
 
-import com.xebia.devradar.domain.EventSource;
+import javax.persistence.Basic;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+
+import com.xebia.devradar.pollers.Poller;
 
 
 /**
+ * An object describing how to poll an <code>{@link EventSource}</code>.
+ * A <code>{@link PollerDescriptor}</code> encapsulates all the information necessary
+ * to instantiate an appropriate <code>{@link Poller}</code>.
+ * 
  * @author Alexandre Dutra
  *
  */
-public class PollerDescriptor {
+@Entity
+public class PollerDescriptor extends AbstractEntity {
 
+    /**
+     * The Poller class that should be instantiated in order
+     * to obtain a new Poller.
+     */
+    @Basic(optional=false)
+    @Column(length=500, unique=true)
     private Class<? extends Poller> pollerClass;
 
+    /**
+     * The Poller name, used e.g. for displaying information about this Poller.
+     */
+    @Basic(optional=false)
+    @Column(length=50, unique=true)
     private String name;
 
+    /**
+     * A full description of the Poller, for displaying purposes.
+     */
+    @Basic(optional=true)
+    @Column(length=1000)
     private String description;
+
+
+    public PollerDescriptor() {
+        super();
+    }
 
 
     public PollerDescriptor(final Class<? extends Poller> pollerClass, final String name, final String description) {
@@ -67,7 +97,7 @@ public class PollerDescriptor {
         this.name = name;
     }
 
-    public Poller createPoller(final EventSource source) {
+    public Poller createPoller() {
         Poller poller;
         try {
             poller = this.pollerClass.newInstance();
@@ -76,7 +106,6 @@ public class PollerDescriptor {
         } catch (final IllegalAccessException e) {
             throw new IllegalStateException(e);
         }
-        poller.setSource(source);
         return poller;
     }
 }

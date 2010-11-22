@@ -42,44 +42,20 @@ import com.xebia.devradar.pollers.Poller;
  */
 public class SvnPoller implements Poller {
 
-    private EventSource source;
-
-    /**
-     * FIXME is this client thread-safe?
-     */
-    private SVNLogClient logClient;
-
-    private SVNURL svnUrl;
-
-    public SvnPoller() {
-        super();
-    }
-
-    public SvnPoller(final EventSource source) {
-        super();
-        this.source = source;
-    }
-
-    public void setSource(final EventSource source) {
-        this.source = source;
-    }
-
-    public void init() throws PollException {
+    public List<Event> poll(final EventSource source, final Date startDate, final Date endDate) throws PollException {
         DAVRepositoryFactory.setup();
         //TODO proxy, authentication
-        this.logClient = SVNClientManager.newInstance().getLogClient();
+        SVNLogClient logClient = SVNClientManager.newInstance().getLogClient();
+        SVNURL svnUrl;
         try {
-            this.svnUrl = SVNURL.parseURIDecoded(this.source.getUrl().toExternalForm());
+            svnUrl = SVNURL.parseURIDecoded(source.getUrl().toExternalForm());
         } catch (final SVNException e) {
-            throw new PollException("Bad url: " + this.source.getUrl().toExternalForm(), e);
+            throw new PollException("Bad url: " + source.getUrl().toExternalForm(), e);
         }
-    }
-
-    public List<Event> poll(final Date startDate, final Date endDate) throws PollException {
         try {
             final List<Event> events = new ArrayList<Event>();
-            this.logClient.doLog(
-                this.svnUrl, //repository URL
+            logClient.doLog(
+                svnUrl, //repository URL
                 null, //array of paths relative to <code>url</code>
                 SVNRevision.HEAD, //a revision in which <code>paths</code> are first looked up in the repository
                 SVNRevision.create(startDate),
@@ -96,14 +72,14 @@ public class SvnPoller implements Poller {
                         if(logEntry.getRevision() != -1L) {
                             //TODO trim
                             final String message = logEntry.toString();
-                            final Event event = new Event(SvnPoller.this.source, message, logEntry.getDate());
+                            final Event event = new Event(source, message, logEntry.getDate());
                             events.add(event);
                         }
                     }
                 });
             return events;
         } catch (final SVNException e) {
-            throw new PollException("Could not poll url: " + this.source.getUrl().toExternalForm(), e);
+            throw new PollException("Could not poll url: " + source.getUrl().toExternalForm(), e);
         }
     }
 

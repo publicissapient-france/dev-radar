@@ -43,19 +43,23 @@ public class SvnPollerTest {
 
     private SvnPoller poller;
 
+    private EventSource eventSource;
+
     private final Date end = new Date();
 
     private final Date start = DateUtils.addMonths(this.end, -1);
 
     @Before
     public void setUp() throws PollException, MalformedURLException {
-        this.poller = new SvnPoller(new EventSource(new URL("http://svn.svnkit.com/repos/svnkit/branches/1.3.x")));
-        this.poller.init();
+        eventSource = new EventSource();
+        eventSource.setUrl(new URL("http://svn.svnkit.com/repos/svnkit/branches/1.3.x"));
+        this.poller = new SvnPoller();
+
     }
 
     @Test @Ignore
     public void testSvnKitOneMonth() throws PollException {
-        final List<Event> events = this.poller.poll(this.start, this.end);
+        final List<Event> events = this.poller.poll(this.eventSource, this.start, this.end);
         for (final Event event : events) {
             //TODO delete this
             System.out.println(event.getMessage());

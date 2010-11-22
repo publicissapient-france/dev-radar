@@ -18,51 +18,49 @@
  */
 package com.xebia.devradar.web.controller;
 
+
+import java.util.Date;
+import java.util.List;
+
+import org.apache.commons.lang.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.SessionAttributes;
-import org.springframework.web.bind.support.SessionStatus;
 
+import com.xebia.devradar.domain.Event;
 import com.xebia.devradar.domain.Workspace;
+import com.xebia.devradar.pollers.PollException;
 import com.xebia.devradar.web.WorkspaceRepository;
 
 @Controller
-@RequestMapping("/workspaces/{workspaceId}")
-@SessionAttributes("workspace")
-@Transactional(readOnly=true)
-public class ShowWorkspaces {
-
-    private WorkspaceRepository workspaceRepository;
-
-    public ShowWorkspaces() {
-
-    }
+@RequestMapping("/workspaces/{workspaceId}/poll")
+@SessionAttributes("eventSource")
+@Transactional
+public class PollWorkspaces {
 
     @Autowired
-    public ShowWorkspaces(final WorkspaceRepository workspaceRepository) {
-        this.workspaceRepository = workspaceRepository;
+    private WorkspaceRepository workspaceRepository;
+
+    public PollWorkspaces() {
     }
 
     @RequestMapping(method = RequestMethod.GET)
-    public String setup(@PathVariable("workspaceId") final Long workspaceId, final Model model) {
-        final Workspace workspace = this.workspaceRepository.getWorkspaceById(workspaceId);
+    public String poll(@PathVariable("workspaceId") Long workspaceId, Model model) throws PollException {
+        Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
+        Date end = new Date();
+        Date start = DateUtils.addDays(end, -7);
+        List<Event> events = workspace.poll(start, end);
+        for (Event event : events) {
+            workspace.addEvent(event);
+        }
         model.addAttribute("workspace", workspace);
         return "workspaces/show";
     }
 
-    @RequestMapping(method = { RequestMethod.PUT, RequestMethod.POST })
-    @Transactional(readOnly=false)
-    public String processSubmit(@ModelAttribute("workspace") final Workspace workspace, final BindingResult result,
-        final SessionStatus status) {
-        this.workspaceRepository.deleteWorkspace(workspace);
-        status.setComplete();
-        return "redirect:/workspaces/list.html";
-    }
+
 }

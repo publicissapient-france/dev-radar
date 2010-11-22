@@ -70,7 +70,6 @@
         <td><b>Poller</b></td>
         <td><b>URL</b></td>
         <td><b>Proxy</b></td>
-        <td><b>&nbsp;</b></td>
     </tr>
     <c:forEach var="eventSource" items="${workspace.eventSources}">
         <tr>
@@ -78,21 +77,13 @@
             <td><c:out value="${eventSource.pollerDescriptor.name}" /></td>
             <td><c:out value="${eventSource.url}" /></td>
             <td><c:out value="${eventSource.proxyUrl}" /></td>
-            <td><a class="submit"
-            href="<spring:url value="/workspaces/${workspace.id}/eventSources/${eventSource.id}/edit.html" htmlEscape="true" />">
-            Edit</a></td>
         </tr>
     </c:forEach>
     <tr>
-    <td colspan="5"><a class="submit"
-            href="<spring:url value="/workspaces/${workspace.id}/eventSources/new.html" htmlEscape="true" />">Add Event Source</a></td>
+    <td><a class="submit"
+            href="<spring:url value="/workspaces/${workspace.id}/eventSources/form.html" htmlEscape="true" />">Add Event Source</a></td>
     </tr>
 </table>
-
-<p>
-<a class="submit"
-href="<spring:url value="/workspaces/${workspace.id}/poll.html" htmlEscape="true" />">
-Poll 7 last days</a></p>
 
 <h2>Events</h2>
 <table>

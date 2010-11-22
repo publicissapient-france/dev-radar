@@ -20,6 +20,8 @@ package com.xebia.devradar.pollers;
 
 import java.util.Set;
 
+import com.xebia.devradar.domain.PollerDescriptor;
+
 /**
  * @author Alexandre Dutra
  *

@@ -44,26 +44,11 @@ import com.xebia.devradar.pollers.Poller;
  */
 public class HudsonPoller implements Poller {
 
-    private EventSource source;
-
-    public HudsonPoller() {
-        super();
-    }
-
-    public HudsonPoller(final EventSource source) {
-        super();
-        this.source = source;
-    }
-
-    public void setSource(final EventSource source) {
-        this.source = source;
-    }
-
-    public List<Event> poll(final Date startDate, final Date endDate) throws PollException {
+    public List<Event> poll(final EventSource source, final Date startDate, final Date endDate) throws PollException {
 
         try {
 
-            final URL rootUrl = this.transformUrl(this.source.getUrl());
+            final URL rootUrl = this.transformUrl(source.getUrl());
             final Document jobDocument = this.buildDocument(rootUrl);
 
             if(jobDocument == null) {
@@ -86,7 +71,7 @@ public class HudsonPoller implements Poller {
                         final Element culpritElement = (Element) XPath.selectSingleNode(buildDocument.getRootElement(), "/mavenModuleSetBuild/culprit/fullName");
                         final String culprit = culpritElement == null ? null : culpritElement.getText();
                         final Event event = new Event(
-                            this.source,
+                            source,
                             MessageFormat.format("Build #{0}: {1} (culprit: {2})", buildNumber, result, culprit),
                             date);
                         events.add(event);

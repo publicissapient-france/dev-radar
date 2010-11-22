@@ -53,18 +53,22 @@ public class SonarPollerTest {
 
     private SonarPoller poller;
 
+    private EventSource eventSource;
+
     private final Date end = new Date();
 
     private final Date start = DateUtils.addMonths(this.end, -1);
 
     @Before
     public void setUp() throws PollException, MalformedURLException {
-        this.poller = new SonarPoller(new EventSource(new URL(SONAR_API_URL)));
+        eventSource = new EventSource();
+        eventSource.setUrl(new URL(SONAR_API_URL));
+        this.poller = new SonarPoller();
     }
 
     @Test @Ignore
     public void testSonar() throws PollException {
-        final List<Event> events = this.poller.poll(this.start, this.end);
+        final List<Event> events = this.poller.poll(this.eventSource, this.start, this.end);
         for (final Event event : events) {
             //TODO delete this
             System.out.println(event.getMessage());

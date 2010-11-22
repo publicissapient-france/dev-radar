@@ -18,6 +18,7 @@ package com.xebia.devradar.web;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Date;
 import java.util.List;
 
 import org.hamcrest.CoreMatchers;
@@ -25,12 +26,12 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.xebia.devradar.domain.Event;
 import com.xebia.devradar.domain.EventSource;
+import com.xebia.devradar.domain.PollerDescriptor;
 import com.xebia.devradar.domain.Workspace;
 import com.xebia.devradar.persistence.AbstractRepositoryTests;
 import com.xebia.devradar.persistence.DbUnitDataset;
-import com.xebia.devradar.pollers.jira.JiraPoller;
-import com.xebia.devradar.pollers.svn.SvnPoller;
 
 public class WorkspaceRepositoryTest extends AbstractRepositoryTests {
 
@@ -38,28 +39,43 @@ public class WorkspaceRepositoryTest extends AbstractRepositoryTests {
     private WorkspaceRepository repository;
 
     @Test
+    @DbUnitDataset("com/xebia/devradar/createWorkspaceShouldInsertOneRow.xml")
     public void createWorkspaceShouldInsertOneRow() throws MalformedURLException {
         final String workspaceName = "TEST";
         Workspace w = new Workspace(workspaceName);
         w = this.repository.createWorkspace(w);
         Assert.assertThat(w, CoreMatchers.not(CoreMatchers.nullValue()));
         Assert.assertThat(w.getName(), CoreMatchers.is(workspaceName));
-        w.addEventSource(new EventSource(SvnPoller.class, "Foo Project Trunk", new URL("http://test.com/svn")));
-        w.addEventSource(new EventSource(JiraPoller.class, "Foo Project Jira Issues", new URL("http://test.com/jira")));
+        PollerDescriptor jiraPollerDescriptor = entityManager.find(PollerDescriptor.class, 1L);
+        PollerDescriptor svnPollerDescriptor = entityManager.find(PollerDescriptor.class, 2L);
+        EventSource svnSource = new EventSource(svnPollerDescriptor, new URL("http://test.com/svn"), "Foo Project Subversion Trunk");
+        w.addEventSource(svnSource);
+        EventSource jiraSource = new EventSource(jiraPollerDescriptor, new URL("http://test.com/jira"), "Foo Project Jira Issues");
+        w.addEventSource(jiraSource);
+        w.addEvent(new Event(svnSource, "User Joe committed something", new Date()));
+        w.addEvent(new Event(jiraSource, "User Joe closed jira FOO-1234", new Date()));
         this.entityManager.flush();
         Assert.assertThat(this.countRowsInTable("WORKSPACE"), CoreMatchers.is(1));
         Assert.assertThat(this.countRowsInTable("WORKSPACE_EVENTSOURCE"), CoreMatchers.is(2));
+        Assert.assertThat(this.countRowsInTable("EVENTSOURCE"), CoreMatchers.is(2));
+        Assert.assertThat(this.countRowsInTable("WORKSPACE_EVENT"), CoreMatchers.is(2));
+        Assert.assertThat(this.countRowsInTable("EVENT"), CoreMatchers.is(2));
     }
 
     @Test
-    @DbUnitDataset("com/xebia/devradar/dataset1.xml")
-    public void deleteWorkspaceShouldDeleteOrphanEvents() {
+    @DbUnitDataset("com/xebia/devradar/deleteWorkspaceShouldDeleteOrphans.xml")
+    public void deleteWorkspaceShouldDeleteOrphans() {
         final Workspace w = this.entityManager.find(Workspace.class, 1L);
         this.repository.deleteWorkspace(w);
         this.entityManager.flush();
+        //this should clean the tables below...
         Assert.assertThat(this.countRowsInTable("WORKSPACE"), CoreMatchers.is(0));
         Assert.assertThat(this.countRowsInTable("WORKSPACE_EVENTSOURCE"), CoreMatchers.is(0));
+        Assert.assertThat(this.countRowsInTable("EVENTSOURCE"), CoreMatchers.is(0));
+        Assert.assertThat(this.countRowsInTable("WORKSPACE_EVENT"), CoreMatchers.is(0));
         Assert.assertThat(this.countRowsInTable("EVENT"), CoreMatchers.is(0));
+        //but should keep those rows
+        Assert.assertThat(this.countRowsInTable("POLLERDESCRIPTOR"), CoreMatchers.is(2));
     }
 
     @Test

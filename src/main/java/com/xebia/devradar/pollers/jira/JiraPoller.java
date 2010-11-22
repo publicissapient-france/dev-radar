@@ -32,22 +32,7 @@ import com.xebia.devradar.pollers.Poller;
  */
 public class JiraPoller implements Poller {
 
-    private EventSource source;
-
-    public JiraPoller() {
-        super();
-    }
-
-    public JiraPoller(final EventSource source) {
-        super();
-        this.source = source;
-    }
-
-    public void setSource(final EventSource source) {
-        this.source = source;
-    }
-
-    public List<Event> poll(final Date startDate, final Date endDate) throws PollException {
+    public List<Event> poll(final EventSource source, final Date startDate, final Date endDate) throws PollException {
         //TODO implement
         return null;
     }

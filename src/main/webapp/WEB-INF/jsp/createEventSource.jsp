@@ -33,13 +33,13 @@
 	
 	<table>
 	    <tr>
-	        <td><form:label path="pollerClass">Poller</form:label></td>
+	        <td><form:label path="pollerDescriptor">Poller</form:label></td>
 	        <td>
 	           <table>
 		           <c:forEach items="${pollerDescriptors}" var="pollerDescriptor">
 			           <tr>
 				           <td>
-			                 <form:radiobutton path="pollerClass" value="${pollerDescriptor.pollerClass.name}" label="${pollerDescriptor.name}"/>
+			                 <form:radiobutton path="pollerDescriptor" value="${pollerDescriptor.id}" label="${pollerDescriptor.name}"/>
 			               </td>
 			               <td>
 			                 ${pollerDescriptor.description}
@@ -47,7 +47,7 @@
 			           </tr>
 		           </c:forEach>
 	           </table>
-	           <form:errors path="pollerClass" cssClass="error" />
+	           <form:errors path="pollerDescriptor" cssClass="error" />
 	        </td>
 	    </tr>
         <tr>

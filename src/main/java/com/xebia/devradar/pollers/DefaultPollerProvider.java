@@ -24,6 +24,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import com.xebia.devradar.domain.PollerDescriptor;
 import com.xebia.devradar.pollers.hudson.HudsonPoller;
 import com.xebia.devradar.pollers.jira.JiraPoller;
 import com.xebia.devradar.pollers.sonar.SonarPoller;

@@ -46,7 +46,7 @@ import com.xebia.devradar.pollers.PollException;
 public class Workspace extends AbstractEntity {
 
     @Basic(optional = false)
-    @Column(length = 50)
+    @Column(length = 50, unique=true)
     private String name;
 
     @Column(length = 256)
