@@ -77,7 +77,7 @@
             <td><c:out value="${eventSource.description}" /></td>
             <td><c:out value="${eventSource.pollerDescriptor.name}" /></td>
             <td><c:out value="${eventSource.url}" /></td>
-            <td><c:out value="${eventSource.proxyUrl}" /></td>
+            <td><c:out value="${eventSource.proxy.host}" /></td>
             <td><a class="submit"
             href="<spring:url value="/workspaces/${workspace.id}/eventSources/${eventSource.id}/edit.html" htmlEscape="true" />">
             Edit</a></td>

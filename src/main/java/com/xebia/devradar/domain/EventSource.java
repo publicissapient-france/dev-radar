@@ -20,14 +20,20 @@ package com.xebia.devradar.domain;
 
 import java.net.URL;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Basic;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import com.xebia.devradar.pollers.PollException;
 import com.xebia.devradar.pollers.Poller;
@@ -36,9 +42,9 @@ import com.xebia.devradar.pollers.Poller;
  * Describes an Event Source for a <code>{@link Workspace}</code>.
  * An Event Source object basically encapsulates:
  * <ol>
- * <li>A <code>{@link PollerDescriptor}</code> object describing which <code>{@link Poller}</code> 
+ * <li>A <code>{@link PollerDescriptor}</code> object describing which <code>{@link Poller}</code>
  * should be used to poll the source;<li>
- * <li>Any network connection information necessary to interrogate the source, 
+ * <li>Any network connection information necessary to interrogate the source,
  * such as the source URL, proxy settings, authentication, etc.</li>
  * </ol>
  * 
@@ -55,25 +61,43 @@ public class EventSource extends AbstractEntity {
     @Basic(optional = false)
     @Column(length = 4096)
     private URL url;
-    
+
     @Basic(optional = false)
     @Column(length = 500)
     private String description;
 
     @Basic(optional = true)
-    @Column(length = 4096)
-    private URL proxyUrl;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date lastPollDate;
 
-    //TODO proxy settings, authentication, etc.
+    /**
+     * The user name and password, if the Event Source
+     * needs HTTP authentication.
+     */
+    @Embedded
+    private Authentication authentication;
+
+    /**
+     * Optioanl HTTP proxy.
+     */
+    @Embedded
+    private Proxy proxy;
+
+    /**
+     * Event Source parameters. Parameters can be used
+     * to supply additional information to <code>{@link Poller}</code>s,
+     * e.g. a JIRA key, a Sonar project ID, etc.
+     */
+    @ElementCollection
+    private Map<String, String> parameters = new HashMap<String, String>();
 
     public EventSource() {
     }
 
-    
     public EventSource(
-        PollerDescriptor pollerDescriptor,
-        URL url,
-        String description) {
+            final PollerDescriptor pollerDescriptor,
+            final URL url,
+            final String description) {
         super();
         this.pollerDescriptor = pollerDescriptor;
         this.url = url;
@@ -82,11 +106,19 @@ public class EventSource extends AbstractEntity {
 
 
     public PollerDescriptor getPollerDescriptor() {
-        return pollerDescriptor;
+        return this.pollerDescriptor;
     }
 
-    public void setPollerDescriptor(PollerDescriptor pollerDescriptor) {
+    public void setPollerDescriptor(final PollerDescriptor pollerDescriptor) {
         this.pollerDescriptor = pollerDescriptor;
+    }
+
+    public Date getLastPollDate() {
+        return this.lastPollDate;
+    }
+
+    public void setLastPollDate(final Date lastPollDate) {
+        this.lastPollDate = lastPollDate;
     }
 
     public URL getUrl() {
@@ -105,12 +137,36 @@ public class EventSource extends AbstractEntity {
         this.description = description;
     }
 
-    public URL getProxyUrl() {
-        return this.proxyUrl;
+    public Authentication getAuthentication() {
+        return this.authentication;
     }
 
-    public void setProxyUrl(final URL proxyUrl) {
-        this.proxyUrl = proxyUrl;
+    public void setAuthentication(final Authentication authentication) {
+        this.authentication = authentication;
+    }
+
+    public Proxy getProxy() {
+        return this.proxy;
+    }
+
+    public void setProxy(final Proxy proxy) {
+        this.proxy = proxy;
+    }
+
+    public Map<String, String> getParameters() {
+        return this.parameters;
+    }
+
+    public void setParameters(final Map<String, String> parameters) {
+        this.parameters = parameters;
+    }
+
+    public String getParameter(final String key) {
+        return this.parameters.get(key);
+    }
+
+    public void addParameter(final String key, final String value) {
+        this.parameters.put(key, value);
     }
 
     public List<Event> poll(final Date startDate, final Date endDate) throws PollException{

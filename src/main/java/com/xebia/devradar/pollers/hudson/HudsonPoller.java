@@ -18,8 +18,6 @@
  */
 package com.xebia.devradar.pollers.hudson;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.MessageFormat;
@@ -30,13 +28,13 @@ import java.util.List;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
-import org.jdom.input.SAXBuilder;
 import org.jdom.xpath.XPath;
 
 import com.xebia.devradar.domain.Event;
 import com.xebia.devradar.domain.EventSource;
 import com.xebia.devradar.pollers.PollException;
 import com.xebia.devradar.pollers.Poller;
+import com.xebia.devradar.utils.HttpUtils;
 
 /**
  * @author Alexandre Dutra
@@ -48,8 +46,7 @@ public class HudsonPoller implements Poller {
 
         try {
 
-            final URL rootUrl = this.transformUrl(source.getUrl());
-            final Document jobDocument = this.buildDocument(rootUrl);
+            final Document jobDocument = HttpUtils.getResponseAsDocument(source.getUrl(), source.getAuthentication(), source.getProxy());
 
             if(jobDocument == null) {
                 return null;
@@ -63,7 +60,7 @@ public class HudsonPoller implements Poller {
                 for (final Element build : builds) {
                     final String buildNumber = build.getChildText("number");
                     final URL buildUrl = this.transformUrl(build.getChildText("url"));
-                    final Document buildDocument = this.buildDocument(buildUrl);
+                    final Document buildDocument = HttpUtils.getResponseAsDocument(buildUrl, source.getAuthentication(), source.getProxy());;
                     final String timestamp = ((Element) XPath.selectSingleNode(buildDocument.getRootElement(), "/mavenModuleSetBuild/timestamp")).getText();
                     final Date date = new Date(Long.parseLong(timestamp));
                     if(date.before(endDate) && date.after(startDate)) {
@@ -71,9 +68,9 @@ public class HudsonPoller implements Poller {
                         final Element culpritElement = (Element) XPath.selectSingleNode(buildDocument.getRootElement(), "/mavenModuleSetBuild/culprit/fullName");
                         final String culprit = culpritElement == null ? null : culpritElement.getText();
                         final Event event = new Event(
-                            source,
-                            MessageFormat.format("Build #{0}: {1} (culprit: {2})", buildNumber, result, culprit),
-                            date);
+                                source,
+                                MessageFormat.format("Build #{0}: {1} (culprit: {2})", buildNumber, result, culprit),
+                                date);
                         events.add(event);
                     }
                 }
@@ -87,37 +84,12 @@ public class HudsonPoller implements Poller {
     }
 
 
-    private Document buildDocument(final URL url) throws PollException {
-        Document document;
-        try {
-            final SAXBuilder builder = new SAXBuilder();
-            document = builder.build(url);
-        } catch(final FileNotFoundException e) {
-            throw new PollException("URL does not exist: " + url, e);
-        } catch (final JDOMException e) {
-            throw new PollException("Cannot build DOM tree from URL: " + url, e);
-        } catch (final IOException e) {
-            throw new PollException("Unknown IO error while polling URL: " + url, e);
-        }
-        return document;
-    }
-
     private URL transformUrl(final String original) throws PollException {
         try {
-            return this.transformUrl(new URL(original));
+            return new URL(new URL(original), "api/xml");
         } catch (final MalformedURLException e) {
             throw new PollException(e);
         }
-    }
-
-    private URL transformUrl(final URL original) throws PollException {
-        URL url;
-        try {
-            url = new URL(original, "api/xml");
-        } catch (final MalformedURLException e) {
-            throw new PollException(e);
-        }
-        return url;
     }
 
 }

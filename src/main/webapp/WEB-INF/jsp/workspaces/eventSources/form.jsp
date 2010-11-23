@@ -21,7 +21,7 @@
 <%@ include file="/WEB-INF/jsp/includes.jsp"%>
 <%@ include file="/WEB-INF/jsp/header.jsp"%>
 <c:choose>
-	<c:when test="${workspace.new}">
+	<c:when test="${eventSource.new}">
 		<c:set var="method" value="post" />
 	</c:when>
 	<c:otherwise>
@@ -72,8 +72,12 @@
             <td><form:input path="url" /><form:errors path="url" cssClass="error" /></td>
         </tr>
         <tr>
-            <td><form:label path="proxyUrl">Proxy URL</form:label></td>
-            <td><form:input path="proxyUrl" /><form:errors path="proxyUrl" cssClass="error" /></td>
+            <td><form:label path="proxy.host">Proxy Host</form:label></td>
+            <td><form:input path="proxy.host" /><form:errors path="proxy.host" cssClass="error" /></td>
+        </tr>
+        <tr>
+            <td><form:label path="proxy.port">Proxy Port</form:label></td>
+            <td><form:input path="proxy.port" /><form:errors path="proxy.port" cssClass="error" /></td>
         </tr>
 		<tr>
 			<c:choose>

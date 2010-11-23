@@ -36,7 +36,7 @@ public interface Poller {
      * @param source
      * @param startDate
      * @param endDate
-     * @return
+     * @return the <code>{@link Event}</code>s occurred between <code>startDate</code> and <code>endDate</code>
      * @throws PollException
      */
     List<Event> poll(final EventSource source, Date startDate, Date endDate) throws PollException;

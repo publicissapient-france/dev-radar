@@ -18,23 +18,113 @@
  */
 package com.xebia.devradar.pollers.jira;
 
+import java.text.MessageFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import com.xebia.devradar.domain.Event;
 import com.xebia.devradar.domain.EventSource;
 import com.xebia.devradar.pollers.PollException;
 import com.xebia.devradar.pollers.Poller;
+import com.xebia.devradar.pollers.jira.generated.JiraSoapService;
+import com.xebia.devradar.pollers.jira.generated.RemoteException;
+import com.xebia.devradar.pollers.jira.generated.RemoteIssue;
 
 /**
+ * This client is built following the indications given here:
+ * http://confluence.atlassian.com/display/JIRA/Creating+a+SOAP+Client
+ * http://confluence.atlassian.com/display/JIRA/Remote+API+%28SOAP%29+Examples
+ * 
+ * FIXME this works only for Jira > 4.0
+ * A possible lead for a more generic client:
+ * http://stackoverflow.com/questions/764282/how-can-jira-soap-api-not-have-this-method
+ * 
  * @author Alexandre Dutra
  *
  */
 public class JiraPoller implements Poller {
 
+    public static final String JIRA_PROJECT_KEY_PARAM = "PROJECT_KEY";
+
+    private static final String JQL_QUERY_TEMPLATE = "project = \"{0}\" and updated > \"{1}\" and updated < \"{2}\" order by updated desc";
+
+    private static final String EVENT_MESSAGE_TEMPLATE = "Issue #{0} updated on {1}";
+
+    private static final ThreadLocal<SimpleDateFormat> JIRA_DATE_FORMAT = new ThreadLocal<SimpleDateFormat>(){
+        @Override
+        protected SimpleDateFormat initialValue() {
+            return new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        }
+    };
+
+    private static final Log LOGGER = LogFactory.getLog(JiraPoller.class);
+
     public List<Event> poll(final EventSource source, final Date startDate, final Date endDate) throws PollException {
-        //TODO implement
-        return null;
+        try {
+
+            LOGGER.info("polling source: " + source);
+
+            final JiraSOAPSession soapSession = new JiraSOAPSession(source.getUrl());
+
+            soapSession.connect(
+                    source.getAuthentication().getUsername(),
+                    new String(source.getAuthentication().getPassword()));
+
+            // the JIRA SOAP Service and authentication token are used to make authentication calls
+            final JiraSoapService jiraSoapService = soapSession.getJiraSoapService();
+            final String authToken = soapSession.getAuthenticationToken();
+
+            final String projectKey = source.getParameter(JIRA_PROJECT_KEY_PARAM);
+
+            final String query = this.buildJQLQuery(
+                    projectKey,
+                    startDate, endDate);
+
+            final RemoteIssue[] issues = jiraSoapService.getIssuesFromJqlSearch(
+                    authToken,
+                    query,
+                    50);
+
+            final List<Event> events = new ArrayList<Event>();
+
+            for (final RemoteIssue issue : issues) {
+                final Date updated = issue.getUpdated().getTime();
+                final String message = MessageFormat.format(
+                        EVENT_MESSAGE_TEMPLATE,
+                        issue.getId(),
+                        updated
+                );
+                final Event event = new Event(source, message, updated);
+                events.add(event);
+            }
+
+            return events;
+
+        } catch (final RemoteException e) {
+            LOGGER.error(e);
+            throw new PollException(e);
+
+        } catch (final java.rmi.RemoteException e) {
+            LOGGER.error(e);
+            throw new PollException(e);
+
+        }
+
+    }
+
+    private String buildJQLQuery(final String projectKey, final Date start, final Date end) {
+        //http://confluence.atlassian.com/display/JIRA/Advanced+Searching
+        return MessageFormat.format(
+                JQL_QUERY_TEMPLATE,
+                projectKey,
+                JIRA_DATE_FORMAT.get().format(start),
+                JIRA_DATE_FORMAT.get().format(end)
+        );
     }
 
 }

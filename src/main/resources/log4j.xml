@@ -29,6 +29,18 @@
         </layout>
     </appender>
 
+    <logger name="com.xebia">
+      <level value="trace"/> 
+    </logger>
+    
+    <logger name="org.apache">
+      <level value="warn"/> 
+    </logger>
+    
+    <logger name="org.apache.axis">
+      <level value="warn"/>
+    </logger>
+    
     <logger name="org.apache.commons">
       <level value="warn"/> 
     </logger>
@@ -52,10 +64,9 @@
     <logger name="org.dbunit">
       <level value="info"/> 
     </logger>
-
     
     <root>
-        <priority value="debug" />
+        <priority value="info" />
         <appender-ref ref="console" />
     </root>
 

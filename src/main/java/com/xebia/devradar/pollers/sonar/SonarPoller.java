@@ -18,9 +18,6 @@
  */
 package com.xebia.devradar.pollers.sonar;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -30,13 +27,13 @@ import java.util.List;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
-import org.jdom.input.SAXBuilder;
 import org.jdom.xpath.XPath;
 
 import com.xebia.devradar.domain.Event;
 import com.xebia.devradar.domain.EventSource;
 import com.xebia.devradar.pollers.PollException;
 import com.xebia.devradar.pollers.Poller;
+import com.xebia.devradar.utils.HttpUtils;
 
 /**
  * @author Alexandre Dutra
@@ -51,12 +48,12 @@ public class SonarPoller implements Poller {
             return new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
         }
     };
-    
+
     public List<Event> poll(final EventSource source, final Date startDate, final Date endDate) throws PollException {
 
         try {
 
-            final Document jobDocument = this.buildDocument(source.getUrl());
+            final Document jobDocument = HttpUtils.getResponseAsDocument(source.getUrl(), source.getAuthentication(), source.getProxy());
 
             if(jobDocument == null) {
                 return null;
@@ -103,20 +100,5 @@ public class SonarPoller implements Poller {
         }
     }
 
-
-    private Document buildDocument(final URL url) throws PollException {
-        Document document;
-        try {
-            final SAXBuilder builder = new SAXBuilder();
-            document = builder.build(url);
-        } catch(final FileNotFoundException e) {
-            throw new PollException("URL does not exist: " + url, e);
-        } catch (final JDOMException e) {
-            throw new PollException("Cannot build DOM tree from URL: " + url, e);
-        } catch (final IOException e) {
-            throw new PollException("Unknown IO error while polling URL: " + url, e);
-        }
-        return document;
-    }
 
 }

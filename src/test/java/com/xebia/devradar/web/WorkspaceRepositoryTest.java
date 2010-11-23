@@ -16,13 +16,16 @@
  */
 package com.xebia.devradar.web;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.junit.Assert.assertThat;
+
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Date;
 import java.util.List;
 
-import org.hamcrest.CoreMatchers;
-import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -44,22 +47,22 @@ public class WorkspaceRepositoryTest extends AbstractRepositoryTests {
         final String workspaceName = "TEST";
         Workspace w = new Workspace(workspaceName);
         w = this.repository.createWorkspace(w);
-        Assert.assertThat(w, CoreMatchers.not(CoreMatchers.nullValue()));
-        Assert.assertThat(w.getName(), CoreMatchers.is(workspaceName));
-        PollerDescriptor jiraPollerDescriptor = entityManager.find(PollerDescriptor.class, 1L);
-        PollerDescriptor svnPollerDescriptor = entityManager.find(PollerDescriptor.class, 2L);
-        EventSource svnSource = new EventSource(svnPollerDescriptor, new URL("http://test.com/svn"), "Foo Project Subversion Trunk");
+        assertThat(w, not(nullValue()));
+        assertThat(w.getName(), is(workspaceName));
+        final PollerDescriptor jiraPollerDescriptor = this.entityManager.find(PollerDescriptor.class, 1L);
+        final PollerDescriptor svnPollerDescriptor = this.entityManager.find(PollerDescriptor.class, 2L);
+        final EventSource svnSource = new EventSource(svnPollerDescriptor, new URL("http://test.com/svn"), "Foo Project Subversion Trunk");
         w.addEventSource(svnSource);
-        EventSource jiraSource = new EventSource(jiraPollerDescriptor, new URL("http://test.com/jira"), "Foo Project Jira Issues");
+        final EventSource jiraSource = new EventSource(jiraPollerDescriptor, new URL("http://test.com/jira"), "Foo Project Jira Issues");
         w.addEventSource(jiraSource);
         w.addEvent(new Event(svnSource, "User Joe committed something", new Date()));
         w.addEvent(new Event(jiraSource, "User Joe closed jira FOO-1234", new Date()));
         this.entityManager.flush();
-        Assert.assertThat(this.countRowsInTable("WORKSPACE"), CoreMatchers.is(1));
-        Assert.assertThat(this.countRowsInTable("WORKSPACE_EVENTSOURCE"), CoreMatchers.is(2));
-        Assert.assertThat(this.countRowsInTable("EVENTSOURCE"), CoreMatchers.is(2));
-        Assert.assertThat(this.countRowsInTable("WORKSPACE_EVENT"), CoreMatchers.is(2));
-        Assert.assertThat(this.countRowsInTable("EVENT"), CoreMatchers.is(2));
+        assertThat(this.countRowsInTable("WORKSPACE"), is(1));
+        assertThat(this.countRowsInTable("WORKSPACE_EVENTSOURCE"), is(2));
+        assertThat(this.countRowsInTable("EVENTSOURCE"), is(2));
+        assertThat(this.countRowsInTable("WORKSPACE_EVENT"), is(2));
+        assertThat(this.countRowsInTable("EVENT"), is(2));
     }
 
     @Test
@@ -69,24 +72,24 @@ public class WorkspaceRepositoryTest extends AbstractRepositoryTests {
         this.repository.deleteWorkspace(w);
         this.entityManager.flush();
         //this should clean the tables below...
-        Assert.assertThat(this.countRowsInTable("WORKSPACE"), CoreMatchers.is(0));
-        Assert.assertThat(this.countRowsInTable("WORKSPACE_EVENTSOURCE"), CoreMatchers.is(0));
-        Assert.assertThat(this.countRowsInTable("EVENTSOURCE"), CoreMatchers.is(0));
-        Assert.assertThat(this.countRowsInTable("WORKSPACE_EVENT"), CoreMatchers.is(0));
-        Assert.assertThat(this.countRowsInTable("EVENT"), CoreMatchers.is(0));
+        assertThat(this.countRowsInTable("WORKSPACE"), is(0));
+        assertThat(this.countRowsInTable("WORKSPACE_EVENTSOURCE"), is(0));
+        assertThat(this.countRowsInTable("EVENTSOURCE"), is(0));
+        assertThat(this.countRowsInTable("WORKSPACE_EVENT"), is(0));
+        assertThat(this.countRowsInTable("EVENT"), is(0));
         //but should keep those rows
-        Assert.assertThat(this.countRowsInTable("POLLERDESCRIPTOR"), CoreMatchers.is(2));
+        assertThat(this.countRowsInTable("POLLERDESCRIPTOR"), is(2));
     }
 
     @Test
     @DbUnitDataset("com/xebia/devradar/workspaceShouldGetWorkspacesOrdered.xml")
     public void shouldGetWorkspacesOrdered() {
         final List<Workspace> workspaces = this.repository.getAllWorkspaces();
-        Assert.assertThat(workspaces.size(), CoreMatchers.is(5));
-        Assert.assertThat(workspaces.get(0).getName(), CoreMatchers.is("WORKSPACE A"));
-        Assert.assertThat(workspaces.get(1).getName(), CoreMatchers.is("WORKSPACE B"));
-        Assert.assertThat(workspaces.get(2).getName(), CoreMatchers.is("WORKSPACE C"));
-        Assert.assertThat(workspaces.get(3).getName(), CoreMatchers.is("WORKSPACE D"));
-        Assert.assertThat(workspaces.get(4).getName(), CoreMatchers.is("WORKSPACE E"));
+        assertThat(workspaces.size(), is(5));
+        assertThat(workspaces.get(0).getName(), is("WORKSPACE A"));
+        assertThat(workspaces.get(1).getName(), is("WORKSPACE B"));
+        assertThat(workspaces.get(2).getName(), is("WORKSPACE C"));
+        assertThat(workspaces.get(3).getName(), is("WORKSPACE D"));
+        assertThat(workspaces.get(4).getName(), is("WORKSPACE E"));
     }
 }

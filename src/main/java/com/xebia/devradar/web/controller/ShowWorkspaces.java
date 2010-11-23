@@ -22,7 +22,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -59,8 +58,7 @@ public class ShowWorkspaces {
 
     @RequestMapping(method = { RequestMethod.PUT, RequestMethod.POST })
     @Transactional(readOnly=false)
-    public String processSubmit(@ModelAttribute("workspace") final Workspace workspace, final BindingResult result,
-        final SessionStatus status) {
+    public String processSubmit(@ModelAttribute("workspace") final Workspace workspace, final SessionStatus status) {
         this.workspaceRepository.deleteWorkspace(workspace);
         status.setComplete();
         return "redirect:/workspaces/list.html";

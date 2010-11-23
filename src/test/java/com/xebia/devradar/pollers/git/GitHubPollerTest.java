@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.xebia.devradar.pollers.hudson;
+package com.xebia.devradar.pollers.git;
 
 
 import java.net.MalformedURLException;
@@ -41,11 +41,16 @@ import com.xebia.devradar.pollers.PollException;
  * @author Alexandre Dutra
  *
  */
-public class HudsonPollerTest {
+public class GitHubPollerTest {
 
-    private static final String DEV_RADAR_HUDSON_URL = "http://fluxx.fr.cr:9080/hudson/job/dev-radar/";
+    private static final String GIT_HUB_URL = "http://github.com/api/v2/xml/commits/list/xebia-france/dev-radar/master";
 
-    private HudsonPoller poller;
+    //not necessary
+    //    private static final String LOGIN_NAME = "adutra";
+    //
+    //    private static final String LOGIN_PASSWORD = "xxxxxx";
+
+    private GitHubPoller poller;
 
     private EventSource eventSource;
 
@@ -53,17 +58,18 @@ public class HudsonPollerTest {
 
     private final Date start = DateUtils.addMonths(this.end, -1);
 
-    @Before
+    @Before @Ignore
     public void setUp() throws PollException, MalformedURLException {
         this.eventSource = new EventSource();
-        this.eventSource.setUrl(new URL(DEV_RADAR_HUDSON_URL));
+        this.eventSource.setUrl(new URL(GIT_HUB_URL));
+        //this.eventSource.setAuthentication(new Authentication(LOGIN_NAME, LOGIN_PASSWORD.toCharArray()));
         this.eventSource.setProxy(
                 new Proxy("proxy.gicm.net", 3128, new Authentication("continuum", "continuum".toCharArray())));
-        this.poller = new HudsonPoller();
+        this.poller = new GitHubPoller();
     }
 
-    @Test @Ignore
-    public void testHudson() throws PollException {
+    @Test
+    public void testGitHub() throws PollException {
         final List<Event> events = this.poller.poll(this.eventSource, this.start, this.end);
         for (final Event event : events) {
             //TODO delete this

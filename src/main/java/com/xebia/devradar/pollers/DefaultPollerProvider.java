@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.xebia.devradar.domain.PollerDescriptor;
+import com.xebia.devradar.pollers.git.GitHubPoller;
 import com.xebia.devradar.pollers.hudson.HudsonPoller;
 import com.xebia.devradar.pollers.jira.JiraPoller;
 import com.xebia.devradar.pollers.sonar.SonarPoller;
@@ -40,25 +41,30 @@ public class DefaultPollerProvider implements PollerProvider {
 
     static {
         POLLERS.put(
-            SvnPoller.class,
-            new PollerDescriptor(SvnPoller.class,
-                "Standard Subversion Poller",
-            "A general-purpose Poller for Subversion Repositories. Uses SVNKit library behind the scenes."));
+                SvnPoller.class,
+                new PollerDescriptor(SvnPoller.class,
+                        "Standard Subversion Poller",
+                "A general-purpose Poller for Subversion Repositories. Uses SVNKit library behind the scenes."));
         POLLERS.put(
-            JiraPoller.class,
-            new PollerDescriptor(JiraPoller.class,
-                "Standard JIRA Poller",
-            "A general-purpose Poller for Jira Projects."));
+                JiraPoller.class,
+                new PollerDescriptor(JiraPoller.class,
+                        "Standard JIRA Poller",
+                "A general-purpose Poller for Jira Projects."));
         POLLERS.put(
-            HudsonPoller.class,
-            new PollerDescriptor(HudsonPoller.class,
-                "Standard Hudson Poller",
-            "A general-purpose Poller for Hudson Jobs. Monitors Hudson builds and reports failures and successes."));
+                HudsonPoller.class,
+                new PollerDescriptor(HudsonPoller.class,
+                        "Standard Hudson Poller",
+                "A general-purpose Poller for Hudson Jobs. Monitors Hudson builds and reports failures and successes."));
         POLLERS.put(
-            SonarPoller.class,
-            new PollerDescriptor(SonarPoller.class,
-                "Standard Sonar Poller",
-            "A general-purpose Poller for Sonar."));
+                SonarPoller.class,
+                new PollerDescriptor(SonarPoller.class,
+                        "Standard Sonar Poller",
+                "A general-purpose Poller for Sonar."));
+        POLLERS.put(
+                GitHubPoller.class,
+                new PollerDescriptor(GitHubPoller.class,
+                        "Standard GitHub Poller",
+                "A general-purpose Poller for GitHub."));
     }
 
     public Set<PollerDescriptor> getSupportedPollers(){

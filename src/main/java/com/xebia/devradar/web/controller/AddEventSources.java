@@ -22,8 +22,6 @@ package com.xebia.devradar.web.controller;
 import java.beans.PropertyEditorSupport;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -58,39 +56,39 @@ public class AddEventSources {
 
     public AddEventSources() {
     }
-    
-    
+
+
     @InitBinder
-    protected void initBinder(HttpServletRequest request, ServletRequestDataBinder binder) {
+    protected void initBinder(final ServletRequestDataBinder binder) {
         binder.registerCustomEditor(PollerDescriptor.class, new PropertyEditorSupport(){
             @Override
-            public void setAsText(String text) throws IllegalArgumentException {
-                PollerDescriptor pd = pollerDescriptorRepository.getPollerDescriptorById(Long.parseLong(text));
-                setValue(pd);
+            public void setAsText(final String text) throws IllegalArgumentException {
+                final PollerDescriptor pd = AddEventSources.this.pollerDescriptorRepository.getPollerDescriptorById(Long.parseLong(text));
+                this.setValue(pd);
             }
-            
+
         });
     }
 
     @RequestMapping(method = RequestMethod.GET)
-    public String setupForm(Model model) {
-        EventSource eventSource = new EventSource();
+    public String setupForm(final Model model) {
+        final EventSource eventSource = new EventSource();
         model.addAttribute("eventSource", eventSource);
-        final List<PollerDescriptor> pollerDescriptors = pollerDescriptorRepository.getAll();
+        final List<PollerDescriptor> pollerDescriptors = this.pollerDescriptorRepository.getAll();
         model.addAttribute("pollerDescriptors", pollerDescriptors);
         return "workspaces/eventSources/form";
     }
 
     @RequestMapping(method = RequestMethod.POST)
     public String processSubmit(
-        @PathVariable("workspaceId") Long workspaceId, 
-        @ModelAttribute("eventSource") EventSource eventSource, 
-        BindingResult result, SessionStatus status) {
+        @PathVariable("workspaceId") final Long workspaceId,
+        @ModelAttribute("eventSource") final EventSource eventSource,
+        final BindingResult result, final SessionStatus status) {
         //new WorkspaceValidator().validate(eventSource, result);
         if (result.hasErrors()) {
             return "workspaces/eventSources/form";
         } else {
-            Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
+            final Workspace workspace = this.workspaceRepository.getWorkspaceById(workspaceId);
             workspace.addEventSource(eventSource);
             status.setComplete();
             return "redirect:/workspaces/" + workspace.getId()+".html";
