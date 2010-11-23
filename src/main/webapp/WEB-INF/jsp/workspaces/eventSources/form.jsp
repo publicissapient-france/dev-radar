@@ -50,7 +50,7 @@
                    <c:forEach items="${pollerDescriptors}" var="pollerDescriptor">
                        <tr>
                            <td>
-                             <form:radiobutton  path="pollerDescriptor" value="${pollerDescriptor.id}" label="${pollerDescriptor.name}"/>
+                             <form:radiobutton path="pollerDescriptor" value="${pollerDescriptor.id}" label="${pollerDescriptor.name}"/>
                            </td>
                            <td>
                              ${pollerDescriptor.description}
@@ -85,7 +85,7 @@
 					<td><p class="submit"><input type="submit" value="Add Event Source" /></p></td>
 				</c:when>
 				<c:otherwise>
-					<td><p class="submit"><input type="submit" value="Update Event Source" /><td>
+					<td><p class="submit"><input type="submit" value="Update Event Source" /></p></td>
 				</c:otherwise>
 			</c:choose>
 		</tr>
