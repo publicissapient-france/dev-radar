@@ -58,7 +58,7 @@ public class GitHubPollerTest {
 
     private final Date start = DateUtils.addMonths(this.end, -1);
 
-    @Before @Ignore
+    @Before
     public void setUp() throws PollException, MalformedURLException {
         this.eventSource = new EventSource();
         this.eventSource.setUrl(new URL(GIT_HUB_URL));
@@ -68,7 +68,7 @@ public class GitHubPollerTest {
         this.poller = new GitHubPoller();
     }
 
-    @Test
+    @Test @Ignore
     public void testGitHub() throws PollException {
         final List<Event> events = this.poller.poll(this.eventSource, this.start, this.end);
         for (final Event event : events) {
