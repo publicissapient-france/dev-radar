@@ -57,7 +57,6 @@ public class AddEventSources {
     public AddEventSources() {
     }
 
-
     @InitBinder
     protected void initBinder(final ServletRequestDataBinder binder) {
         binder.registerCustomEditor(PollerDescriptor.class, new PropertyEditorSupport(){
@@ -76,7 +75,7 @@ public class AddEventSources {
         model.addAttribute("eventSource", eventSource);
         final List<PollerDescriptor> pollerDescriptors = this.pollerDescriptorRepository.getAll();
         model.addAttribute("pollerDescriptors", pollerDescriptors);
-        return "workspaces/eventSources/form";
+        return "event-sources/form";
     }
 
     @RequestMapping(method = RequestMethod.POST)
@@ -86,7 +85,7 @@ public class AddEventSources {
         final BindingResult result, final SessionStatus status) {
         //new WorkspaceValidator().validate(eventSource, result);
         if (result.hasErrors()) {
-            return "workspaces/eventSources/form";
+            return "event-sources/form";
         } else {
             final Workspace workspace = this.workspaceRepository.getWorkspaceById(workspaceId);
             workspace.addEventSource(eventSource);

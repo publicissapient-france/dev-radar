@@ -36,6 +36,7 @@ import org.springframework.web.bind.support.SessionStatus;
 import com.xebia.devradar.domain.Workspace;
 import com.xebia.devradar.utils.Pom;
 import com.xebia.devradar.utils.PomLoaderUtils;
+import com.xebia.devradar.utils.WorkspaceFactory;
 import com.xebia.devradar.validation.WorkspaceValidator;
 import com.xebia.devradar.web.WorkspaceRepository;
 
@@ -47,6 +48,8 @@ public class AddWorkspaces {
 
     private WorkspaceRepository workspaceRepository;
 
+    private WorkspaceFactory workspaceFactory = new WorkspaceFactory();
+    
     public AddWorkspaces() {
         
     }
@@ -69,14 +72,22 @@ public class AddWorkspaces {
         if (result.hasErrors()) {
             return "workspaces/form";
         } else {
-            String customName = workspace.getName();
-            createWorkspaceFromPom(workspace, result);
-            if (org.springframework.util.StringUtils.hasLength(customName)) {
-                workspace.setName(customName);
-            }
+            createWorkspace(workspace, result);           
             workspaceRepository.createWorkspace(workspace);
             status.setComplete();
-            return "redirect:/workspaces/" + workspace.getId()+"/edit.html";
+            return "redirect:/workspaces/" + workspace.getId()+".html";
+        }
+    }
+
+    private void createWorkspace(Workspace workspace, BindingResult result) {
+        String customName = workspace.getName();
+        String customDescription = workspace.getDescription();
+        createWorkspaceFromPom(workspace, result);
+        if (StringUtils.hasLength(customName)) {
+            workspace.setName(customName);
+        }
+        if (StringUtils.hasLength(customDescription)) {
+            workspace.setDescription(customDescription);
         }
     }
 
@@ -84,11 +95,7 @@ public class AddWorkspaces {
         if (StringUtils.hasLength(workspace.getPomUrl())) {
             try {
                 Pom pom = PomLoaderUtils.create(new URL(workspace.getPomUrl()));
-                workspace.setName(pom.getName());
-                workspace.setScm(pom.getScm());
-                workspace.setCiManagement(pom.getCiManagement());
-                workspace.setDescription(pom.getDescription());
-                workspace.setIssueManagement(pom.getIssueManagement());
+                workspace = workspaceFactory.create(pom);
             } catch (Exception e) {
                 result.rejectValue("pomUrl", "invalid-url", "invalid url");
             }

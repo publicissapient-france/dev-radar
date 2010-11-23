@@ -35,6 +35,5 @@
       <td><a href="<spring:url value="/workspaces/list.html" htmlEscape="true" />">Home</a></td>
       <td><a href="<spring:url value="/workspaces/new.html" htmlEscape="true" />">Create a new workspace</a></td>
       <td><a href="<spring:url value="/workspaces/list.html" htmlEscape="true" />">View workspaces</a></td>
-      <td align="right">Xebia</td>
     </tr>
   </table>

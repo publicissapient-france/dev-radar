@@ -75,7 +75,7 @@ public class EditEventSources {
         model.addAttribute("eventSource", eventSource);
         final List<PollerDescriptor> pollerDescriptors = this.pollerDescriptorRepository.getAll();
         model.addAttribute("pollerDescriptors", pollerDescriptors);
-        return "workspaces/eventSources/form";
+        return "event-sources/form";
     }
 
     @RequestMapping(method = { RequestMethod.PUT, RequestMethod.POST })
@@ -86,7 +86,7 @@ public class EditEventSources {
 
         //new WorkspaceValidator().validate(eventSource, result);
         if (result.hasErrors()) {
-            return "workspaces/eventSources/form";
+            return "event-sources/form";
         } else {
             this.eventSourceRepository.updateEventSource(eventSource);
             status.setComplete();
