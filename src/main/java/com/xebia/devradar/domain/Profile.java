@@ -49,10 +49,21 @@ public class Profile extends AbstractEntity {
     }
 
     public Profile(String nickname, String email) {
+        this(nickname, email, nickname);
+    }
+
+    public Profile(String nickname, String email, String aliasSCM) {
+        this(nickname,
+                email,
+                GravatarUtils.constructGravatarUrlFromEmail(email, false, true),
+                aliasSCM);
+    }
+
+    private Profile(String nickname, String email, String gravatarUrl, String aliasSCM) {
         this.nickname = nickname;
-        this.aliasSCM = nickname;
         this.email = email;
-        this.gravatarUrl = GravatarUtils.constructGravatarUrlFromEmail(email, false, true);
+        this.gravatarUrl = gravatarUrl;
+        this.aliasSCM = aliasSCM;
     }
 
     public String getNickname() {
@@ -74,10 +85,6 @@ public class Profile extends AbstractEntity {
 
     public String getGravatarUrl() {
         return gravatarUrl;
-    }
-
-    public void setGravatarUrl(String gravatarUrl) {
-        this.gravatarUrl = gravatarUrl;
     }
 
     public String getAliasSCM() {

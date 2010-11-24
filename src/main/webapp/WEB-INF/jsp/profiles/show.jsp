@@ -39,7 +39,7 @@
 	<tr>
 		<td><a class="submit"
 			href='<spring:url value="/profiles/${profile.id}/edit.html" htmlEscape="true" />'>Edit</a></td>
-		<td><form:form method="delete">
+		<td><form:form method="delete" action="./${profile.id}/delete.html">
 			<p class="submit"><input type="submit" value="Delete Profile" /></p>
 		</form:form></td>
 	</tr>
