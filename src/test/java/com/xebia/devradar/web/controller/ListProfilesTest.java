@@ -18,28 +18,21 @@
  */
 package com.xebia.devradar.web.controller;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import com.xebia.devradar.domain.Profile;
 import com.xebia.devradar.web.ProfileRepository;
 import com.xebia.devradar.web.controller.profiles.ListProfiles;
-import com.xebia.devradar.web.controller.workspaces.ListWorkspaces;
 import com.xebia.devradar.web.model.ProfileListModel;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.xebia.devradar.domain.Workspace;
-import com.xebia.devradar.web.WorkspaceRepository;
-import com.xebia.devradar.web.model.WorkspaceListModel;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class ListProfilesTest {
     private ProfileRepository profileRepository;

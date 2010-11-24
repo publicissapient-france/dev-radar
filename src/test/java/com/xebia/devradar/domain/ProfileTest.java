@@ -25,7 +25,7 @@ import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 
-public class ProfilTest {
+public class ProfileTest {
 
     private static String NICKNAME = "Beau Lebens";
     private static String EMAIL = "beau@dentedreality.com.au";
@@ -33,19 +33,19 @@ public class ProfilTest {
 
     @Test
     public void should_create_profil() {
-        Profile profil = new Profile("Beau Lebens", "beau@dentedreality.com.au");
-        assertNotNull(profil);
-        assertThat(profil.getNickname(), equalTo(NICKNAME));
-        assertThat(profil.getEmail(), equalTo(EMAIL));
-        assertThat(profil.getGravatarUrl(), equalTo(GRAVATAR_URL));
+        Profile profile = new Profile("Beau Lebens", "beau@dentedreality.com.au");
+        assertNotNull(profile);
+        assertThat(profile.getNickname(), equalTo(NICKNAME));
+        assertThat(profile.getEmail(), equalTo(EMAIL));
+        assertThat(profile.getGravatarUrl(), equalTo(GRAVATAR_URL));
     }
 
     @Test
     public void should_modify_gravatar_url_while_modifying_email() {
-        Profile profil = new Profile(NICKNAME, "test@free.fr");
-        assertNotNull(profil);
-        assertThat(profil.getGravatarUrl(), not(GRAVATAR_URL));
-        profil.setEmail(EMAIL);
-        assertThat(profil.getGravatarUrl(), equalTo(GRAVATAR_URL));
+        Profile profile = new Profile(NICKNAME, "test@free.fr");
+        assertNotNull(profile);
+        assertThat(profile.getGravatarUrl(), not(GRAVATAR_URL));
+        profile.setEmail(EMAIL);
+        assertThat(profile.getGravatarUrl(), equalTo(GRAVATAR_URL));
     }
 }
