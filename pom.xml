@@ -438,7 +438,7 @@
             <exclude>src/main/resources/META-INF/services/*</exclude>
             <exclude>src/main/wsdl/*</exclude>
             <exclude>src/tomcat/*</exclude>
-            <exclude>src/test/resources/devradar/*</exclude>
+            <exclude>src/main/webapp/*.html</exclude>
           </excludes>
         </configuration>
       </plugin>
