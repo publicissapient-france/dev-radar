@@ -41,23 +41,9 @@
 		<td><c:out value="${workspace.description}" /></td>
 	</tr>
 	<tr>
-		<td>Issue management :</td>
-		<td><a href='<c:out value="${workspace.issueManagement}"/>'><c:out
-			value="${workspace.issueManagement}" /></a></td>
-	</tr>
-	<tr>
-		<td>CI management :</td>
-		<td><a href='<c:out value="${workspace.ciManagement}"/>'><c:out
-			value="${workspace.ciManagement}" /></a></td>
-	</tr>
-	<tr>
-		<td>Scm :</td>
-		<td><c:out value="${workspace.scm}" /></td>
-	</tr>
-	<tr>
 		<td><a class="submit"
 			href="<spring:url value="/workspaces/${workspace.id}/edit.html" htmlEscape="true" />">Edit</a></td>
-		<td><form:form method="delete">
+		<td><form:form action="./${workspace.id}/delete.html" method="delete">
 			<p class="submit"><input type="submit" value="Delete Workspace" /></p>
 		</form:form></td>
 	</tr>

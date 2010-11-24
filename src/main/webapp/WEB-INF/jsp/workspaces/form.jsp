@@ -54,22 +54,6 @@
 				cssClass="errors" /></td>
 			<td><form:input path="description" size="50" maxlength="512" /></td>
 			</tr>
-		<tr>
-			<td>Scm: <form:errors path="scm" cssClass="errors" /></td>
-			<td><form:input path="scm" size="50" maxlength="256" /></td>
-		</tr>
-		<tr>
-			<td>Issue management: <form:errors path="issueManagement"
-				cssClass="errors" /></td>
-			<td><form:input path="issueManagement" size="50" maxlength="256" /></td>
-		
-		</tr>
-		<tr>
-			<td>Ci management: <form:errors path="ciManagement"
-				cssClass="errors" /></td>
-			<td><form:input path="ciManagement" size="50" maxlength="256" /></td>
-		
-		</tr>
 		<tr><td></td>
 			<c:choose>
 				<c:when test="${workspace.new}">

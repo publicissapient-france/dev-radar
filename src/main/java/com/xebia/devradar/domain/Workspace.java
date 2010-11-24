@@ -55,15 +55,6 @@ public class Workspace extends AbstractEntity {
     @Column(length = 512)
     private String description;
 
-    @Column(length = 256)
-    private String issueManagement;
-
-    @Column(length = 256)
-    private String ciManagement;
-
-    @Column(length = 256)
-    private String scm;
-
     @OneToMany(cascade=CascadeType.ALL,orphanRemoval=true)
     private Set<Event> events = new LinkedHashSet<Event>();
 
@@ -125,36 +116,6 @@ public class Workspace extends AbstractEntity {
 
     public void setDescription(final String description) {
         this.description = description;
-    }
-
-
-    public String getIssueManagement() {
-        return this.issueManagement;
-    }
-
-
-    public void setIssueManagement(final String issueManagement) {
-        this.issueManagement = issueManagement;
-    }
-
-
-    public String getCiManagement() {
-        return this.ciManagement;
-    }
-
-
-    public void setCiManagement(final String ciManagement) {
-        this.ciManagement = ciManagement;
-    }
-
-
-    public String getScm() {
-        return this.scm;
-    }
-
-
-    public void setScm(final String scm) {
-        this.scm = scm;
     }
 
     public List<Event> poll(final Date startDate, final Date endDate) throws PollException {
