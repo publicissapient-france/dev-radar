@@ -43,7 +43,7 @@
 	<tr>
 		<td><a class="submit"
 			href="<spring:url value="/workspaces/${workspace.id}/edit.html" htmlEscape="true" />">Edit</a></td>
-		<td><form:form method="delete">
+		<td><form:form action="./${workspace.id}/delete.html" method="delete">
 			<p class="submit"><input type="submit" value="Delete Workspace" /></p>
 		</form:form></td>
 	</tr>

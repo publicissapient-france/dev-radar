@@ -39,6 +39,10 @@ public class AbstractEntity {
     public final Long getId() {
         return id;
     }
+
+    public final void setId(Long id) {
+        this.id = id;
+    }
     
     public Integer getVersion() {
         return version;
