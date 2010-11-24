@@ -28,13 +28,13 @@ import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.xebia.devradar.web.controller.workspaces.ListWorkspaces;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.xebia.devradar.domain.Workspace;
 import com.xebia.devradar.web.WorkspaceRepository;
-import com.xebia.devradar.web.controller.ListWorkspaces;
 import com.xebia.devradar.web.model.WorkspaceListModel;
 
 public class ListWorkspacesTest {

@@ -33,7 +33,7 @@ public class ProfilTest {
 
     @Test
     public void should_create_profil() {
-        Profil profil = new Profil("Beau Lebens", "beau@dentedreality.com.au");
+        Profile profil = new Profile("Beau Lebens", "beau@dentedreality.com.au");
         assertNotNull(profil);
         assertThat(profil.getNickname(), equalTo(NICKNAME));
         assertThat(profil.getEmail(), equalTo(EMAIL));
@@ -42,7 +42,7 @@ public class ProfilTest {
 
     @Test
     public void should_modify_gravatar_url_while_modifying_email() {
-        Profil profil = new Profil(NICKNAME, "test@free.fr");
+        Profile profil = new Profile(NICKNAME, "test@free.fr");
         assertNotNull(profil);
         assertThat(profil.getGravatarUrl(), not(GRAVATAR_URL));
         profil.setEmail(EMAIL);
