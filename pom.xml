@@ -433,6 +433,12 @@
             <exclude>test/**/*</exclude>
             <exclude>**/*MANIFEST.MF</exclude>
             <exclude>**/*.log</exclude>
+            <exclude>test/*</exclude>
+            <exclude>build-tools/*</exclude>
+            <exclude>src/main/resources/META-INF/services/*</exclude>
+            <exclude>src/main/wsdl/*</exclude>
+            <exclude>src/tomcat/*</exclude>
+            <exclude>src/test/resources/devradar/*</exclude>
           </excludes>
         </configuration>
       </plugin>
