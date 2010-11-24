@@ -16,11 +16,14 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.xebia.devradar.web.controller;
+package com.xebia.devradar.web.controller.profiles;
 
 
 import java.net.URL;
 
+import com.xebia.devradar.domain.Profile;
+import com.xebia.devradar.validation.ProfileValidator;
+import com.xebia.devradar.web.ProfileRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,58 +43,38 @@ import com.xebia.devradar.validation.WorkspaceValidator;
 import com.xebia.devradar.web.WorkspaceRepository;
 
 @Controller
-@RequestMapping("/workspaces/new")
-@SessionAttributes("workspace")
+@RequestMapping("/profiles/new")
+@SessionAttributes("profile")
 @Transactional
-public class AddWorkspaces {
+public class AddProfiles {
 
-    private WorkspaceRepository workspaceRepository;
+    private ProfileRepository profileRepository;
 
-    public AddWorkspaces() {
-        
+    public AddProfiles() {
+
     }
-    
+
     @Autowired
-    public AddWorkspaces(WorkspaceRepository workspaceRepository) {
-        this.workspaceRepository = workspaceRepository;
+    public AddProfiles(ProfileRepository profileRepository) {
+        this.profileRepository = profileRepository;
     }
 
     @RequestMapping(method = RequestMethod.GET)
     public String setupForm(Model model) {
-        Workspace workspace = new Workspace();
-        model.addAttribute("workspace", workspace);
-        return "workspaces/form";
+        Profile profile = new Profile();
+        model.addAttribute("profile", profile);
+        return "profiles/form";
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    public String processSubmit(@ModelAttribute("workspace") Workspace workspace, BindingResult result, SessionStatus status) {
-        new WorkspaceValidator().validate(workspace, result);
+    public String processSubmit(@ModelAttribute("profile") Profile profile, BindingResult result, SessionStatus status) {
+        new ProfileValidator().validate(profile, result);
         if (result.hasErrors()) {
-            return "workspaces/form";
+            return "profiles/form";
         } else {
-            String customName = workspace.getName();
-            createWorkspaceFromPom(workspace, result);
-            if (org.springframework.util.StringUtils.hasLength(customName)) {
-                workspace.setName(customName);
-            }
-            workspaceRepository.createWorkspace(workspace);
+            profileRepository.createProfile(profile);
             status.setComplete();
-            return "redirect:/workspaces/" + workspace.getId()+"/edit.html";
-        }
-    }
-
-    private void createWorkspaceFromPom(Workspace workspace, BindingResult result) {
-        if (StringUtils.hasLength(workspace.getPomUrl())) {
-            try {
-                Pom pom = PomLoaderUtils.create(new URL(workspace.getPomUrl()));
-                workspace.setName(pom.getName());
-                workspace.setScm(pom.getScm());
-                workspace.setCiManagement(pom.getCiManagement());
-                workspace.setDescription(pom.getDescription());
-                workspace.setIssueManagement(pom.getIssueManagement());
-            } catch (Exception e) {
-                result.rejectValue("pomUrl", "invalid-url", "invalid url");
-            }
+            return "redirect:/profiles/" + profile.getId()+"/edit.html";
         }
     }
 }

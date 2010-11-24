@@ -24,7 +24,12 @@ import javax.persistence.*;
 
 @Entity
 @Access(AccessType.FIELD)
-public class Profil extends AbstractEntity {
+@NamedQueries({
+@NamedQuery(name = Profile.ORDER_BY_NAME, query = "from Profile p order by p.nickname")
+})
+public class Profile extends AbstractEntity {
+
+    public static final String ORDER_BY_NAME = "Profile.orderByName";
 
     @Basic(optional = false)
     @Column(length = 30)
@@ -37,11 +42,15 @@ public class Profil extends AbstractEntity {
     @Basic(optional = false)
     private String gravatarUrl;
 
-    public Profil() {
+    @Column(length = 30)
+    private String aliasSCM;
+
+    public Profile() {
     }
 
-    public Profil(String nickname, String email) {
+    public Profile(String nickname, String email) {
         this.nickname = nickname;
+        this.aliasSCM = nickname;
         this.email = email;
         this.gravatarUrl = GravatarUtils.constructGravatarUrlFromEmail(email, false, true);
     }
@@ -69,5 +78,13 @@ public class Profil extends AbstractEntity {
 
     public void setGravatarUrl(String gravatarUrl) {
         this.gravatarUrl = gravatarUrl;
+    }
+
+    public String getAliasSCM() {
+        return aliasSCM;
+    }
+
+    public void setAliasSCM(String aliasSCM) {
+        this.aliasSCM = aliasSCM;
     }
 }

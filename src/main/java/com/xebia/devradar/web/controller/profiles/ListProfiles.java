@@ -16,10 +16,11 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.xebia.devradar.web.controller;
+package com.xebia.devradar.web.controller.profiles;
 
-import com.xebia.devradar.domain.Workspace;
-import com.xebia.devradar.web.WorkspaceRepository;
+import com.xebia.devradar.domain.Profile;
+import com.xebia.devradar.web.ProfileRepository;
+import com.xebia.devradar.web.model.ProfileListModel;
 import com.xebia.devradar.web.model.WorkspaceListModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -30,20 +31,20 @@ import org.springframework.web.servlet.ModelAndView;
 import java.util.List;
 
 @Controller
-@RequestMapping("/workspaces/list")
-public class ListWorkspaces {
-    private final WorkspaceRepository workspaceRepository;
+@RequestMapping("/profiles/list")
+public class ListProfiles {
+    private final ProfileRepository profileRepository;
 
     @Autowired
-    public ListWorkspaces(WorkspaceRepository workspaceRepository) {
-        this.workspaceRepository = workspaceRepository;
+    public ListProfiles(ProfileRepository profileRepository) {
+        this.profileRepository = profileRepository;
     }
 
     @RequestMapping(method = RequestMethod.GET)
-    public ModelAndView getAllWorkspaces() {
-        List<Workspace> workspaces = workspaceRepository.getAllWorkspaces();
-        ModelAndView mav = new ModelAndView(WorkspaceListModel.NAME);
-        mav.addObject(WorkspaceListModel.WORKSPACES, workspaces);
+    public ModelAndView getAllProfiles() {
+        List<Profile> profiles = profileRepository.getAllProfiles();
+        ModelAndView mav = new ModelAndView(ProfileListModel.NAME);
+        mav.addObject(ProfileListModel.PROFILES, profiles);
         return mav;
     }
 }

@@ -16,51 +16,58 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.xebia.devradar.web.controller;
+package com.xebia.devradar.web.controller.workspaces;
 
-
-import java.util.Date;
-import java.util.List;
-
-import org.apache.commons.lang.time.DateUtils;
+import com.xebia.devradar.web.WorkspaceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.bind.support.SessionStatus;
 
-import com.xebia.devradar.domain.Event;
 import com.xebia.devradar.domain.Workspace;
-import com.xebia.devradar.pollers.PollException;
-import com.xebia.devradar.web.WorkspaceRepository;
+import com.xebia.devradar.validation.WorkspaceValidator;
 
 @Controller
-@RequestMapping("/workspaces/{workspaceId}/poll")
-@SessionAttributes("eventSource")
+@RequestMapping("/workspaces/{workspaceId}/edit")
+@SessionAttributes("workspace")
 @Transactional
-public class PollWorkspaces {
+public class EditWorkspaces {
 
-    @Autowired
     private WorkspaceRepository workspaceRepository;
 
-    public PollWorkspaces() {
+    public EditWorkspaces() {
+        
+    }
+    
+    @Autowired
+    public EditWorkspaces(WorkspaceRepository workspaceRepository) {
+        this.workspaceRepository = workspaceRepository;
     }
 
     @RequestMapping(method = RequestMethod.GET)
-    public String poll(@PathVariable("workspaceId") Long workspaceId, Model model) throws PollException {
+    public String setupForm(@PathVariable("workspaceId") Long workspaceId, Model model) {
         Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
-        Date end = new Date();
-        Date start = DateUtils.addDays(end, -7);
-        List<Event> events = workspace.poll(start, end);
-        for (Event event : events) {
-            workspace.addEvent(event);
-        }
         model.addAttribute("workspace", workspace);
-        return "workspaces/show";
+        return "workspaces/form";
     }
 
-
+    @RequestMapping(method = { RequestMethod.PUT, RequestMethod.POST })
+    public String processSubmit(@ModelAttribute("workspace") Workspace workspace, BindingResult result,
+            SessionStatus status) {
+        new WorkspaceValidator().validate(workspace, result);
+        if (result.hasErrors()) {
+            return "workspaces/form";
+        } else {
+            workspaceRepository.updateWorkspace(workspace);
+            status.setComplete();
+            return "redirect:/workspaces/" + workspace.getId() + ".html";
+        }
+    }
 }

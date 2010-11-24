@@ -16,14 +16,12 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.xebia.devradar.web.controller;
+package com.xebia.devradar.web.controller.workspaces;
 
-import com.xebia.devradar.web.WorkspaceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,42 +30,37 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
 
 import com.xebia.devradar.domain.Workspace;
-import com.xebia.devradar.validation.WorkspaceValidator;
+import com.xebia.devradar.web.WorkspaceRepository;
 
 @Controller
-@RequestMapping("/workspaces/{workspaceId}/edit")
+@RequestMapping("/workspaces/{workspaceId}")
 @SessionAttributes("workspace")
-@Transactional
-public class EditWorkspaces {
+@Transactional(readOnly=true)
+public class ShowWorkspaces {
 
     private WorkspaceRepository workspaceRepository;
 
-    public EditWorkspaces() {
-        
+    public ShowWorkspaces() {
+
     }
-    
+
     @Autowired
-    public EditWorkspaces(WorkspaceRepository workspaceRepository) {
+    public ShowWorkspaces(final WorkspaceRepository workspaceRepository) {
         this.workspaceRepository = workspaceRepository;
     }
 
     @RequestMapping(method = RequestMethod.GET)
-    public String setupForm(@PathVariable("workspaceId") Long workspaceId, Model model) {
-        Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
+    public String setup(@PathVariable("workspaceId") final Long workspaceId, final Model model) {
+        final Workspace workspace = this.workspaceRepository.getWorkspaceById(workspaceId);
         model.addAttribute("workspace", workspace);
-        return "workspaces/form";
+        return "workspaces/show";
     }
 
     @RequestMapping(method = { RequestMethod.PUT, RequestMethod.POST })
-    public String processSubmit(@ModelAttribute("workspace") Workspace workspace, BindingResult result,
-            SessionStatus status) {
-        new WorkspaceValidator().validate(workspace, result);
-        if (result.hasErrors()) {
-            return "workspaces/form";
-        } else {
-            workspaceRepository.updateWorkspace(workspace);
-            status.setComplete();
-            return "redirect:/workspaces/" + workspace.getId() + ".html";
-        }
+    @Transactional(readOnly=false)
+    public String processSubmit(@ModelAttribute("workspace") final Workspace workspace, final SessionStatus status) {
+        this.workspaceRepository.deleteWorkspace(workspace);
+        status.setComplete();
+        return "redirect:/workspaces/list.html";
     }
 }
