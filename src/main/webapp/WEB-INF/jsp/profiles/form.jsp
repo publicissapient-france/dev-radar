@@ -34,24 +34,29 @@
 </c:if> Profiles</h2>
 
 <form:form modelAttribute="profile" method="${method}">
+
 	<table>
 		<c:if test="${not profile.new}">
 			<tr>
 				<td>Id:</td>
 				<td><c:out value="${profile.id}" /></td>
+                <td>&nbsp;</td>
 			</tr>
 		</c:if>
 		<tr>
-			<td>Nickname*: <form:errors path="nickname" cssClass="errors" /></td>
+			<td>Nickname*: </td>
 			<td><form:input path="nickname" size="50" maxlength="30" /></td>
+            <td><form:errors path="nickname" cssClass="errors"/></td>
 		</tr>
 		<tr>
-			<td>Email*: <form:errors path="email" cssClass="errors" /></td>
+			<td>Email*: </td>
 			<td><form:input path="email" size="50" maxlength="80" /></td>
+            <td><form:errors path="email" cssClass="errors"/></td>
 		</tr>
 		<tr>
-			<td>Alias SCM: <form:errors path="aliasSCM" cssClass="errors" /></td>
+			<td>Alias SCM: </td>
 			<td><form:input path="aliasSCM" size="50" maxlength="30" /></td>
+            <td><form:errors path="aliasSCM" cssClass="errors"/></td>
         </tr>
 		<tr>
             <td></td>

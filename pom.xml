@@ -186,6 +186,12 @@
     </dependency>
 
     <dependency>
+        <groupId>org.hibernate</groupId>
+        <artifactId>hibernate-validator</artifactId>
+        <version>4.1.0.Final</version>
+    </dependency>
+
+    <dependency>
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-api</artifactId>
         <version>1.6.1</version>
@@ -433,6 +439,7 @@
             <exclude>test/**/*</exclude>
             <exclude>**/*MANIFEST.MF</exclude>
             <exclude>**/*.log</exclude>
+            <exclude>**/*.properties</exclude>
             <exclude>test/*</exclude>
             <exclude>build-tools/*</exclude>
             <exclude>src/main/resources/META-INF/services/*</exclude>
@@ -477,6 +484,8 @@
          <version>6.1.10</version>
          <configuration>
 	         <jettyEnvXml>${basedir}/src/jetty/jetty-env.xml</jettyEnvXml>
+             <stopKey>F13</stopKey>
+             <stopPort>8080</stopPort>
          </configuration>
          <dependencies>
             <dependency>

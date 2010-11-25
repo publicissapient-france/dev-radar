@@ -20,7 +20,6 @@ package com.xebia.devradar.web.controller;
 
 
 import com.xebia.devradar.domain.Profile;
-import com.xebia.devradar.validation.ProfileValidator;
 import com.xebia.devradar.web.ProfileRepository;
 import com.xebia.devradar.web.model.ProfileListModel;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +31,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @Controller
@@ -60,8 +60,7 @@ public class ProfilesController {
 
     @RequestMapping(value = "/new", method = RequestMethod.POST)
     @Transactional(readOnly = false)
-    public String createProfile(@ModelAttribute("profile") Profile profile, BindingResult result, SessionStatus status) {
-        new ProfileValidator().validate(profile, result);
+    public String createProfile(@ModelAttribute("profile") @Valid Profile profile, BindingResult result, SessionStatus status) {
         if (result.hasErrors()) {
             return "profiles/form";
         } else {
@@ -104,9 +103,8 @@ public class ProfilesController {
     }
 
     @RequestMapping(value = "/{profileId}/edit", method = { RequestMethod.PUT, RequestMethod.POST })
-    public String editProfile(@ModelAttribute("profile") Profile profile, BindingResult result,
+    public String editProfile(@ModelAttribute("profile") @Valid Profile profile, BindingResult result,
                               SessionStatus status) {
-        new ProfileValidator().validate(profile, result);
         if (result.hasErrors()) {
             return "profiles/form";
         } else {

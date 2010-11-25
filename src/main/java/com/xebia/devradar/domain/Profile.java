@@ -19,8 +19,14 @@
 package com.xebia.devradar.domain;
 
 import com.xebia.devradar.utils.GravatarUtils;
+import org.hibernate.validator.constraints.Email;
+import org.hibernate.validator.constraints.NotBlank;
+import org.hibernate.validator.constraints.NotEmpty;
+import org.hibernate.validator.constraints.URL;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 @Entity
 @Access(AccessType.FIELD)
@@ -31,18 +37,20 @@ public class Profile extends AbstractEntity {
 
     public static final String ORDER_BY_NAME = "Profile.orderByName";
 
-    @Basic(optional = false)
-    @Column(length = 30)
+    @NotBlank
+    @Size(min = 1, max = 30)
     private String nickname;
 
-    @Basic(optional = false)
-    @Column(length = 80)
+    @NotBlank
+    @Email
+    @Size(min = 1, max = 80)
     private String email;
 
-    @Basic(optional = false)
+    @NotBlank
+    @URL
     private String gravatarUrl;
 
-    @Column(length = 30)
+    @Size(min = 0, max = 30)
     private String aliasSCM;
 
     public Profile() {
@@ -54,9 +62,9 @@ public class Profile extends AbstractEntity {
 
     public Profile(String nickname, String email, String aliasSCM) {
         this(nickname,
-                email,
-                GravatarUtils.constructGravatarUrlFromEmail(email, false, true),
-                aliasSCM);
+            email,
+            getGravatarUrlForEmail(email),
+            aliasSCM);
     }
 
     private Profile(String nickname, String email, String gravatarUrl, String aliasSCM) {
@@ -64,6 +72,14 @@ public class Profile extends AbstractEntity {
         this.email = email;
         this.gravatarUrl = gravatarUrl;
         this.aliasSCM = aliasSCM;
+    }
+
+    private static String getGravatarUrlForEmail(final String email) {
+        try {
+            return GravatarUtils.constructGravatarUrlFromEmail(email, false, true);
+        } catch (final IllegalArgumentException e) {
+            return null;
+        }
     }
 
     public String getNickname() {
@@ -80,7 +96,7 @@ public class Profile extends AbstractEntity {
 
     public void setEmail(String email) {
         this.email = email;
-        this.gravatarUrl = GravatarUtils.constructGravatarUrlFromEmail(email, false, true);
+        this.gravatarUrl = getGravatarUrlForEmail(email);
     }
 
     public String getGravatarUrl() {
