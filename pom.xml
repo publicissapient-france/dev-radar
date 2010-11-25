@@ -433,6 +433,12 @@
             <exclude>test/**/*</exclude>
             <exclude>**/*MANIFEST.MF</exclude>
             <exclude>**/*.log</exclude>
+            <exclude>test/*</exclude>
+            <exclude>build-tools/*</exclude>
+            <exclude>src/main/resources/META-INF/services/*</exclude>
+            <exclude>src/main/wsdl/*</exclude>
+            <exclude>src/tomcat/*</exclude>
+            <exclude>src/main/webapp/*.html</exclude>
           </excludes>
         </configuration>
       </plugin>
@@ -442,6 +448,7 @@
         <artifactId>maven-eclipse-plugin</artifactId>
         <version>2.8</version>
         <configuration>
+          <outputDirectory>bin</outputDirectory>
           <downloadSources>true</downloadSources>
           <downloadJavadocs>false</downloadJavadocs>
           <wtpversion>2.0</wtpversion>
