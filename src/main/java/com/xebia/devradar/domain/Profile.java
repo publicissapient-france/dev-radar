@@ -63,7 +63,7 @@ public class Profile extends AbstractEntity {
     public Profile(String nickname, String email, String aliasSCM) {
         this(nickname,
             email,
-            getGravatarUrlForEmail(email),
+            GravatarUtils.constructGravatarUrlFromEmail(email, false, true),
             aliasSCM);
     }
 
@@ -72,14 +72,6 @@ public class Profile extends AbstractEntity {
         this.email = email;
         this.gravatarUrl = gravatarUrl;
         this.aliasSCM = aliasSCM;
-    }
-
-    private static String getGravatarUrlForEmail(final String email) {
-        try {
-            return GravatarUtils.constructGravatarUrlFromEmail(email, false, true);
-        } catch (final IllegalArgumentException e) {
-            return null;
-        }
     }
 
     public String getNickname() {
@@ -96,7 +88,7 @@ public class Profile extends AbstractEntity {
 
     public void setEmail(String email) {
         this.email = email;
-        this.gravatarUrl = getGravatarUrlForEmail(email);
+        this.gravatarUrl = GravatarUtils.constructGravatarUrlFromEmail(email, false, true);
     }
 
     public String getGravatarUrl() {
