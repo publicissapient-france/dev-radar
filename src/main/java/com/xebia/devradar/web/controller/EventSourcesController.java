@@ -54,6 +54,12 @@ public class EventSourcesController {
     public EventSourcesController() {
     }
 
+    public EventSourcesController(PollerDescriptorRepository pollerDescriptorRepository, WorkspaceRepository workspaceRepository, EventSourceRepository eventSourceRepository) {
+        this.pollerDescriptorRepository = pollerDescriptorRepository;
+        this.workspaceRepository = workspaceRepository;
+        this.eventSourceRepository = eventSourceRepository;
+    }
+
     @InitBinder
     protected void initBinder(final ServletRequestDataBinder binder) {
         binder.registerCustomEditor(PollerDescriptor.class, new PropertyEditorSupport(){
