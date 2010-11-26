@@ -406,8 +406,8 @@
 
             <replacements>
                 <replacement>
-                    <token>^public (abstract)? class</token>
-                    <value>@SuppressWarnings("all") public class</value>
+                    <token>^public\s+(abstract\s)?\s*class</token>
+                    <value>@SuppressWarnings("all") $0</value>
                 </replacement>
             </replacements>
         </configuration>

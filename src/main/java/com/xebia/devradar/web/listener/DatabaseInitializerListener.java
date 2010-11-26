@@ -21,8 +21,6 @@ package com.xebia.devradar.web.listener;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.springframework.web.context.ContextLoader;
 
 import com.xebia.devradar.persistence.DatabaseInitializer;
@@ -36,23 +34,16 @@ import com.xebia.devradar.persistence.DatabaseInitializer;
  */
 public class DatabaseInitializerListener implements ServletContextListener {
 
-    private static final Log LOGGER = LogFactory.getLog(DatabaseInitializerListener.class.getName());
- 
-    public void contextInitialized(ServletContextEvent sce) {
+    public void contextInitialized(final ServletContextEvent sce) {
 
-        LOGGER.info("-----------------------------------------------------------");
-    	LOGGER.info("Dev Radar Initializing database");
-    	
-    	DatabaseInitializer databaseInitializer = 
-        	(DatabaseInitializer) 
-        		ContextLoader.getCurrentWebApplicationContext().getBean("databaseInitializer");
+        final DatabaseInitializer databaseInitializer =
+            (DatabaseInitializer)
+            ContextLoader.getCurrentWebApplicationContext().getBean("databaseInitializer");
         databaseInitializer.initDatabase();
 
-        LOGGER.info("Dev Radar Database successfully initialized");
-        LOGGER.info("-----------------------------------------------------------");
     }
 
-    public void contextDestroyed(ServletContextEvent sce) {
+    public void contextDestroyed(final ServletContextEvent sce) {
         //Nothing to do
     }
 
