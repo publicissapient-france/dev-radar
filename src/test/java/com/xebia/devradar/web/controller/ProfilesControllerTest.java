@@ -78,25 +78,6 @@ public class ProfilesControllerTest {
         assertThat(view, is("redirect:/profiles/" + profile.getId()+".html"));
     }
 
-    /*
-    @Test
-    public void should_not_create_profile_causes_form_errors() throws Exception {
-        Profile profile = getProfile();
-        BindingResult result = new MapBindingResult(new HashMap<Object, Object>(), "bindingResult");
-        SessionStatus status = new SimpleSessionStatus();
-
-        result.addError(new ObjectError("field", "default message"));
-
-        when(workspaceRepository.createWorkspace(workspace)).thenReturn(workspace);
-        when(workspaceFactory.create(PomLoaderUtils.create(new URL(workspace.getPomUrl())))).thenReturn(workspace);
-
-        String view = workspacesController.createWorkspace(workspace, result, status);
-
-        assertThat(status.isComplete(), is(false));
-        assertThat(view, is("workspaces/form"));
-    }
-    */
-
     @Test
     public void should_init_edit_profile_model() {
         Profile profile = getProfile();
@@ -123,28 +104,6 @@ public class ProfilesControllerTest {
         assertThat(status.isComplete(), is(true));
         assertThat(view, is("redirect:/profiles/" + profile.getId() + ".html"));
     }
-    /*
-    @Test
-    // pom AND name must be valid ?
-    public void should_not_edit_workspace_cause_invalid_pom_url_and_invalid_name() throws Exception {
-        Workspace workspace = getWorkspace();
-        BindingResult result = new MapBindingResult(new HashMap<Object, Object>(), "bindingResult");
-        SessionStatus status = new SimpleSessionStatus();
-
-        workspace.setPomUrl("");
-        workspace.setName("");
-
-        when(workspaceRepository.updateWorkspace(workspace)).thenReturn(workspace);
-
-        String view = workspacesController.editWorkspace(workspace, result, status);
-
-        assertThat(result.getErrorCount(), is(2));
-        assertThat(result.getFieldError("pomUrl"), notNullValue());
-        assertThat(result.getFieldError("name"), notNullValue());
-        assertThat(status.isComplete(), is(false));
-        assertThat(view, is("workspaces/form"));
-    }
-    */
 
     @Test
     @SuppressWarnings("unchecked")
@@ -171,13 +130,6 @@ public class ProfilesControllerTest {
         assertThat(model.asMap().get("profile") instanceof Profile, is(true));
         assertThat(view, is("profiles/show"));
     }
-    /*
-    @Test
-    @Ignore
-    public void should_not_show_workspace_cause_workspace_doesn_t_exist() throws Exception {
-        //TODO
-    }
-    */
 
     @Test
     public void should_delete_profile() throws Exception {
@@ -192,13 +144,6 @@ public class ProfilesControllerTest {
         assertThat(status.isComplete(), is(true));
         assertThat(view, is("redirect:/profiles/list.html"));
     }
-    /*
-    @Test
-    @Ignore
-    public void should_not_delete_workspace_cause_workspace_doesn_t_exist() throws Exception {
-        //TODO
-    }
-    */
 
     private Profile getProfile() {
         return new Profile("blebens", "beau@dentedreality.com.au");
