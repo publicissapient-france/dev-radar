@@ -26,10 +26,9 @@ import javax.persistence.PersistenceContext;
 import org.springframework.stereotype.Repository;
 
 import com.xebia.devradar.domain.PollerDescriptor;
-import com.xebia.devradar.domain.Workspace;
 
 /**
- * Repository for <code>{@link Workspace}</code> instances.
+ * Repository for <code>{@link PollerDescriptor}</code> instances.
  * 
  */
 @Repository
@@ -42,9 +41,9 @@ public class PollerDescriptorRepository {
     public List<PollerDescriptor> getAll() {
         return this.entityManager.createQuery("from PollerDescriptor").getResultList();
     }
-    
-    public PollerDescriptor getPollerDescriptorById(Long id) {
-        return entityManager.find(PollerDescriptor.class, id);
+
+    public PollerDescriptor getPollerDescriptorById(final Long id) {
+        return this.entityManager.find(PollerDescriptor.class, id);
     }
-    
+
 }
