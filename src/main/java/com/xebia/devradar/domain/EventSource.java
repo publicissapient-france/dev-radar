@@ -19,21 +19,9 @@
 package com.xebia.devradar.domain;
 
 import java.net.URL;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-import javax.persistence.Access;
-import javax.persistence.AccessType;
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.ElementCollection;
-import javax.persistence.Embedded;
-import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import javax.persistence.*;
 
 import com.xebia.devradar.pollers.PollException;
 import com.xebia.devradar.pollers.Poller;
@@ -90,6 +78,9 @@ public class EventSource extends AbstractEntity {
      */
     @ElementCollection
     private Map<String, String> parameters = new HashMap<String, String>();
+
+    @OneToMany(mappedBy = "source", cascade=CascadeType.ALL,orphanRemoval=true)
+    private Set<Event> events = new LinkedHashSet<Event>();
 
     public EventSource() {
     }
@@ -173,4 +164,11 @@ public class EventSource extends AbstractEntity {
         return this.getPollerDescriptor().createPoller().poll(this, startDate, endDate);
     }
 
+    public Set<Event> getEvents() {
+        return events;
+    }
+
+    public void setEvents(Set<Event> events) {
+        this.events = events;
+    }
 }
