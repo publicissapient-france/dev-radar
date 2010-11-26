@@ -18,19 +18,14 @@
  */
 package com.xebia.devradar.web.listener;
 
-import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.sql.SQLException;
-
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
-import javax.sql.DataSource;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+
+import com.xebia.devradar.persistence.DatabaseConnectionChecker;
+import com.xebia.devradar.persistence.DatabaseConnectionException;
 
 /**
  * @author Alexandre Dutra
@@ -39,46 +34,20 @@ import org.apache.commons.logging.LogFactory;
 public class DatasourceCheckListener implements ServletContextListener {
 
     private static final Log LOGGER = LogFactory.getLog(DatasourceCheckListener.class.getName());
- 
-    public void contextInitialized(ServletContextEvent sce) {
 
-        LOGGER.info("-----------------------------------------------------------");
-        LOGGER.info("Dev-Radar Server starting");
-        LOGGER.info("Dev-Radar Checking datasource...");
-        
-        DataSource ds;
-        try{
-            Context initCtx = new InitialContext();
-            Context envCtx = (Context) initCtx.lookup("java:comp/env");
-            ds = (DataSource) envCtx.lookup("jdbc/devradar-ds");
-        } catch (NamingException e){
-            String msg = "Could not obtain JNDI datasource looking up java:comp/env/jdbc/devradar-ds, Dev Radar start failed!";
-            LOGGER.error(msg, e);
-            throw new IllegalStateException(msg, e);
-        }
-        
+    public void contextInitialized(final ServletContextEvent sce) {
+
         try {
-            Connection conn = null;
-            try {
-                conn = ds.getConnection();
-                DatabaseMetaData meta = conn.getMetaData();
-                LOGGER.info("Dev Radar RDBMS: " + meta.getDatabaseProductName() + ", version: " + meta.getDatabaseProductVersion());
-                LOGGER.info("Dev Radar JDBC driver: " + meta.getDriverName() + ", version: " + meta.getDriverVersion());
-            } finally {
-                if(conn != null) conn.close();
-            }
-        } catch (SQLException e) {
-            String msg = "Could not read datasource metadata, Dev Radar start failed!";
+            new DatabaseConnectionChecker().checkDatabaseConnection();
+        } catch (final DatabaseConnectionException e) {
+            final String msg = "Dev Radar startup failed";
             LOGGER.error(msg, e);
-            throw new IllegalStateException(msg, e);
+            throw e;
         }
-        
-        LOGGER.info("Dev Radar Datasource OK");
-        LOGGER.info("-----------------------------------------------------------");
 
     }
 
-    public void contextDestroyed(ServletContextEvent sce) {
+    public void contextDestroyed(final ServletContextEvent sce) {
         // Nothing to do
     }
 
