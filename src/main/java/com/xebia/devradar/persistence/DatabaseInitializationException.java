@@ -18,11 +18,29 @@
  */
 package com.xebia.devradar.persistence;
 
-import org.springframework.transaction.annotation.Transactional;
 
-public interface DatabaseInitializer {
+public class DatabaseInitializationException extends RuntimeException {
 
-    @Transactional
-    public abstract void initDatabase() throws DatabaseInitializationException;
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 5605698819920264020L;
+
+    public DatabaseInitializationException() {
+        super();
+    }
+
+    public DatabaseInitializationException(final String message, final Throwable cause) {
+        super(message, cause);
+    }
+
+    public DatabaseInitializationException(final String message) {
+        super(message);
+    }
+
+    public DatabaseInitializationException(final Throwable cause) {
+        super(cause);
+    }
+
 
 }
