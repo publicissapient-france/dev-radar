@@ -55,7 +55,7 @@ public class Workspace extends AbstractEntity {
     @Column(length = 512)
     private String description;
 
-    @OneToMany(cascade=CascadeType.ALL,orphanRemoval=true)
+    @OneToMany(cascade={CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
     private Set<Event> events = new LinkedHashSet<Event>();
 
     @OneToMany(cascade=CascadeType.ALL,orphanRemoval=true)

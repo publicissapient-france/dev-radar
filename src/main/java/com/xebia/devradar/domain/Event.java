@@ -42,7 +42,7 @@ public class Event extends AbstractEntity {
     @Temporal(TemporalType.TIMESTAMP)
     private Date date;
 
-    @ManyToOne(optional=true)
+    @ManyToOne(optional = false)
     private EventSource source;
 
     public Event() {
