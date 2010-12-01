@@ -439,6 +439,7 @@
             <exclude>src/main/wsdl/*</exclude>
             <exclude>src/tomcat/*</exclude>
             <exclude>src/main/webapp/*.html</exclude>
+            <exclude>bin/**/*</exclude>
           </excludes>
         </configuration>
       </plugin>
