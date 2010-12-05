@@ -61,7 +61,7 @@ public class GravatarUtils {
         String trimedEmail = StringUtils.trim(email);
         String hash = null;
         try {
-            MessageDigest md = MessageDigest.getInstance(HASH_ALGORITHM);
+            MessageDigest md = newMessageDigest();
             hash = (secure ? SECURE_BASE_URL : BASE_URL)
                  + (trimedEmail != null ? hex(md.digest(trimedEmail.toLowerCase().getBytes(HASH_ENCODING))) : "")
                  + (defaultImage ? DEFAULT_IMAGE : "");
@@ -73,5 +73,10 @@ public class GravatarUtils {
             LOGGER.error(msg, e);
         }
         return hash;
+    }
+
+    private static MessageDigest newMessageDigest() throws NoSuchAlgorithmException {
+        MessageDigest md = MessageDigest.getInstance(HASH_ALGORITHM);
+        return md;
     }
 }
