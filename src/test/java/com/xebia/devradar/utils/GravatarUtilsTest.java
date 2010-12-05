@@ -61,9 +61,16 @@ public class GravatarUtilsTest {
     }
 
     @Test
-    public void should_construct_an_empty_url() {
+    public void when_email_is_null_should_construct_a_default_url() {
         String url = GravatarUtils.constructGravatarUrlFromEmail(null, false, true);
         assertNotNull(url);
         assertThat(url, equalTo(GRAVATAR_URL + DEFAULT_IMAGE));
+    }
+
+    @Test
+    public void when_email_is_empty_should_construct_a_default_avatar_url() {
+        String url = GravatarUtils.constructGravatarUrlFromEmail("", false, true);
+        assertNotNull(url);
+        assertThat(url, equalTo(GRAVATAR_URL + "d41d8cd98f00b204e9800998ecf8427e" + DEFAULT_IMAGE));
     }
 }
