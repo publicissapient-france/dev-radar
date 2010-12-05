@@ -1,4 +1,3 @@
-<%--
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -17,11 +16,10 @@
  * specific language governing permissions and limitations
  * under the License.
  */
- --%>
-<%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
+package com.xebia.devradar.web.model;
 
-<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
-<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+public interface ProfileListModel {
+
+    String PROFILES = "profiles";
+    String NAME = "profiles/list";
+}

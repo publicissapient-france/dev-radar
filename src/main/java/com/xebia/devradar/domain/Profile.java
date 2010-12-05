@@ -19,31 +19,59 @@
 package com.xebia.devradar.domain;
 
 import com.xebia.devradar.utils.GravatarUtils;
+import org.hibernate.validator.constraints.Email;
+import org.hibernate.validator.constraints.NotBlank;
+import org.hibernate.validator.constraints.NotEmpty;
+import org.hibernate.validator.constraints.URL;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 @Entity
 @Access(AccessType.FIELD)
-public class Profil extends AbstractEntity {
+@NamedQueries({
+@NamedQuery(name = Profile.ORDER_BY_NAME, query = "from Profile p order by p.nickname")
+})
+public class Profile extends AbstractEntity {
 
-    @Basic(optional = false)
-    @Column(length = 30)
+    public static final String ORDER_BY_NAME = "Profile.orderByName";
+
+    @NotBlank
+    @Size(min = 1, max = 30)
     private String nickname;
 
-    @Basic(optional = false)
-    @Column(length = 80)
+    @NotBlank
+    @Email
+    @Size(min = 1, max = 80)
     private String email;
 
-    @Basic(optional = false)
+    @NotBlank
+    @URL
     private String gravatarUrl;
 
-    public Profil() {
+    @Size(min = 0, max = 30)
+    private String aliasSCM;
+
+    public Profile() {
     }
 
-    public Profil(String nickname, String email) {
+    public Profile(String nickname, String email) {
+        this(nickname, email, nickname);
+    }
+
+    public Profile(String nickname, String email, String aliasSCM) {
+        this(nickname,
+            email,
+            GravatarUtils.constructGravatarUrlFromEmail(email, false, true),
+            aliasSCM);
+    }
+
+    private Profile(String nickname, String email, String gravatarUrl, String aliasSCM) {
         this.nickname = nickname;
         this.email = email;
-        this.gravatarUrl = GravatarUtils.constructGravatarUrlFromEmail(email, false, true);
+        this.gravatarUrl = gravatarUrl;
+        this.aliasSCM = aliasSCM;
     }
 
     public String getNickname() {
@@ -67,7 +95,11 @@ public class Profil extends AbstractEntity {
         return gravatarUrl;
     }
 
-    public void setGravatarUrl(String gravatarUrl) {
-        this.gravatarUrl = gravatarUrl;
+    public String getAliasSCM() {
+        return aliasSCM;
+    }
+
+    public void setAliasSCM(String aliasSCM) {
+        this.aliasSCM = aliasSCM;
     }
 }

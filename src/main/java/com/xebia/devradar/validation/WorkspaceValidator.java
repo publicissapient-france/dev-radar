@@ -18,7 +18,7 @@
  */
 package com.xebia.devradar.validation;
 
-import org.springframework.util.StringUtils;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.validation.Errors;
 
 import com.xebia.devradar.domain.Workspace;
@@ -29,7 +29,7 @@ public class WorkspaceValidator {
         String name = workspace.getName();
         String pomUrl = workspace.getPomUrl();
         
-        if (!StringUtils.hasLength(pomUrl) && !StringUtils.hasLength(name)) {
+        if (StringUtils.isBlank(pomUrl) && StringUtils.isBlank(name)) {
             errors.rejectValue("pomUrl", "required", "required");
             errors.rejectValue("name", "required", "required");
         }
