@@ -22,6 +22,8 @@ import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
+
 import com.xebia.devradar.pollers.Poller;
 
 
@@ -107,5 +109,14 @@ public class PollerDescriptor extends AbstractEntity {
             throw new IllegalStateException(e);
         }
         return poller;
+    }
+    
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this) //
+                .append("id", this.getId()) //
+                .append("name", this.name) //
+                .append("pollerClass", this.pollerClass) //
+                .toString();
     }
 }
