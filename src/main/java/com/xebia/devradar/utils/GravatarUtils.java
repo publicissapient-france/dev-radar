@@ -40,7 +40,7 @@ public class GravatarUtils {
     private static String hex(byte[] array) {
         StringBuffer sb = new StringBuffer();
         for (int i = 0; i < array.length; i++) {
-            sb.append(Integer.toHexString((array[i] & 0xFF) | 0x100).substring(1,3));
+            sb.append(Integer.toHexString((array[i] & 0xFF) | 0x100).substring(1, 3));
         }
         return sb.toString();
     }
@@ -49,22 +49,26 @@ public class GravatarUtils {
      * Construct an url that allows user to retrieve their gravatar image using user's email address.
      *
      * @param email
-     *          User's email address
+     *            User's email address
      * @param secure
-     *          URL have to be secured
+     *            URL have to be secured
      * @param defaultImage
-     *          Use the mystery-man default image if there is no matching image for the specified URL
-     * @return
-     *          The URL that returns the image matching to the specified email.
+     *            Use the mystery-man default image if there is no matching image for the specified URL
+     * @return The URL that returns the image matching to the specified email.
      */
-    public static String constructGravatarUrlFromEmail(String email, boolean secure, boolean defaultImage) throws IllegalArgumentException {
+    public static String constructGravatarUrlFromEmail(String email, boolean secure, boolean defaultImage)
+            throws IllegalArgumentException {
         String trimedEmail = StringUtils.trim(email);
-        String hash = null;
+        String hash = (secure ? SECURE_BASE_URL : BASE_URL) + (trimedEmail != null ? buildHexmd5(trimedEmail) : "")
+                + (defaultImage ? DEFAULT_IMAGE : "");
+
+        return hash;
+    }
+
+    private static String buildHexmd5(String trimedEmail) {
         try {
             MessageDigest md = MessageDigest.getInstance(HASH_ALGORITHM);
-            hash = (secure ? SECURE_BASE_URL : BASE_URL)
-                 + (trimedEmail != null ? hex(md.digest(trimedEmail.toLowerCase().getBytes(HASH_ENCODING))) : "")
-                 + (defaultImage ? DEFAULT_IMAGE : "");
+            return hex(md.digest(trimedEmail.toLowerCase().getBytes(HASH_ENCODING)));
         } catch (NoSuchAlgorithmException e) {
             String msg = "Could not construct gravatar url, " + HASH_ALGORITHM + " algorithm not found!";
             LOGGER.error(msg, e);
@@ -72,6 +76,6 @@ public class GravatarUtils {
             String msg = "Could not construct gravatar url, " + HASH_ENCODING + " encoding unsupported!";
             LOGGER.error(msg, e);
         }
-        return hash;
+        return null;
     }
 }
