@@ -34,6 +34,8 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
+
 import com.xebia.devradar.pollers.PollException;
 
 
@@ -126,4 +128,11 @@ public class Workspace extends AbstractEntity {
         return events;
     }
 
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this) //
+        .append("id", this.getId())
+        .append("name", this.name) //
+        .toString();
+    }
 }

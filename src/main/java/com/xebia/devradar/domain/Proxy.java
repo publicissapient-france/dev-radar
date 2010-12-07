@@ -25,6 +25,8 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.Embedded;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
+
 /**
  * This object describes an HTTP proxy.
  * 
@@ -95,4 +97,11 @@ public class Proxy {
         this.authentication = authentication;
     }
 
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this) //
+                .append("host", this.host)//
+                .append("port", this.port)//
+                .toString();
+    }
 }

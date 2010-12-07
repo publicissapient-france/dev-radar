@@ -29,6 +29,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.builder.ToStringBuilder;
+
 
 @Entity
 @Access(AccessType.FIELD)
@@ -50,7 +53,7 @@ public class Event extends AbstractEntity {
 
     public Event(final EventSource source, final String message, final Date date) {
         this.source = source;
-        this.message = message;
+        this.setMessage(message);
         this.date = date;
     }
 
@@ -59,7 +62,7 @@ public class Event extends AbstractEntity {
     }
 
     public void setMessage(final String message) {
-        this.message = message;
+        this.message = StringUtils.abbreviate(message, 500);
     }
 
     public Date getDate() {
@@ -80,9 +83,10 @@ public class Event extends AbstractEntity {
 
     @Override
     public String toString() {
-        return "Event [date=" + this.date + ", message=" + this.message + ", source=" + this.source + "]";
+        return new ToStringBuilder(this) //
+                .append("date", this.date) //
+                .append("message", StringUtils.abbreviate(this.message, 10)) //
+                .append("source", this.source) //
+                .toString();
     }
-
-
-
 }

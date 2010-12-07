@@ -26,6 +26,8 @@ import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
+
 /**
  * This object holds a user name and a password, and should be used
  * if an Event Source needs HTTP authentication.
@@ -82,5 +84,12 @@ public class Authentication {
 
     public PasswordAuthentication getPasswordAuthentication(){
         return new PasswordAuthentication(this.username, this.password);
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this) //
+                .append("username", this.username)//
+                .toString();
     }
 }
