@@ -19,11 +19,11 @@
 package com.xebia.devradar.pollers.jira;
 
 import java.text.MessageFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang.time.FastDateFormat;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -55,14 +55,9 @@ public class JiraPoller implements Poller {
 
     private static final String EVENT_MESSAGE_TEMPLATE = "Issue #{0} updated on {1}";
 
-    private static final ThreadLocal<SimpleDateFormat> JIRA_DATE_FORMAT = new ThreadLocal<SimpleDateFormat>(){
-        @Override
-        protected SimpleDateFormat initialValue() {
-            return new SimpleDateFormat("yyyy-MM-dd HH:mm");
-        }
-    };
-
     private static final Log LOGGER = LogFactory.getLog(JiraPoller.class);
+
+    private FastDateFormat jiraDateFormat = FastDateFormat.getInstance("yyyy-MM-dd HH:mm");
 
     public List<Event> poll(final EventSource source, final Date startDate, final Date endDate) throws PollException {
         try {
@@ -116,14 +111,14 @@ public class JiraPoller implements Poller {
         }
 
     }
-
+    
     private String buildJQLQuery(final String projectKey, final Date start, final Date end) {
         //http://confluence.atlassian.com/display/JIRA/Advanced+Searching
         return MessageFormat.format(
                 JQL_QUERY_TEMPLATE,
                 projectKey,
-                JIRA_DATE_FORMAT.get().format(start),
-                JIRA_DATE_FORMAT.get().format(end)
+                jiraDateFormat.format(start),
+                jiraDateFormat.format(end)
         );
     }
 
