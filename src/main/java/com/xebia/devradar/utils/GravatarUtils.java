@@ -18,6 +18,7 @@
  */
 package com.xebia.devradar.utils;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -34,16 +35,6 @@ public class GravatarUtils {
     private static final String BASE_URL = "http://www.gravatar.com/avatar/";
     private static final String DEFAULT_IMAGE = "?d=mm";
 
-    private static final String HASH_ALGORITHM = "MD5";
-    private static final String HASH_ENCODING = "CP1252";
-
-    private static String hex(byte[] array) {
-        StringBuffer sb = new StringBuffer();
-        for (int i = 0; i < array.length; i++) {
-            sb.append(Integer.toHexString((array[i] & 0xFF) | 0x100).substring(1, 3));
-        }
-        return sb.toString();
-    }
 
     /**
      * Construct an url that allows user to retrieve their gravatar image using user's email address.
@@ -59,23 +50,14 @@ public class GravatarUtils {
     public static String constructGravatarUrlFromEmail(String email, boolean secure, boolean defaultImage)
             throws IllegalArgumentException {
         String trimedEmail = StringUtils.trim(email);
-        String hash = (secure ? SECURE_BASE_URL : BASE_URL) + (trimedEmail != null ? buildHexmd5(trimedEmail) : "")
-                + (defaultImage ? DEFAULT_IMAGE : "");
+        String url = secure ? SECURE_BASE_URL : BASE_URL;
+        String emailAsMd5Hex = trimedEmail != null ? asMd5Hex(trimedEmail) : "";
 
-        return hash;
+        return url + emailAsMd5Hex + (defaultImage ? DEFAULT_IMAGE : "");
     }
 
-    private static String buildHexmd5(String trimedEmail) {
-        try {
-            MessageDigest md = MessageDigest.getInstance(HASH_ALGORITHM);
-            return hex(md.digest(trimedEmail.toLowerCase().getBytes(HASH_ENCODING)));
-        } catch (NoSuchAlgorithmException e) {
-            String msg = "Could not construct gravatar url, " + HASH_ALGORITHM + " algorithm not found!";
-            LOGGER.error(msg, e);
-        } catch (UnsupportedEncodingException e) {
-            String msg = "Could not construct gravatar url, " + HASH_ENCODING + " encoding unsupported!";
-            LOGGER.error(msg, e);
-        }
-        return null;
+    private static String asMd5Hex(String email) {
+        return DigestUtils.md5Hex(email);
     }
+
 }
