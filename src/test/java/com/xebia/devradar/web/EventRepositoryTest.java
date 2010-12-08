@@ -18,6 +18,8 @@ package com.xebia.devradar.web;
 
 import java.util.Set;
 
+import com.xebia.devradar.EventType;
+import com.xebia.devradar.domain.Profil;
 import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
 import org.junit.Test;
@@ -47,6 +49,13 @@ public class EventRepositoryTest extends AbstractRepositoryTests {
         final Set<Event> eventsForWorkspace = this.repository.getEventsForWorkspace("TEST");
         Assert.assertThat(eventsForWorkspace, CoreMatchers.not(CoreMatchers.nullValue()));
         Assert.assertThat(eventsForWorkspace.size(), CoreMatchers.is(2));
+    }
+
+    @Test
+    @DbUnitDataset("com/xebia/devradar/getProfilWhoHaveMaxEventTypeShouldReturnBill.xml")
+    public void getProfilWhoHaveMaxEventTypeShouldReturnBill() {
+        final Long  profil = this.repository.getProfilIdWhoHaveMaxEventType(1L, EventType.COMMIT);
+        Assert.assertThat(profil, CoreMatchers.is(2L));
     }
 
 }

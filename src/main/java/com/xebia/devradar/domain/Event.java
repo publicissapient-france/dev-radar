@@ -18,16 +18,11 @@
  */
 package com.xebia.devradar.domain;
 
+import com.xebia.devradar.EventType;
+
 import java.util.Date;
 
-import javax.persistence.Access;
-import javax.persistence.AccessType;
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import javax.persistence.*;
 
 
 @Entity
@@ -42,16 +37,28 @@ public class Event extends AbstractEntity {
     @Temporal(TemporalType.TIMESTAMP)
     private Date date;
 
+    @Enumerated(EnumType.STRING)
+    private EventType eventType;
+
     @ManyToOne(optional = false)
     private EventSource source;
+
+    @ManyToOne(optional = false)
+    private Workspace workspace;
+
+    // Persist is temprary until part Profil <-> Event is implemented
+    @ManyToOne(optional = true, cascade = CascadeType.PERSIST)
+    private Profil profil;
 
     public Event() {
     }
 
-    public Event(final EventSource source, final String message, final Date date) {
+    public Event(final EventSource source, final String message, final Date date, EventType eventType, Profil profil) {
         this.source = source;
         this.message = message;
         this.date = date;
+        this.eventType = eventType;
+        this.profil = profil;
     }
 
     public String getMessage() {
@@ -74,15 +81,37 @@ public class Event extends AbstractEntity {
         return this.source;
     }
 
+    public EventType getEventType() {
+        return eventType;
+    }
+
+    public void setEventType(EventType eventType) {
+        this.eventType = eventType;
+    }
+
     public void setSource(final EventSource source) {
         this.source = source;
+    }
+
+    public Workspace getWorkspace() {
+        return workspace;
+    }
+
+    public void setWorkspace(Workspace workspace) {
+        this.workspace = workspace;
+        workspace.internalAddEvent(this);
+    }
+
+    public Profil getProfil() {
+        return profil;
+    }
+
+    public void setProfil(Profil profil) {
+        this.profil = profil;
     }
 
     @Override
     public String toString() {
         return "Event [date=" + this.date + ", message=" + this.message + ", source=" + this.source + "]";
     }
-
-
-
 }

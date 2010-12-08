@@ -22,6 +22,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.xebia.devradar.EventType;
+import com.xebia.devradar.domain.Profil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jdom.Document;
@@ -37,10 +39,10 @@ import com.xebia.devradar.pollers.Poller;
 import com.xebia.devradar.utils.HttpUtils;
 
 /**
- * 
+ *
  * @see "http://develop.github.com/"
  * @author Alexandre Dutra
- * 
+ *
  */
 public class GitHubPoller implements Poller {
 
@@ -65,11 +67,13 @@ public class GitHubPoller implements Poller {
             for (final Element commit : commits) {
 
                 final String commiter =
-                    ((Element)XPath.selectSingleNode(commit, "committer/name")).getValue();
+                        ((Element)XPath.selectSingleNode(commit, "committer/name")).getValue();
                 final Date date = ISODateTimeFormat.dateTimeNoMillis().parseDateTime(
                         ((Element)XPath.selectSingleNode(commit, "committed-date")).getValue()).toDate();
-                final Event event = new Event(
-                        source, commiter + " commited something.", date);
+
+                 Profil profil = getProfile(commiter);
+
+                final Event event = new Event(source, commiter + " commited something.", date, EventType.COMMIT, profil);
 
                 events.add(event);
             }
@@ -82,4 +86,21 @@ public class GitHubPoller implements Poller {
 
     }
 
+
+    private Profil getProfile(String commiter) {
+        Profil profil = new Profil();
+
+        profil.setNickname(commiter);
+        if (commiter.equals("mrenou")) {
+            profil.setId(1L);
+        } else if (commiter.equals("adutra")) {
+            profil.setId(2L);
+        } else {
+            profil.setId(2L);
+            profil.setNickname("default");
+        }
+        profil.setEmail("test");
+        profil.setGravatarUrl("test");
+        return profil;
+    }
 }

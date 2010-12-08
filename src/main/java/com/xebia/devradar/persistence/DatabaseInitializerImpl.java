@@ -18,25 +18,25 @@
  */
 package com.xebia.devradar.persistence;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.List;
-import java.util.Set;
-
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
-
+import com.xebia.devradar.EventType;
+import com.xebia.devradar.badge.dsl.DslParameterType;
+import com.xebia.devradar.domain.*;
+import com.xebia.devradar.pollers.PollerServiceLocator;
+import com.xebia.devradar.pollers.git.GitHubPoller;
+import com.xebia.devradar.pollers.hudson.HudsonPoller;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.xebia.devradar.domain.EventSource;
-import com.xebia.devradar.domain.PollerDescriptor;
-import com.xebia.devradar.domain.Workspace;
-import com.xebia.devradar.pollers.PollerServiceLocator;
-import com.xebia.devradar.pollers.git.GitHubPoller;
-import com.xebia.devradar.pollers.hudson.HudsonPoller;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * @author Alexandre Dutra
@@ -85,6 +85,20 @@ public class DatabaseInitializerImpl implements DatabaseInitializer {
 
         final Workspace defaultWorkspace = new Workspace();
         defaultWorkspace.setName(DEVRADAR_WORKSPACE_NAME);
+
+        DslParameter dslParameter = new DslParameter();
+        dslParameter.setName("eventType");
+        dslParameter.setType(DslParameterType.EVENT_TYPE);
+        dslParameter.setValue(EventType.COMMIT.name());
+
+        BadgeType biggerCommiter = new BadgeType();
+        biggerCommiter.setDslQuery("select e.profil.id from Event e where e.workspace.id = :workspaceId and e.eventType = :eventType group by e.profil.id order by count(e.id) desc");
+        biggerCommiter.setName("Bigger Commiter");
+        biggerCommiter.setDslParameters(new HashSet<DslParameter>(Arrays.asList(dslParameter)));
+
+        entityManager.persist(biggerCommiter);
+
+        defaultWorkspace.addBadge(new Badge(biggerCommiter));
 
         final Set<PollerDescriptor> supportedPollers = PollerServiceLocator.getSupportedPollers();
         for (final PollerDescriptor pollerDescriptor : supportedPollers) {

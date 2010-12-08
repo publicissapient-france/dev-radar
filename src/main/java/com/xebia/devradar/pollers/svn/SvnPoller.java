@@ -72,7 +72,7 @@ public class SvnPoller implements Poller {
                         if(logEntry.getRevision() != -1L) {
                             //TODO trim
                             final String message = logEntry.toString();
-                            final Event event = new Event(source, message, logEntry.getDate());
+                            final Event event = new Event(source, message, logEntry.getDate(), null, null);
                             events.add(event);
                         }
                     }

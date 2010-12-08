@@ -47,6 +47,17 @@
 			<p class="submit"><input type="submit" value="Delete Workspace" /></p>
 		</form:form></td>
 	</tr>
+    <tr>
+		<td>Badge :</td>
+		<td>
+        <c:forEach var="badge" items="${workspace.badges}">
+            <c:if test="${badge.profil != null}">
+                <c:out value="${badge.badgeType.name}" />(<c:out value="${badge.profil.nickname}" />)    
+            </c:if>
+        </c:forEach>
+        </td>
+
+	</tr>
 </table>
 
 <h2>Event Sources</h2>
@@ -77,8 +88,12 @@
 
 <p>
 <a class="submit"
+href="<spring:url value="/workspaces/${workspace.id}/refreshBadgesOwners.html" htmlEscape="true" />">
+Refresh Badges</a></p>
+<a class="submit"
 href="<spring:url value="/workspaces/${workspace.id}/poll.html" htmlEscape="true" />">
 Poll 7 last days</a></p>
+
 
 <h2>Events</h2>
 <table>

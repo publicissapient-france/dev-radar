@@ -31,5 +31,6 @@
     this allows for automatic injection of annotated beans in test environments
      -->
     <context:component-scan base-package="com.xebia.devradar.web"/>
+    <context:component-scan base-package="com.xebia.devradar.badge"/>
 
 </beans>

@@ -16,25 +16,8 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.xebia.devradar.domain;
+package com.xebia.devradar;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertThat;
-
-import java.util.Date;
-
-import org.junit.Test;
-
-
-public class EventTest
-{
-
-    private static final String SOME_MESSAGE = "message";
-
-    @Test
-    public void should_set_param_at_the_right_place()
-    {
-        final Event event = new Event(new EventSource(), SOME_MESSAGE, new Date(), null, null);
-        assertThat(event.getMessage(), equalTo(SOME_MESSAGE));
-    }
+public enum EventType {
+    COMMIT, ISSUE_RESOLVED, ISSUE_CREATED, BUILD_BROKEN
 }

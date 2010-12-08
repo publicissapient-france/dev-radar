@@ -55,13 +55,12 @@ public class WorkspaceRepositoryTest extends AbstractRepositoryTests {
         w.addEventSource(svnSource);
         final EventSource jiraSource = new EventSource(jiraPollerDescriptor, new URL("http://test.com/jira"), "Foo Project Jira Issues");
         w.addEventSource(jiraSource);
-        w.addEvent(new Event(svnSource, "User Joe committed something", new Date()));
-        w.addEvent(new Event(jiraSource, "User Joe closed jira FOO-1234", new Date()));
+        w.addEvent(new Event(svnSource, "User Joe committed something", new Date(), null, null));
+        w.addEvent(new Event(jiraSource, "User Joe closed jira FOO-1234", new Date(), null, null));
         this.entityManager.flush();
         assertThat(this.countRowsInTable("WORKSPACE"), is(1));
         assertThat(this.countRowsInTable("WORKSPACE_EVENTSOURCE"), is(2));
         assertThat(this.countRowsInTable("EVENTSOURCE"), is(2));
-        assertThat(this.countRowsInTable("WORKSPACE_EVENT"), is(2));
         assertThat(this.countRowsInTable("EVENT"), is(2));
     }
 
@@ -75,7 +74,6 @@ public class WorkspaceRepositoryTest extends AbstractRepositoryTests {
         assertThat(this.countRowsInTable("WORKSPACE"), is(0));
         assertThat(this.countRowsInTable("WORKSPACE_EVENTSOURCE"), is(0));
         assertThat(this.countRowsInTable("EVENTSOURCE"), is(0));
-        assertThat(this.countRowsInTable("WORKSPACE_EVENT"), is(0));
         assertThat(this.countRowsInTable("EVENT"), is(0));
         //but should keep those rows
         assertThat(this.countRowsInTable("POLLERDESCRIPTOR"), is(2));

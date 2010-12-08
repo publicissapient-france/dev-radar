@@ -34,6 +34,7 @@
         ">
 
     <context:component-scan base-package="com.xebia.devradar.web"/>
+    <context:component-scan base-package="com.xebia.devradar.badge"/>
 
 <!--
     <bean class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping" />

@@ -18,23 +18,45 @@
  */
 package com.xebia.devradar.domain;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertThat;
+import com.xebia.devradar.badge.dsl.DslParameterType;
 
-import java.util.Date;
+import javax.persistence.*;
 
-import org.junit.Test;
+@Entity
+@Table(uniqueConstraints=@UniqueConstraint(columnNames={"NAME", "BADGETYPE_ID"}))
+public class DslParameter extends AbstractEntity {
 
+    @Basic(optional = false)
+    private String name;
 
-public class EventTest
-{
+    @Basic(optional = false)
+    @Enumerated(EnumType.STRING)
+    private DslParameterType type;
 
-    private static final String SOME_MESSAGE = "message";
+    @Basic(optional = false)
+    private String value;
 
-    @Test
-    public void should_set_param_at_the_right_place()
-    {
-        final Event event = new Event(new EventSource(), SOME_MESSAGE, new Date(), null, null);
-        assertThat(event.getMessage(), equalTo(SOME_MESSAGE));
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public DslParameterType getType() {
+        return type;
+    }
+
+    public void setType(DslParameterType type) {
+        this.type = type;
+    }
+
+    public String getValue() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
     }
 }

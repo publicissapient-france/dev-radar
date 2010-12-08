@@ -16,25 +16,33 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.xebia.devradar.domain;
+package com.xebia.devradar.badge;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertThat;
+import com.xebia.devradar.EventType;
+import com.xebia.devradar.domain.Profil;
+import com.xebia.devradar.web.EventRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
-import java.util.Date;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 
-import org.junit.Test;
+@Component
+public class BiggerCommiterFinder implements BadgeOwnerFinder {
 
+    @Autowired
+    EventRepository eventRepository;
 
-public class EventTest
-{
+    public BiggerCommiterFinder() {
 
-    private static final String SOME_MESSAGE = "message";
+    }
 
-    @Test
-    public void should_set_param_at_the_right_place()
-    {
-        final Event event = new Event(new EventSource(), SOME_MESSAGE, new Date(), null, null);
-        assertThat(event.getMessage(), equalTo(SOME_MESSAGE));
+    public BiggerCommiterFinder(EventRepository eventRepository) {
+        this.eventRepository = eventRepository;
+    }
+
+    @Override
+    public Long findBadgeOwnerForWorkspace(Long workspaceId) {
+        return eventRepository.getProfilIdWhoHaveMaxEventType(workspaceId, EventType.COMMIT);
     }
 }

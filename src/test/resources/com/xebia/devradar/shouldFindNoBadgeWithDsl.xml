@@ -23,7 +23,7 @@
 
     <POLLERDESCRIPTOR ID="1" VERSION="3" NAME="Svn Poller" POLLERCLASS="com.xebia.devradar.pollers.svn.SvnPoller"  />
     <POLLERDESCRIPTOR ID="2" VERSION="8" NAME="Jira Poller" POLLERCLASS="com.xebia.devradar.pollers.jira.JiraPoller"  />
-    
+
     <WORKSPACE ID="1" VERSION="5" NAME="TEST"  />
 
     <EVENTSOURCE ID="1" VERSION="3" POLLERDESCRIPTOR_ID="1" DESCRIPTION="Foo Project Trunk" URL="http://svn.test.com"  />
@@ -32,7 +32,18 @@
     <WORKSPACE_EVENTSOURCE WORKSPACE_ID="1" EVENTSOURCES_ID="1"  />
     <WORKSPACE_EVENTSOURCE WORKSPACE_ID="1" EVENTSOURCES_ID="2"  />
 
-    <EVENT ID="1" SOURCE_ID="1" VERSION="45" MESSAGE="Dummy SVN event" DATE="2010-09-25 15:46:23" WORKSPACE_ID="1" />
-    <EVENT ID="2" SOURCE_ID="2" VERSION="21" MESSAGE="Dummy JIRA event" DATE="2010-10-31 18:31:22" WORKSPACE_ID="1" />
+    <PROFIL ID="1" NICKNAME="boul" EMAIL="bill@xebia.fr" GRAVATARURL="http://bill" />
+    <PROFIL ID="2" NICKNAME="bill" EMAIL="boul@xebia.fr" GRAVATARURL="http://boul" />
 
+    
+    <EVENT ID="1" SOURCE_ID="1" VERSION="45" MESSAGE="Dummy SVN event" DATE="2010-09-25 15:46:23" EVENTTYPE="CREATE_JIRA" WORKSPACE_ID="1" PROFIL_ID="2" />
+    <EVENT ID="2" SOURCE_ID="1" VERSION="21" MESSAGE="Dummy SVN event" DATE="2010-10-31 18:31:22"  EVENTTYPE="CREATE_JIRA" WORKSPACE_ID="1" PROFIL_ID="2" />
+    <EVENT ID="3" SOURCE_ID="1" VERSION="21" MESSAGE="Dummy SVN event" DATE="2010-10-31 18:31:22"  EVENTTYPE="CREATE_JIRA" WORKSPACE_ID="1" PROFIL_ID="1" />
+    <EVENT ID="4" SOURCE_ID="2" VERSION="21" MESSAGE="Dummy JIRA event" DATE="2010-10-31 18:31:22"  EVENTTYPE="CREATE_JIRA" WORKSPACE_ID="1" PROFIL_ID="1" />
+
+    <BADGETYPE ID="1" NAME="BIGGER_COMMITER" DSLQUERY="select e.profil.id from Event e where e.workspace.id = :workspaceId and e.eventType = :eventType group by e.profil.id order by count(e.id) desc" />
+
+    <DSLPARAMETER ID="1" NAME="eventType" TYPE="EVENT_TYPE" VALUE="COMMIT" BADGETYPE_ID="1" />
+
+    <BADGE ID="1" WORKSPACE_ID="1" BADGETYPE_ID="1" />
 </dataset>

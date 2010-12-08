@@ -16,25 +16,22 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.xebia.devradar.domain;
+package com.xebia.devradar.badge.dsl;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertThat;
+import com.xebia.devradar.EventType;
+import com.xebia.devradar.domain.DslParameter;
 
-import java.util.Date;
+public enum DslParameterType {
 
-import org.junit.Test;
+    ID, EVENT_TYPE;
 
-
-public class EventTest
-{
-
-    private static final String SOME_MESSAGE = "message";
-
-    @Test
-    public void should_set_param_at_the_right_place()
-    {
-        final Event event = new Event(new EventSource(), SOME_MESSAGE, new Date(), null, null);
-        assertThat(event.getMessage(), equalTo(SOME_MESSAGE));
+    public Object getObjectValue(DslParameter dslParameter) {
+        if (dslParameter.getType().equals(ID)) {
+           return Long.valueOf(dslParameter.getValue());
+        } else if (dslParameter.getType().equals(EVENT_TYPE)) {
+            return EventType.valueOf(dslParameter.getValue());
+        }
+        throw new IllegalArgumentException();
     }
+
 }

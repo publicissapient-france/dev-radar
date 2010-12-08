@@ -18,6 +18,7 @@
  */
 package com.xebia.devradar.web.controller;
 
+import com.xebia.devradar.badge.BadgesOwnersRefresher;
 import com.xebia.devradar.domain.Event;
 import com.xebia.devradar.domain.Workspace;
 import com.xebia.devradar.utils.PomLoaderUtils;
@@ -52,11 +53,14 @@ public class WorkspacesControllerTest {
 
     private WorkspaceFactory workspaceFactory;
 
+    private BadgesOwnersRefresher badgesOwnersRefresher;
+
     @Before
     public void init() {
         workspaceRepository = mock(WorkspaceRepository.class);
         workspaceFactory = mock(WorkspaceFactory.class);
-        workspacesController = new WorkspacesController(workspaceRepository, workspaceFactory);
+        badgesOwnersRefresher = mock(BadgesOwnersRefresher.class);
+        workspacesController = new WorkspacesController(workspaceRepository, workspaceFactory, badgesOwnersRefresher);
     }
 
     @Test
@@ -235,6 +239,21 @@ public class WorkspacesControllerTest {
     @Ignore
     public void should_not_poll_workspace_cause_workspace_doesn_t_exist() throws Exception {
         //TODO
+    }
+
+    @Test
+    public void should_refresh_badges_owners() throws Exception {
+        Model model = new ExtendedModelMap();
+        Workspace workspace = getWorkspace();
+
+        when(workspaceRepository.getWorkspaceById(1L)).thenReturn(workspace);
+
+        String view = workspacesController.refreshBadgesOwners(1L, model);
+
+        verify(badgesOwnersRefresher, times(1)).refreshBadgesToWorkspace(workspace);
+
+        assertThat(((Workspace)model.asMap().get("workspace")), is(workspace));
+        assertThat(view, is("workspaces/show"));
     }
 
     private Workspace getWorkspace() {

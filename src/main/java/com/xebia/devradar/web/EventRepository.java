@@ -18,11 +18,14 @@
  */
 package com.xebia.devradar.web;
 
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
+import com.xebia.devradar.EventType;
+import com.xebia.devradar.domain.Profil;
 import org.springframework.stereotype.Repository;
 
 import com.xebia.devradar.domain.Event;
@@ -30,7 +33,7 @@ import com.xebia.devradar.domain.Workspace;
 
 /**
  * Repository for Event
- * 
+ *
  * @author Jean-Laurent de Morlhon
  */
 @Repository
@@ -42,10 +45,23 @@ public class EventRepository {
     public Set<Event> getEventsForWorkspace(final String workspaceName) {
 
         final Workspace workspace = (Workspace) this.entityManager
-        .createNamedQuery("workspaceByName")
-        .setParameter("name", workspaceName).getSingleResult();
+                .createNamedQuery("workspaceByName")
+                .setParameter("name", workspaceName).getSingleResult();
 
         return workspace.getEvents();
     }
 
+    public Long getProfilIdWhoHaveMaxEventType(final Long workspaceId, final EventType eventType) {
+        List<Long> profils = (List<Long>) this.entityManager
+                .createQuery("select e.profil.id from Event e where e.workspace.id = :workspaceId and e.eventType = :eventType group by e.profil.id order by count(e.id) desc")
+                .setParameter("workspaceId", workspaceId)
+                .setParameter("eventType", eventType)
+                .setMaxResults(1)
+                .getResultList();
+
+        if (profils.size() == 0) {
+            return null;
+        }
+        return profils.get(0);
+    }
 }

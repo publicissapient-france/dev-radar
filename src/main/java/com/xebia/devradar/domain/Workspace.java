@@ -18,30 +18,17 @@
  */
 package com.xebia.devradar.domain;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
-
-import javax.persistence.Access;
-import javax.persistence.AccessType;
-import javax.persistence.Basic;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
-
 import com.xebia.devradar.pollers.PollException;
+
+import javax.persistence.*;
+import java.util.*;
 
 
 @Entity
 @Access(AccessType.FIELD)
 @NamedQueries({
-    @NamedQuery(name="workspaceByName", query="from Workspace where name = :name"),
-    @NamedQuery(name="orderByName", query="from Workspace w order by w.name")
+        @NamedQuery(name="workspaceByName", query="select w from Workspace w where w.name = :name"),
+        @NamedQuery(name="orderByName", query="from Workspace w order by w.name")
 })
 public class Workspace extends AbstractEntity {
 
@@ -55,11 +42,14 @@ public class Workspace extends AbstractEntity {
     @Column(length = 512)
     private String description;
 
-    @OneToMany(cascade={CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
+    @OneToMany(mappedBy = "workspace", cascade={CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
     private Set<Event> events = new LinkedHashSet<Event>();
 
     @OneToMany(cascade=CascadeType.ALL,orphanRemoval=true)
     private Set<EventSource> eventSources = new LinkedHashSet<EventSource>();
+
+    @OneToMany(mappedBy = "workspace", cascade=CascadeType.ALL,orphanRemoval=true)
+    private Set<Badge> badges = new LinkedHashSet<Badge>();
 
     public Workspace() {
     }
@@ -77,14 +67,15 @@ public class Workspace extends AbstractEntity {
     }
 
     public Set<Event> getEvents() {
-        return this.events;
-    }
-
-    public void setEvents(final Set<Event> events) {
-        this.events = events;
+        return Collections.unmodifiableSet(events);
     }
 
     public void addEvent(final Event e) {
+        e.setWorkspace(this);
+        internalAddEvent(e);
+    }
+
+    void internalAddEvent(final Event e) {
         this.events.add(e);
     }
 
@@ -98,6 +89,19 @@ public class Workspace extends AbstractEntity {
 
     public void addEventSource(final EventSource e) {
         this.eventSources.add(e);
+    }
+
+    public Set<Badge> getBadges() {
+        return Collections.unmodifiableSet(badges);
+    }
+
+    public void addBadge(final Badge b) {
+        b.setWorkspace(this);
+        internalAddBadge(b);
+    }
+
+    void internalAddBadge(final Badge b) {
+        this.badges.add(b);
     }
 
     public String getPomUrl() {
@@ -125,5 +129,4 @@ public class Workspace extends AbstractEntity {
         }
         return events;
     }
-
 }

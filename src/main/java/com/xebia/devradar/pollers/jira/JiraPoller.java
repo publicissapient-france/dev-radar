@@ -99,7 +99,7 @@ public class JiraPoller implements Poller {
                         issue.getId(),
                         updated
                 );
-                final Event event = new Event(source, message, updated);
+                final Event event = new Event(source, message, updated, null, null);
                 events.add(event);
             }
 

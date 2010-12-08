@@ -164,11 +164,16 @@ public class EventSource extends AbstractEntity {
         return this.getPollerDescriptor().createPoller().poll(this, startDate, endDate);
     }
 
-    public Set<Event> getEvents() {
-        return events;
+    public void addEvent(final Event e) {
+        e.setSource(this);
+        internalAddEvent(e);
     }
 
-    public void setEvents(Set<Event> events) {
-        this.events = events;
+    void internalAddEvent(final Event e) {
+        this.events.add(e);
+    }
+
+    public Set<Event> getEvents() {
+        return Collections.unmodifiableSet(events);
     }
 }
