@@ -24,6 +24,9 @@ import java.util.Date;
 
 import javax.persistence.*;
 
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.builder.ToStringBuilder;
+
 
 @Entity
 @Access(AccessType.FIELD)
@@ -48,17 +51,17 @@ public class Event extends AbstractEntity {
 
     // Persist is temprary until part Profil <-> Event is implemented
     @ManyToOne(optional = true, cascade = CascadeType.PERSIST)
-    private Profil profil;
+    private Profile profile;
 
     public Event() {
     }
 
-    public Event(final EventSource source, final String message, final Date date, EventType eventType, Profil profil) {
+    public Event(final EventSource source, final String message, final Date date, EventType eventType, Profile profile) {
         this.source = source;
-        this.message = message;
+        this.setMessage(message);
         this.date = date;
         this.eventType = eventType;
-        this.profil = profil;
+        this.profile = profile;
     }
 
     public String getMessage() {
@@ -66,7 +69,7 @@ public class Event extends AbstractEntity {
     }
 
     public void setMessage(final String message) {
-        this.message = message;
+        this.message = StringUtils.abbreviate(message, 500);
     }
 
     public Date getDate() {
@@ -102,16 +105,21 @@ public class Event extends AbstractEntity {
         workspace.internalAddEvent(this);
     }
 
-    public Profil getProfil() {
-        return profil;
+    public Profile getProfile() {
+        return profile;
     }
 
-    public void setProfil(Profil profil) {
-        this.profil = profil;
+    public void setProfile(Profile profile) {
+        this.profile = profile;
     }
 
     @Override
     public String toString() {
-        return "Event [date=" + this.date + ", message=" + this.message + ", source=" + this.source + "]";
+        return new ToStringBuilder(this) //
+                .append("date", this.date) //
+                .append("message", StringUtils.abbreviate(this.message, 10)) //
+                .append("profile", this.profile) //
+                .append("source", this.source) //
+                .toString();
     }
 }

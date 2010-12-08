@@ -19,13 +19,9 @@
 package com.xebia.devradar.badge;
 
 import com.xebia.devradar.EventType;
-import com.xebia.devradar.domain.Profil;
 import com.xebia.devradar.web.EventRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 
 @Component
 public class BiggerCommiterFinder implements BadgeOwnerFinder {

@@ -19,7 +19,6 @@ package com.xebia.devradar.web;
 import java.util.Set;
 
 import com.xebia.devradar.EventType;
-import com.xebia.devradar.domain.Profil;
 import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
 import org.junit.Test;

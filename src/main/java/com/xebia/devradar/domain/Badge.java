@@ -31,7 +31,7 @@ public class Badge extends AbstractEntity {
     private BadgeType badgeType;
 
     @ManyToOne
-    private Profil profil;
+    private Profile profile;
 
     @ManyToOne(optional = false)
     private Workspace workspace;
@@ -52,12 +52,12 @@ public class Badge extends AbstractEntity {
         this.badgeType = badgeType;
     }
 
-    public Profil getProfil() {
-        return profil;
+    public Profile getProfile() {
+        return profile;
     }
 
-    public void setProfil(Profil profil) {
-        this.profil = profil;
+    public void setProfile(Profile profil) {
+        this.profile = profil;
     }
 
     public Workspace getWorkspace() {

@@ -23,7 +23,7 @@ import java.util.Date;
 import java.util.List;
 
 import com.xebia.devradar.EventType;
-import com.xebia.devradar.domain.Profil;
+import com.xebia.devradar.domain.Profile;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jdom.Document;
@@ -71,7 +71,7 @@ public class GitHubPoller implements Poller {
                 final Date date = ISODateTimeFormat.dateTimeNoMillis().parseDateTime(
                         ((Element)XPath.selectSingleNode(commit, "committed-date")).getValue()).toDate();
 
-                 Profil profil = getProfile(commiter);
+                 Profile profil = getProfile(commiter);
 
                 final Event event = new Event(source, commiter + " commited something.", date, EventType.COMMIT, profil);
 
@@ -87,8 +87,8 @@ public class GitHubPoller implements Poller {
     }
 
 
-    private Profil getProfile(String commiter) {
-        Profil profil = new Profil();
+    private Profile getProfile(String commiter) {
+        Profile profil = new Profile();
 
         profil.setNickname(commiter);
         if (commiter.equals("mrenou")) {

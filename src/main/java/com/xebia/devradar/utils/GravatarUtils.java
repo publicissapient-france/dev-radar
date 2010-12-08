@@ -56,18 +56,14 @@ public class GravatarUtils {
      *          Use the mystery-man default image if there is no matching image for the specified URL
      * @return
      *          The URL that returns the image matching to the specified email.
-     * @throws IllegalArgumentException
      */
     public static String constructGravatarUrlFromEmail(String email, boolean secure, boolean defaultImage) throws IllegalArgumentException {
         String trimedEmail = StringUtils.trim(email);
         String hash = null;
-        if (trimedEmail == null || trimedEmail.length() == 0) {
-            throw new IllegalArgumentException("email == null || email size = 0");
-        }
         try {
             MessageDigest md = MessageDigest.getInstance(HASH_ALGORITHM);
             hash = (secure ? SECURE_BASE_URL : BASE_URL)
-                 + hex(md.digest(trimedEmail.toLowerCase().getBytes(HASH_ENCODING)))
+                 + (trimedEmail != null ? hex(md.digest(trimedEmail.toLowerCase().getBytes(HASH_ENCODING))) : "")
                  + (defaultImage ? DEFAULT_IMAGE : "");
         } catch (NoSuchAlgorithmException e) {
             String msg = "Could not construct gravatar url, " + HASH_ALGORITHM + " algorithm not found!";

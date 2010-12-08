@@ -42,7 +42,7 @@ public class BadgesOwnersRefresherTest  extends AbstractRepositoryTests {
         badgesOwnersRefresher.refreshBadgesToWorkspace(workspace);
         assertThat(workspace.getBadges().size(), is(1));
         Badge badge = workspace.getBadges().iterator().next();
-        assertThat(badge.getProfil().getId(), is(2L));
+        assertThat(badge.getProfile().getId(), is(2L));
     }
 
     @Test
@@ -53,7 +53,7 @@ public class BadgesOwnersRefresherTest  extends AbstractRepositoryTests {
         badgesOwnersRefresher.refreshBadgesToWorkspace(workspace);
         assertThat(workspace.getBadges().size(), is(1));
         Badge badge = workspace.getBadges().iterator().next();
-        assertThat(badge.getProfil().getId(), is(2L));
+        assertThat(badge.getProfile().getId(), is(2L));
     }
 
     @Test
@@ -64,7 +64,7 @@ public class BadgesOwnersRefresherTest  extends AbstractRepositoryTests {
         badgesOwnersRefresher.refreshBadgesToWorkspace(workspace);
         assertThat(workspace.getBadges().size(), is(1));
         Badge badge = workspace.getBadges().iterator().next();
-        assertThat(badge.getProfil(), nullValue());
+        assertThat(badge.getProfile(), nullValue());
     }
 
     @Test
@@ -75,6 +75,6 @@ public class BadgesOwnersRefresherTest  extends AbstractRepositoryTests {
         badgesOwnersRefresher.refreshBadgesToWorkspace(workspace);
         assertThat(workspace.getBadges().size(), is(1));
         Badge badge = workspace.getBadges().iterator().next();
-        assertThat(badge.getProfil(), nullValue());
+        assertThat(badge.getProfile(), nullValue());
     }
 }

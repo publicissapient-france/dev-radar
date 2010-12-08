@@ -25,7 +25,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import com.xebia.devradar.EventType;
-import com.xebia.devradar.domain.Profil;
 import org.springframework.stereotype.Repository;
 
 import com.xebia.devradar.domain.Event;
@@ -53,7 +52,7 @@ public class EventRepository {
 
     public Long getProfilIdWhoHaveMaxEventType(final Long workspaceId, final EventType eventType) {
         List<Long> profils = (List<Long>) this.entityManager
-                .createQuery("select e.profil.id from Event e where e.workspace.id = :workspaceId and e.eventType = :eventType group by e.profil.id order by count(e.id) desc")
+                .createQuery("select e.profile.id from Event e where e.workspace.id = :workspaceId and e.eventType = :eventType group by e.profile.id order by count(e.id) desc")
                 .setParameter("workspaceId", workspaceId)
                 .setParameter("eventType", eventType)
                 .setMaxResults(1)

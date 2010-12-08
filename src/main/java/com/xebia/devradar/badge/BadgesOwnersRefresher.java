@@ -41,22 +41,22 @@ public class BadgesOwnersRefresher implements ApplicationContextAware {
     public void refreshBadgesToWorkspace(Workspace workspace) {
         for (Badge badge : workspace.getBadges()) {
             BadgeType badgeType = badge.getBadgeType();
-            Long profilId;
+            Long profileId;
 
             if (badge.getBadgeType().getDslQuery() != null) {
-                profilId = refreshWithDsl(workspace, badgeType);
+                profileId = refreshWithDsl(workspace, badgeType);
             } else {
-                profilId = refreshWithOwnerFinder(workspace, badgeType);
+                profileId = refreshWithOwnerFinder(workspace, badgeType);
             }
-            if (profilId != null) {
-                Profil profil = entityManager.find(Profil.class, profilId);
+            if (profileId != null) {
+                Profile profile = entityManager.find(Profile.class, profileId);
 
-                if (profil == null) {
-                    throw new IllegalStateException("the dsl query doesn't return a valid profil.");
+                if (profile == null) {
+                    throw new IllegalStateException("the dsl query doesn't return a valid profile.");
                 }
-                badge.setProfil(profil);
+                badge.setProfile(profile);
             } else {
-                badge.setProfil(null);
+                badge.setProfile(null);
             }
         }
     }

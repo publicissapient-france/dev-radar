@@ -23,6 +23,8 @@ import java.util.*;
 
 import javax.persistence.*;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
+
 import com.xebia.devradar.pollers.PollException;
 import com.xebia.devradar.pollers.Poller;
 
@@ -175,5 +177,13 @@ public class EventSource extends AbstractEntity {
 
     public Set<Event> getEvents() {
         return Collections.unmodifiableSet(events);
+    }
+    
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this) //
+                .append("id", this.getId()) //
+                .append("url", this.url) //
+                .toString();
     }
 }

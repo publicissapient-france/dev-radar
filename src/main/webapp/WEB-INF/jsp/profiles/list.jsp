@@ -17,11 +17,20 @@
  * specific language governing permissions and limitations
  * under the License.
  */
- --%>
-<%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
+--%>
+<%@ include file="/WEB-INF/jsp/includes.jsp"%>
+<%@ include file="/WEB-INF/jsp/header.jsp"%>
 
-<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
-<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<br/>
+
+<a href="<spring:url value="/profiles/new.html" htmlEscape="true" />">Create a new profile</a></td>
+
+<h2>List of profiles (${ fn:length(profiles) })</h2>
+   <ul>
+   <c:forEach var="profile" items="${profiles}">
+       <c:url value="/profiles/${profile.id}.html" var="viewProfileUrl"/>
+       <li><a href="${viewProfileUrl}"><c:out value="${profile.nickname}" /></a></li>
+   </c:forEach>
+   </ul>
+
+<%@ include file="/WEB-INF/jsp/footer.jsp"%>

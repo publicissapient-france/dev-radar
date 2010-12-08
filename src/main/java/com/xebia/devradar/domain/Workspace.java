@@ -18,6 +18,24 @@
  */
 package com.xebia.devradar.domain;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
+
+import javax.persistence.Access;
+import javax.persistence.AccessType;
+import javax.persistence.Basic;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
+
+import org.apache.commons.lang.builder.ToStringBuilder;
+
 import com.xebia.devradar.pollers.PollException;
 
 import javax.persistence.*;
@@ -128,5 +146,13 @@ public class Workspace extends AbstractEntity {
             events.addAll(source.poll(startDate, endDate));
         }
         return events;
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this) //
+        .append("id", this.getId())
+        .append("name", this.name) //
+        .toString();
     }
 }

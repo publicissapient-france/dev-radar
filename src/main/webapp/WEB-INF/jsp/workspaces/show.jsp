@@ -105,7 +105,7 @@ Poll 7 last days</a></p>
 	<c:forEach var="event" items="${workspace.events}">
 		<tr>
 			<td><c:out value="${event.source.description}" /></td>
-			<td><c:out value="${event.message}" /></td>
+			<td><pre><c:out value="${event.message}" /></pre></td>
 			<td><c:out value="${event.date}" /></td>
 		</tr>
 	</c:forEach>
