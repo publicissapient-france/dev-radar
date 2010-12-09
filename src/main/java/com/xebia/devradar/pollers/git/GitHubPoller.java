@@ -86,7 +86,9 @@ public class GitHubPoller implements Poller {
 
     }
 
-
+    /*
+     * TODO temporary method
+     */
     private Profile getProfile(String commiter) {
         Profile profil = new Profile();
 
