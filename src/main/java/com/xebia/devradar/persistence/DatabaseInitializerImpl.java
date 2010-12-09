@@ -92,7 +92,7 @@ public class DatabaseInitializerImpl implements DatabaseInitializer {
         dslParameter.setValue(EventType.COMMIT.name());
 
         BadgeType biggerCommiter = new BadgeType();
-        biggerCommiter.setDslQuery("select e.profil.id from Event e where e.workspace.id = :workspaceId and e.eventType = :eventType group by e.profil.id order by count(e.id) desc");
+        biggerCommiter.setDslQuery("select e.profile.id from Event e where e.workspace.id = :workspaceId and e.eventType = :eventType group by e.profile.id order by count(e.id) desc");
         biggerCommiter.setName("Bigger Commiter");
         biggerCommiter.setDslParameters(new HashSet<DslParameter>(Arrays.asList(dslParameter)));
 

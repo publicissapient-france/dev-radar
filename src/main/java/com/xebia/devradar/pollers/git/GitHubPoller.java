@@ -96,11 +96,12 @@ public class GitHubPoller implements Poller {
         } else if (commiter.equals("adutra")) {
             profil.setId(2L);
         } else {
-            profil.setId(2L);
+            profil.setId(3L);
             profil.setNickname("default");
         }
-        profil.setEmail("test");
-        profil.setGravatarUrl("test");
+        profil.setEmail("test@xebia.com");
+        profil.setGravatarUrl("http://www.google.com/pouet");
+        profil.setAliasSCM("aliasScm");
         return profil;
     }
 }

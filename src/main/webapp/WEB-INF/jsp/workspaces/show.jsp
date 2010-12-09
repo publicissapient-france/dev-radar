@@ -51,8 +51,8 @@
 		<td>Badge :</td>
 		<td>
         <c:forEach var="badge" items="${workspace.badges}">
-            <c:if test="${badge.profil != null}">
-                <c:out value="${badge.badgeType.name}" />(<c:out value="${badge.profil.nickname}" />)    
+            <c:if test="${badge.profile != null}">
+                <c:out value="${badge.badgeType.name}" />(<c:out value="${badge.profile.nickname}" />)    
             </c:if>
         </c:forEach>
         </td>
