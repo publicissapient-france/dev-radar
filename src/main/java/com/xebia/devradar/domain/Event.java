@@ -101,7 +101,7 @@ public class Event extends AbstractEntity {
         put("adutra", "http://www.gravatar.com/avatar/e96398d35fcd2cb3df072bcb28c9c917");
         put("pvardanega", "");
         put("jsmadja", "");
-        put("ngriso", "http://www.gravatar.com/avatar/4a89258a4759e47dab3266e9b9d76065.png");
+        put("Nicolas Griso", "http://www.gravatar.com/avatar/4a89258a4759e47dab3266e9b9d76065.png");
     }};
 
 }
