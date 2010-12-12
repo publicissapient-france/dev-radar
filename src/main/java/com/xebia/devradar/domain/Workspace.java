@@ -33,6 +33,7 @@ import javax.persistence.Entity;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 
@@ -58,6 +59,7 @@ public class Workspace extends AbstractEntity {
     private String description;
 
     @OneToMany(cascade={CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
+    @OrderBy("date desc")
     private Set<Event> events = new LinkedHashSet<Event>();
 
     @OneToMany(cascade=CascadeType.ALL,orphanRemoval=true)
