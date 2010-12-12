@@ -435,6 +435,7 @@
           <excludes>
             <exclude>.git/**/*</exclude>
             <exclude>.gitignore</exclude>
+            <exclude>infinitest.filters</exclude>
             <exclude>.idea/**/*</exclude>
             <exclude>test/**/*</exclude>
             <exclude>**/*MANIFEST.MF</exclude>
