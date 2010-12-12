@@ -34,7 +34,7 @@ public class EventTest
     @Test
     public void should_set_param_at_the_right_place()
     {
-        final Event event = new Event(new EventSource(), SOME_MESSAGE, new Date());
+        final Event event = new Event(new EventSource(), SOME_MESSAGE, new Date(), "author");
         assertThat(event.getMessage(), equalTo(SOME_MESSAGE));
     }
 }

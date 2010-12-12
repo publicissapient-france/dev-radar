@@ -78,39 +78,7 @@ public class PollersInvoker {
         List<Workspace> workspaces = workspaceRepository.getAll();
         for (Workspace workspace : workspaces) {
 
-            for (EventSource eventSource : workspace.getEventSources()) {
-                PollerDescriptor pollerDescriptor = eventSource.getPollerDescriptor();
-
-                Poller poller = pollerDescriptor.createPoller();
-
-                try {
-                    Date beginDate = eventSource.getLastPollDate();
-                    if (beginDate == null) {
-                        beginDate = defaultBeginDate;
-                    }
-
-                    if (LOGGER.isInfoEnabled()) {
-                        LOGGER.info("Invoke " + poller + " for " + pollerDescriptor + " - " + eventSource + " - " + workspace + " from "
-                                + beginDate + " until " + endDate);
-                    }
-
-                    // invoke poller
-                    List<Event> events = poller.poll(eventSource, beginDate, endDate);
-
-                    if (LOGGER.isDebugEnabled()) {
-                        LOGGER.info("Polled : " + events);
-                    } else if (LOGGER.isInfoEnabled()) {
-                        LOGGER.info("Polled " + events.size() + " events");
-                    }
-
-                    // update workspace
-                    workspace.getEvents().addAll(events);
-                    eventSource.setLastPollDate(endDate);
-                } catch (PollException e) {
-                    LOGGER.error("Exception invoking poller " + pollerDescriptor + " - " + eventSource + " - " + workspace + " until "
-                            + endDate, e);
-                }
-            }
+            pollWorkspace(endDate, defaultBeginDate, workspace);
         }
 
         // update workspaces in a separate loop to prevent a
@@ -118,6 +86,44 @@ public class PollersInvoker {
         for (Workspace workspace : workspaces) {
             workspaceRepository.updateWorkspace(workspace);
         }
+    }
+
+    public void pollWorkspace(Date endDate, Date defaultBeginDate, Workspace workspace) {
+        for (EventSource eventSource : workspace.getEventSources()) {
+            PollerDescriptor pollerDescriptor = eventSource.getPollerDescriptor();
+
+            Poller poller = pollerDescriptor.createPoller();
+
+            try {
+                Date beginDate = eventSource.getLastPollDate();
+                if (beginDate == null) {
+                    beginDate = defaultBeginDate;
+                }
+
+                if (LOGGER.isInfoEnabled()) {
+                    LOGGER.info("Invoke " + poller + " for " + pollerDescriptor + " - " + eventSource + " - " + workspace + " from "
+                            + beginDate + " until " + endDate);
+                }
+
+                // invoke poller
+                List<Event> events = poller.poll(eventSource, beginDate, endDate);
+
+                if (LOGGER.isDebugEnabled()) {
+                    LOGGER.info("Polled : " + events);
+                } else if (LOGGER.isInfoEnabled()) {
+                    LOGGER.info("Polled " + events.size() + " events");
+                }
+
+                // update workspace
+                workspace.getEvents().addAll(events);
+                eventSource.setLastPollDate(endDate);
+            } catch (PollException e) {
+                LOGGER.error("Exception invoking poller " + pollerDescriptor + " - " + eventSource + " - " + workspace + " until "
+                        + endDate, e);
+            }
+        }
+
+        workspaceRepository.updateWorkspace(workspace);
     }
 
     @PostConstruct

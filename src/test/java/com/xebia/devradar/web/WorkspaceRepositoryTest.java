@@ -38,6 +38,8 @@ import com.xebia.devradar.persistence.DbUnitDataset;
 
 public class WorkspaceRepositoryTest extends AbstractRepositoryTests {
 
+    private static final String AN_AUTHOR = "a. nonyme";
+
     @Autowired
     private WorkspaceRepository repository;
 
@@ -55,8 +57,8 @@ public class WorkspaceRepositoryTest extends AbstractRepositoryTests {
         w.addEventSource(svnSource);
         final EventSource jiraSource = new EventSource(jiraPollerDescriptor, new URL("http://test.com/jira"), "Foo Project Jira Issues");
         w.addEventSource(jiraSource);
-        w.addEvent(new Event(svnSource, "User Joe committed something", new Date()));
-        w.addEvent(new Event(jiraSource, "User Joe closed jira FOO-1234", new Date()));
+        w.addEvent(new Event(svnSource, "User Joe committed something", new Date(), AN_AUTHOR));
+        w.addEvent(new Event(jiraSource, "User Joe closed jira FOO-1234", new Date(), AN_AUTHOR));
         this.entityManager.flush();
         assertThat(this.countRowsInTable("WORKSPACE"), is(1));
         assertThat(this.countRowsInTable("WORKSPACE_EVENTSOURCE"), is(2));

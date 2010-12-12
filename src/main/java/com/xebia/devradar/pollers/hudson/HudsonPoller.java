@@ -70,7 +70,8 @@ public class HudsonPoller implements Poller {
                         final Event event = new Event(
                                 source,
                                 MessageFormat.format("Build #{0}: {1} (culprit: {2})", buildNumber, result, culprit),
-                                date);
+                                date,
+                                "hudson");
                         events.add(event);
                     }
                 }

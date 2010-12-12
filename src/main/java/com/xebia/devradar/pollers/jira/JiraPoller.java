@@ -94,7 +94,8 @@ public class JiraPoller implements Poller {
                         issue.getId(),
                         updated
                 );
-                final Event event = new Event(source, message, updated);
+                final String reporter = issue.getReporter();
+                final Event event = new Event(source, message, updated, reporter);
                 events.add(event);
             }
 
