@@ -27,8 +27,6 @@ import static org.junit.Assert.assertThat;
 
 public class GravatarTest {
 
-    private String fallbackUrl = Gravatar.GRAVATAR_URL + Gravatar.DEFAULT_IMAGE;
-
     private Gravatar gravatar;
 
     @Before
@@ -51,13 +49,13 @@ public class GravatarTest {
     public void when_email_is_null_should_construct_a_default_url() {
         String url = gravatar.getUrl(null);
         assertNotNull(url);
-        assertThat(url, equalTo(fallbackUrl));
+        assertThat(url, equalTo(Gravatar.UNKNOWN_USER_URL));
     }
 
     @Test
     public void when_email_is_empty_should_construct_a_default_url() {
         String url = gravatar.getUrl("");
         assertNotNull(url);
-        assertThat(url, equalTo(fallbackUrl));
+        assertThat(url, equalTo(Gravatar.UNKNOWN_USER_URL));
     }
 }

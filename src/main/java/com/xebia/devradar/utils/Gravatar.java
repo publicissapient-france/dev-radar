@@ -25,7 +25,7 @@ public class Gravatar {
 
     public static final String GRAVATAR_URL = "http://www.gravatar.com/avatar/";
     public static final String DEFAULT_IMAGE = "?d=mm";
-
+    public static final String UNKNOWN_USER_URL = GRAVATAR_URL + DEFAULT_IMAGE;
 
     /**
      * Construct a gravatar url based on user's email address.
@@ -34,14 +34,15 @@ public class Gravatar {
      */
     public String getUrl(String email) {
 
-        String gravatarUrl = GRAVATAR_URL;
-        StringBuilder builder = new StringBuilder(gravatarUrl);
+        String url = UNKNOWN_USER_URL;
+
         if (StringUtils.isNotEmpty(email)) {
-            String emailAsMd5Hex = asMd5Hex(email);
-            builder.append(emailAsMd5Hex);
+            StringBuilder builder = new StringBuilder(GRAVATAR_URL);
+            builder.append(asMd5Hex(email));
+            builder.append(DEFAULT_IMAGE);
+            url = builder.toString();
         }
-        builder.append(DEFAULT_IMAGE);
-        return builder.toString();
+        return url;
     }
 
     private String asMd5Hex(String email) {
