@@ -24,31 +24,31 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 
-public class GravatarUtilsTest {
+public class GravatarTest {
 
-    private String fallbackUrl = GravatarUtils.GRAVATAR_URL + GravatarUtils.DEFAULT_IMAGE;
+    private String fallbackUrl = Gravatar.GRAVATAR_URL + Gravatar.DEFAULT_IMAGE;
 
     @Test
     public void should_construct_a_valid_url_with_user_image() {
 
-        String url = new GravatarUtils("beau@dentedreality.com.au").getUrl();
+        String url = new Gravatar("beau@dentedreality.com.au").getUrl();
 
         assertNotNull(url);
         String beauMailAsMd5 = "205e460b479e2e5b48aec07710c08d50";
-        String email = GravatarUtils.GRAVATAR_URL + beauMailAsMd5 + GravatarUtils.DEFAULT_IMAGE;
+        String email = Gravatar.GRAVATAR_URL + beauMailAsMd5 + Gravatar.DEFAULT_IMAGE;
         assertThat(url, equalTo(email));
     }
 
     @Test
     public void when_email_is_null_should_construct_a_default_url() {
-        String url = new GravatarUtils(null).getUrl();
+        String url = new Gravatar(null).getUrl();
         assertNotNull(url);
         assertThat(url, equalTo(fallbackUrl));
     }
 
     @Test
     public void when_email_is_empty_should_construct_a_default_url() {
-        String url = new GravatarUtils("").getUrl();
+        String url = new Gravatar("").getUrl();
         assertNotNull(url);
         assertThat(url, equalTo(fallbackUrl));
     }

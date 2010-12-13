@@ -27,14 +27,14 @@ import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-public class GravatarUtils {
+public class Gravatar {
 
     public static final String GRAVATAR_URL = "http://www.gravatar.com/avatar/";
     public static final String DEFAULT_IMAGE = "?d=mm";
 
     private String email;
 
-    public GravatarUtils(String email) {
+    public Gravatar(String email) {
         this.email = StringUtils.trim(email);
     }
 

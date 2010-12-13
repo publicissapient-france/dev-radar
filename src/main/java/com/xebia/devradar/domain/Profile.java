@@ -30,7 +30,7 @@ import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotBlank;
 import org.hibernate.validator.constraints.URL;
 
-import com.xebia.devradar.utils.GravatarUtils;
+import com.xebia.devradar.utils.Gravatar;
 
 @Entity
 @Access(AccessType.FIELD)
@@ -67,7 +67,7 @@ public class Profile extends AbstractEntity {
     public Profile(String nickname, String email, String aliasSCM) {
         this(nickname,
             email,
-            new GravatarUtils(email).getUrl(),
+            new Gravatar(email).getUrl(),
             aliasSCM);
     }
 
@@ -92,7 +92,7 @@ public class Profile extends AbstractEntity {
 
     public void setEmail(String email) {
         this.email = email;
-        this.gravatarUrl = new GravatarUtils(email).getUrl();
+        this.gravatarUrl = new Gravatar(email).getUrl();
     }
 
     public String getGravatarUrl() {
