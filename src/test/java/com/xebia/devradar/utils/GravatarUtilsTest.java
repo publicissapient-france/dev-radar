@@ -26,51 +26,30 @@ import static org.junit.Assert.assertThat;
 
 public class GravatarUtilsTest {
 
-    private static String EMAIL = "beau@dentedreality.com.au";
-    private static String HASH = "205e460b479e2e5b48aec07710c08d50";
-    private static String GRAVATAR_URL = "http://www.gravatar.com/avatar/";
-    private static String SECURED_GRAVATAR_URL = "https://secure.gravatar.com/avatar/";
-    private static String DEFAULT_IMAGE = "?d=mm";
+    private String fallbackUrl = GravatarUtils.GRAVATAR_URL + GravatarUtils.DEFAULT_IMAGE;
 
     @Test
-    public void should_construct_a_valid_not_secured_url_without_default_image() {
-        String url = GravatarUtils.constructGravatarUrlFromEmail(EMAIL, false, false);
-        assertNotNull(url);
-        assertThat(url, equalTo(GRAVATAR_URL + HASH));
-    }
+    public void should_construct_a_valid_url_with_user_image() {
 
-    @Test
-    public void should_construct_a_valid_not_secured_url_with_default_image() {
-        String url = GravatarUtils.constructGravatarUrlFromEmail(EMAIL, false, true);
-        assertNotNull(url);
-        assertThat(url, equalTo(GRAVATAR_URL + HASH + DEFAULT_IMAGE));
-    }
+        String url = new GravatarUtils("beau@dentedreality.com.au").getUrl();
 
-    @Test
-    public void should_construct_a_valid_secured_url_without_default_image() {
-        String url = GravatarUtils.constructGravatarUrlFromEmail(EMAIL, true, false);
         assertNotNull(url);
-        assertThat(url, equalTo(SECURED_GRAVATAR_URL + HASH));
-    }
-
-    @Test
-    public void should_construct_a_valid_secured_url_with_default_image() {
-        String url = GravatarUtils.constructGravatarUrlFromEmail(EMAIL, true, true);
-        assertNotNull(url);
-        assertThat(url, equalTo(SECURED_GRAVATAR_URL + HASH + DEFAULT_IMAGE));
+        String beauMailAsMd5 = "205e460b479e2e5b48aec07710c08d50";
+        String email = GravatarUtils.GRAVATAR_URL + beauMailAsMd5 + GravatarUtils.DEFAULT_IMAGE;
+        assertThat(url, equalTo(email));
     }
 
     @Test
     public void when_email_is_null_should_construct_a_default_url() {
-        String url = GravatarUtils.constructGravatarUrlFromEmail(null, false, true);
+        String url = new GravatarUtils(null).getUrl();
         assertNotNull(url);
-        assertThat(url, equalTo(GRAVATAR_URL + DEFAULT_IMAGE));
+        assertThat(url, equalTo(fallbackUrl));
     }
 
     @Test
-    public void when_email_is_empty_should_construct_a_default_avatar_url() {
-        String url = GravatarUtils.constructGravatarUrlFromEmail("", false, true);
+    public void when_email_is_empty_should_construct_a_default_url() {
+        String url = new GravatarUtils("").getUrl();
         assertNotNull(url);
-        assertThat(url, equalTo(GRAVATAR_URL + "d41d8cd98f00b204e9800998ecf8427e" + DEFAULT_IMAGE));
+        assertThat(url, equalTo(fallbackUrl));
     }
 }

@@ -67,7 +67,7 @@ public class Profile extends AbstractEntity {
     public Profile(String nickname, String email, String aliasSCM) {
         this(nickname,
             email,
-            GravatarUtils.constructGravatarUrlFromEmail(email, false, true),
+            new GravatarUtils(email).getUrl(),
             aliasSCM);
     }
 
@@ -92,7 +92,7 @@ public class Profile extends AbstractEntity {
 
     public void setEmail(String email) {
         this.email = email;
-        this.gravatarUrl = GravatarUtils.constructGravatarUrlFromEmail(email, false, true);
+        this.gravatarUrl = new GravatarUtils(email).getUrl();
     }
 
     public String getGravatarUrl() {
@@ -106,7 +106,7 @@ public class Profile extends AbstractEntity {
     public void setAliasSCM(String aliasSCM) {
         this.aliasSCM = aliasSCM;
     }
-    
+
     @Override
     public String toString() {
         return new ToStringBuilder(this) //

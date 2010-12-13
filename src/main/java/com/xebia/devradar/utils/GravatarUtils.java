@@ -29,34 +29,33 @@ import java.security.NoSuchAlgorithmException;
 
 public class GravatarUtils {
 
-    private static final Log LOGGER = LogFactory.getLog(GravatarUtils.class.getName());
+    public static final String GRAVATAR_URL = "http://www.gravatar.com/avatar/";
+    public static final String DEFAULT_IMAGE = "?d=mm";
 
-    private static final String SECURE_BASE_URL = "https://secure.gravatar.com/avatar/";
-    private static final String BASE_URL = "http://www.gravatar.com/avatar/";
-    private static final String DEFAULT_IMAGE = "?d=mm";
+    private String email;
 
+    public GravatarUtils(String email) {
+        this.email = StringUtils.trim(email);
+    }
 
     /**
      * Construct an url that allows user to retrieve their gravatar image using user's email address.
      *
-     * @param email
-     *            User's email address
-     * @param secure
-     *            URL have to be secured
-     * @param defaultImage
-     *            Use the mystery-man default image if there is no matching image for the specified URL
      * @return The URL that returns the image matching to the specified email.
      */
-    public static String constructGravatarUrlFromEmail(String email, boolean secure, boolean defaultImage)
-            throws IllegalArgumentException {
-        String trimedEmail = StringUtils.trim(email);
-        String url = secure ? SECURE_BASE_URL : BASE_URL;
-        String emailAsMd5Hex = trimedEmail != null ? asMd5Hex(trimedEmail) : "";
+    public String getUrl() {
 
-        return url + emailAsMd5Hex + (defaultImage ? DEFAULT_IMAGE : "");
+        String gravatarUrl = GRAVATAR_URL;
+        StringBuilder builder = new StringBuilder(gravatarUrl);
+        if (StringUtils.isNotEmpty(email)) {
+            String emailAsMd5Hex = asMd5Hex(email);
+            builder.append(emailAsMd5Hex);
+        }
+        builder.append(DEFAULT_IMAGE);
+        return builder.toString();
     }
 
-    private static String asMd5Hex(String email) {
+    private String asMd5Hex(String email) {
         return DigestUtils.md5Hex(email);
     }
 
