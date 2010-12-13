@@ -26,18 +26,13 @@ public class Gravatar {
     public static final String GRAVATAR_URL = "http://www.gravatar.com/avatar/";
     public static final String DEFAULT_IMAGE = "?d=mm";
 
-    private String email;
-
-    public Gravatar(String email) {
-        this.email = StringUtils.trim(email);
-    }
 
     /**
-     * Construct an url that allows user to retrieve their gravatar image using user's email address.
+     * Construct a gravatar url based on user's email address.
      *
-     * @return The URL that returns the image matching to the specified email.
+     * @return The URL that returns the default image matching to the specified email.
      */
-    public String getUrl() {
+    public String getUrl(String email) {
 
         String gravatarUrl = GRAVATAR_URL;
         StringBuilder builder = new StringBuilder(gravatarUrl);

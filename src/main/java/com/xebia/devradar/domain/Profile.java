@@ -41,6 +41,8 @@ public class Profile extends AbstractEntity {
 
     public static final String ORDER_BY_NAME = "Profile.orderByName";
 
+    public static final Gravatar GRAVATAR = new Gravatar();
+
     @NotBlank
     @Size(min = 1, max = 30)
     private String nickname;
@@ -67,7 +69,7 @@ public class Profile extends AbstractEntity {
     public Profile(String nickname, String email, String aliasSCM) {
         this(nickname,
             email,
-            new Gravatar(email).getUrl(),
+            GRAVATAR.getUrl(email),
             aliasSCM);
     }
 
@@ -92,7 +94,7 @@ public class Profile extends AbstractEntity {
 
     public void setEmail(String email) {
         this.email = email;
-        this.gravatarUrl = new Gravatar(email).getUrl();
+        this.gravatarUrl = GRAVATAR.getUrl(email);
     }
 
     public String getGravatarUrl() {

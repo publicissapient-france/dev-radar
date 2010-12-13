@@ -18,6 +18,7 @@
  */
 package com.xebia.devradar.utils;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -28,10 +29,17 @@ public class GravatarTest {
 
     private String fallbackUrl = Gravatar.GRAVATAR_URL + Gravatar.DEFAULT_IMAGE;
 
-    @Test
-    public void should_construct_a_valid_url_with_user_image() {
+    private Gravatar gravatar;
 
-        String url = new Gravatar("beau@dentedreality.com.au").getUrl();
+    @Before
+    public void given() {
+        gravatar = new Gravatar();
+    }
+
+    @Test
+    public void when_email_is_valid_should_return_url_with_user_image() {
+
+        String url = gravatar.getUrl("beau@dentedreality.com.au");
 
         assertNotNull(url);
         String beauMailAsMd5 = "205e460b479e2e5b48aec07710c08d50";
@@ -41,14 +49,14 @@ public class GravatarTest {
 
     @Test
     public void when_email_is_null_should_construct_a_default_url() {
-        String url = new Gravatar(null).getUrl();
+        String url = gravatar.getUrl(null);
         assertNotNull(url);
         assertThat(url, equalTo(fallbackUrl));
     }
 
     @Test
     public void when_email_is_empty_should_construct_a_default_url() {
-        String url = new Gravatar("").getUrl();
+        String url = gravatar.getUrl("");
         assertNotNull(url);
         assertThat(url, equalTo(fallbackUrl));
     }
