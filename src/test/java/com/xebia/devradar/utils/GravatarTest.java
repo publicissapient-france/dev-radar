@@ -37,7 +37,7 @@ public class GravatarTest {
     }
 
     @Test
-    public void when_email_is_valid_should_return_url_with_user_image() {
+    public void when_email_is_a_not_empty_string_should_return_url_with_user_image() {
 
         String url = gravatar.getUrl("beau@dentedreality.com.au");
 
