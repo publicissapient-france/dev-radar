@@ -179,6 +179,7 @@ public class EventSource extends AbstractEntity {
         return new ToStringBuilder(this) //
                 .append("id", this.getId()) //
                 .append("url", this.url) //
+                .append("lastPollDate", this.lastPollDate) //
                 .toString();
     }
 }

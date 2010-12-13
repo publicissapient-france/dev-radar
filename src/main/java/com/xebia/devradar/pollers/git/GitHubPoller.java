@@ -69,7 +69,7 @@ public class GitHubPoller implements Poller {
                 final Date date = ISODateTimeFormat.dateTimeNoMillis().parseDateTime(
                         ((Element)XPath.selectSingleNode(commit, "committed-date")).getValue()).toDate();
                 final Event event = new Event(
-                        source, commiter + " commited something.", date);
+                        source, commiter + " commited something.", date, commiter);
 
                 events.add(event);
             }

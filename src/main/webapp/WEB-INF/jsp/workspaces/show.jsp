@@ -83,12 +83,14 @@ Poll 7 last days</a></p>
 <h2>Events</h2>
 <table>
 	<tr>
+		<td><b>Gravatar</b></td>
 		<td><b>Type</b></td>
 		<td><b>Message</b></td>
 		<td><b>Date</b></td>
 	</tr>
 	<c:forEach var="event" items="${workspace.events}">
 		<tr>
+			<td><img src="${event.gravatarUrl}"/></td>
 			<td><c:out value="${event.source.description}" /></td>
 			<td><pre><c:out value="${event.message}" /></pre></td>
 			<td><c:out value="${event.date}" /></td>
