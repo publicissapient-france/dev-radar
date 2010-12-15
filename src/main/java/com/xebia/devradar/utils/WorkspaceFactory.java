@@ -18,11 +18,6 @@
  */
 package com.xebia.devradar.utils;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.springframework.util.StringUtils;
 
 import com.xebia.devradar.domain.EventSource;
@@ -38,8 +33,6 @@ public class WorkspaceFactory {
 
     private static final DefaultPollerProvider POLLER_PROVIDERS = new DefaultPollerProvider();
     
-    private static final Log LOGGER = LogFactory.getLog(WorkspaceFactory.class.getName());
-
     public Workspace create(Pom pom) {
         Workspace workspace = new Workspace();
         addEventSources(workspace, pom);
@@ -64,20 +57,17 @@ public class WorkspaceFactory {
         }
     }
 
-    private EventSource findEventSource(Workspace workspace, String url) {        
-        try {
-            if (StringUtils.hasLength(url)) {
-                Class<? extends Poller> pollerClass = findPollerClassFromUrl(url);
-                if (pollerClass != null) {
-                    EventSource source = new EventSource();
-                    source.setPollerDescriptor(POLLER_PROVIDERS.getPollerDescriptor(pollerClass));
-                    source.setUrl(new URL(url));
-                    return source;
-                }
+    private EventSource findEventSource(Workspace workspace, String url) {
+        if (StringUtils.hasLength(url)) {
+            Class<? extends Poller> pollerClass = findPollerClassFromUrl(url);
+            if (pollerClass != null) {
+                EventSource source = new EventSource();
+                source.setPollerDescriptor(POLLER_PROVIDERS.getPollerDescriptor(pollerClass));
+                source.setUrl(url);
+                return source;
             }
-        } catch(MalformedURLException e) {
-            LOGGER.info(url+" is not a valid url");
         }
+
         return null;
     }
 

@@ -20,7 +20,6 @@ package com.xebia.devradar.pollers.jira;
 
 
 import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.Date;
 import java.util.List;
 
@@ -61,7 +60,7 @@ public class JiraPollerTest {
     @Before
     public void setUp() throws PollException, MalformedURLException {
         this.eventSource = new EventSource();
-        this.eventSource.setUrl(new URL(JIRA_SOAP_SERVICE_URL));
+        this.eventSource.setUrl(JIRA_SOAP_SERVICE_URL);
         final Authentication auth = new Authentication(LOGIN_NAME, LOGIN_PASSWORD.toCharArray());
         this.eventSource.setAuthentication(auth);
         this.eventSource.addParameter(JiraPoller.JIRA_PROJECT_KEY_PARAM, PROJECT_KEY);

@@ -22,7 +22,6 @@ import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
 
 import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.Date;
 import java.util.List;
 
@@ -53,9 +52,9 @@ public class WorkspaceRepositoryTest extends AbstractRepositoryTests {
         assertThat(w.getName(), is(workspaceName));
         final PollerDescriptor jiraPollerDescriptor = this.entityManager.find(PollerDescriptor.class, 1L);
         final PollerDescriptor svnPollerDescriptor = this.entityManager.find(PollerDescriptor.class, 2L);
-        final EventSource svnSource = new EventSource(svnPollerDescriptor, new URL("http://test.com/svn"), "Foo Project Subversion Trunk");
+        final EventSource svnSource = new EventSource(svnPollerDescriptor, "http://test.com/svn", "Foo Project Subversion Trunk");
         w.addEventSource(svnSource);
-        final EventSource jiraSource = new EventSource(jiraPollerDescriptor, new URL("http://test.com/jira"), "Foo Project Jira Issues");
+        final EventSource jiraSource = new EventSource(jiraPollerDescriptor, "http://test.com/jira", "Foo Project Jira Issues");
         w.addEventSource(jiraSource);
         w.addEvent(new Event(svnSource, "User Joe committed something", new Date(), AN_AUTHOR));
         w.addEvent(new Event(jiraSource, "User Joe closed jira FOO-1234", new Date(), AN_AUTHOR));

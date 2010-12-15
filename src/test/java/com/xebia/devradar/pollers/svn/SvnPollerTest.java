@@ -20,7 +20,6 @@ package com.xebia.devradar.pollers.svn;
 
 
 import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.Date;
 import java.util.List;
 
@@ -52,7 +51,7 @@ public class SvnPollerTest {
     @Before
     public void setUp() throws PollException, MalformedURLException {
         eventSource = new EventSource();
-        eventSource.setUrl(new URL("http://svn.svnkit.com/repos/svnkit/branches/1.3.x"));
+        eventSource.setUrl("http://svn.svnkit.com/repos/svnkit/branches/1.3.x");
         this.poller = new SvnPoller();
 
     }

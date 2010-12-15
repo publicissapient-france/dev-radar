@@ -18,9 +18,6 @@
  */
 package com.xebia.devradar.pollers.sonar;
 
-
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.Date;
 import java.util.List;
 
@@ -34,22 +31,20 @@ import com.xebia.devradar.domain.Event;
 import com.xebia.devradar.domain.EventSource;
 import com.xebia.devradar.pollers.PollException;
 
-
 /**
  * @author Alexandre Dutra
- *
+ * 
  */
 public class SonarPollerTest {
 
-
     private static final String SONAR_API_URL = "http://sonar-procapital.gicm.net:8080/api/resources?" +
-    "format=xml&" +
-    "resource=30729&" +
-    "metrics=public_documented_api_density,blocker_violations,critical_violations,major_violations," +
-    "tests,test_errors,test_failures,skipped_tests,coverage&" +
-    "verbose=true&" +
-    "includealerts=true&" +
-    "includetrends=true";
+            "format=xml&" +
+            "resource=30729&" +
+            "metrics=public_documented_api_density,blocker_violations,critical_violations,major_violations," +
+            "tests,test_errors,test_failures,skipped_tests,coverage&" +
+            "verbose=true&" +
+            "includealerts=true&" +
+            "includetrends=true";
 
     private SonarPoller poller;
 
@@ -60,17 +55,18 @@ public class SonarPollerTest {
     private final Date start = DateUtils.addMonths(this.end, -1);
 
     @Before
-    public void setUp() throws PollException, MalformedURLException {
+    public void setUp() throws PollException {
         eventSource = new EventSource();
-        eventSource.setUrl(new URL(SONAR_API_URL));
+        eventSource.setUrl(SONAR_API_URL);
         this.poller = new SonarPoller();
     }
 
-    @Test @Ignore
+    @Test
+    @Ignore
     public void testSonar() throws PollException {
         final List<Event> events = this.poller.poll(this.eventSource, this.start, this.end);
         for (final Event event : events) {
-            //TODO delete this
+            // TODO delete this
             System.out.println(event.getMessage());
             Assert.assertNotNull("Event message should not be null", event.getMessage());
         }
