@@ -18,6 +18,8 @@
  */
 package com.xebia.devradar.pollers.jira;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -64,7 +66,13 @@ public class JiraPoller implements Poller {
 
             LOGGER.info("polling source: " + source);
 
-            final JiraSOAPSession soapSession = new JiraSOAPSession(source.getUrl());
+            URL url;
+            try {
+                url = new URL(source.getUrl());
+            } catch (MalformedURLException e) {
+                throw new PollException("Failure to parse URL: " + source.getUrl(), e);
+            }
+            final JiraSOAPSession soapSession = new JiraSOAPSession(url);
 
             soapSession.connect(
                     source.getAuthentication().getUsername(),

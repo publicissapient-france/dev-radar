@@ -20,7 +20,6 @@ package com.xebia.devradar.pollers.git;
 
 
 import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.Date;
 import java.util.List;
 
@@ -61,7 +60,7 @@ public class GitHubPollerTest {
     @Before
     public void setUp() throws PollException, MalformedURLException {
         this.eventSource = new EventSource();
-        this.eventSource.setUrl(new URL(GIT_HUB_URL));
+        this.eventSource.setUrl(GIT_HUB_URL);
         //this.eventSource.setAuthentication(new Authentication(LOGIN_NAME, LOGIN_PASSWORD.toCharArray()));
         this.eventSource.setProxy(
                 new Proxy("proxy.gicm.net", 3128, new Authentication("continuum", "continuum".toCharArray())));

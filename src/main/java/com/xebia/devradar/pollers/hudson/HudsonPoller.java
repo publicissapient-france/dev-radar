@@ -18,8 +18,6 @@
  */
 package com.xebia.devradar.pollers.hudson;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -59,7 +57,7 @@ public class HudsonPoller implements Poller {
             if(builds != null && ! builds.isEmpty()){
                 for (final Element build : builds) {
                     final String buildNumber = build.getChildText("number");
-                    final URL buildUrl = this.transformUrl(build.getChildText("url"));
+                    final String buildUrl = build.getChildText("url") + "/api/xml";
                     final Document buildDocument = HttpUtils.getResponseAsDocument(buildUrl, source.getAuthentication(), source.getProxy());;
                     final String timestamp = ((Element) XPath.selectSingleNode(buildDocument.getRootElement(), "/mavenModuleSetBuild/timestamp")).getText();
                     final Date date = new Date(Long.parseLong(timestamp));
@@ -83,14 +81,4 @@ public class HudsonPoller implements Poller {
             throw new PollException(e);
         }
     }
-
-
-    private URL transformUrl(final String original) throws PollException {
-        try {
-            return new URL(new URL(original), "api/xml");
-        } catch (final MalformedURLException e) {
-            throw new PollException(e);
-        }
-    }
-
 }
