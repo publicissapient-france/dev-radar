@@ -1,0 +1,79 @@
+<html>
+<head>
+    <title>Dev Radar</title>
+    <style type="text/css">
+        body {
+            margin: 0;
+            text-align: center;
+        }
+
+        .event {
+            width: 600px;
+            margin-top: 20px;
+            margin-left: auto;
+            margin-right: auto;
+            background-color: #66CC33;
+            border-radius: 10px;
+            text-align: left;
+            padding: 15px;
+            -moz-box-shadow: 1px 1px 12px #555;
+            -webkit-box-shadow: 1px 1px 12px #555;
+            box-shadow: 1px 1px 12px #555;
+            overflow: hidden;
+        }
+
+        .commit-picture {
+            float: left;
+            width: 80px;
+            text-align: center;
+            font-size: 1.2em;
+        }
+
+        .commit-text {
+            font-size: 1.4em;
+            margin-left: 100px;
+            text-align: right;
+        }
+
+        .commit-date {
+            font-style: italic;
+            font-size: 0.9em;
+            margin-bottom: 20px;
+            margin-left: 100px;
+            text-align: left;
+        }
+
+        .author {
+            margin-bottom: 5px;
+            box-shadow: 1px 1px 12px #555;
+            -moz-box-shadow: 1px 1px 12px #555;
+            -webkit-box-shadow: 1px 1px 12px #555;
+            box-shadow: 1px 1px 12px #555;
+        }
+
+        #workspace {
+            font-size: 1.5em;
+            text-align: left;
+            padding-left: 25px;
+        }
+    </style>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $.getJSON("/resources/workspace", function(workspace) {
+                $.each(workspace.events, function (i, event) {
+                    $('#events').append('<div class="event"><div class="commit-picture"><img class="' + event.author + ' author" src="' + event.gravatarUrl + '"/>' + '<br/>' + event.author + '</div><div class="commit-date">' + event.date + '</div><div class="commit-text">' + event.message + '</div>')
+                });
+            });
+        });
+    </script>
+</head>
+
+<body>
+
+<h1>Dev Radar</h1>
+
+<div id="events"></div>
+
+</body>
+</html>
