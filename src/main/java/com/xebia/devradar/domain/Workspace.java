@@ -18,21 +18,13 @@
  */
 package com.xebia.devradar.domain;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
-
-import javax.persistence.*;
-
 import com.xebia.devradar.domain.dao.BadgeTypeRepository;
-import org.apache.commons.lang.builder.ToStringBuilder;
-
 import com.xebia.devradar.pollers.PollException;
+import org.apache.commons.lang.builder.ToStringBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
+import javax.persistence.*;
 import java.util.*;
 
 
@@ -64,6 +56,7 @@ public class Workspace extends AbstractEntity {
     private String description;
 
     @OneToMany(mappedBy = "workspace", cascade={CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
+    @OrderBy("date desc")
     private Set<Event> events = new LinkedHashSet<Event>();
 
     @OneToMany(cascade=CascadeType.ALL,orphanRemoval=true)
@@ -89,6 +82,13 @@ public class Workspace extends AbstractEntity {
 
     public Set<Event> getEvents() {
         return Collections.unmodifiableSet(events);
+    }
+
+    public void addAllEvents(final Collection<Event> events) {
+        for (Event e : events) {
+            e.setWorkspace(this);
+            internalAddEvent(e);
+        }
     }
 
     public void addEvent(final Event e) {

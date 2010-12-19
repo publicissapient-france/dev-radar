@@ -51,7 +51,7 @@ public class BadgeTypesController {
     @Autowired
     private WorkspaceRepository workspaceRepository;
 
-    private static final String DEFAULT_DSL_QUERY = "select e.profile.id from Event e where e.workspace.id = :workspaceId and e.eventType = 'COMMIT' group by e.profile.id order by count(e.id) desc";
+    private static final String DEFAULT_DSL_QUERY = "select e.gravatarUrl from Event e where e.workspace.id = :workspaceId and e.eventType = 'COMMIT' group by e.gravatarUrl order by count(e.id) desc";
 
     public BadgeTypesController(BadgeTypeRepository badgeTypeRepository, WorkspaceRepository workspaceRepository) {
         this.badgeTypeRepository = badgeTypeRepository;
@@ -122,10 +122,10 @@ public class BadgeTypesController {
     private Boolean testBadgeOwner(BadgeTypeFormModel badgeTypeFormModel, BindingResult result) {
         if (badgeTypeFormModel.getTestMode()) {
             try {
-                Profile profile = badgeTypeFormModel.getBadgeType().getBadgeOwnerOfWorkspace(workspaceRepository.getWorkspaceById(badgeTypeFormModel.getWorkspaceId()));
-                badgeTypeFormModel.setProfile(profile);
+                String gravatarUrl = badgeTypeFormModel.getBadgeType().getBadgeOwnerOfWorkspace(workspaceRepository.getWorkspaceById(badgeTypeFormModel.getWorkspaceId()));
+                badgeTypeFormModel.setGravatarUrl(gravatarUrl);
             } catch (DataAccessException e) {
-                result.addError(new FieldError(BadgeTypeFormModel.BADGE_TYPE_FORM_MODEL, "profile", e.getMessage()));
+                result.addError(new FieldError(BadgeTypeFormModel.BADGE_TYPE_FORM_MODEL, "gravatarUrl", e.getMessage()));
             }
             return true;
         }

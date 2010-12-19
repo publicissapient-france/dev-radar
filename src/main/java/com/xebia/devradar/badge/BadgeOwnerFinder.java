@@ -20,5 +20,5 @@ package com.xebia.devradar.badge;
 
 public interface BadgeOwnerFinder {
 
-    Long findBadgeOwnerForWorkspace(Long workspaceId);
+    String findBadgeOwnerForWorkspace(Long workspaceId);
 }

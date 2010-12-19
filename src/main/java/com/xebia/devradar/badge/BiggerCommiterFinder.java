@@ -38,7 +38,7 @@ public class BiggerCommiterFinder implements BadgeOwnerFinder {
     }
 
     @Override
-    public Long findBadgeOwnerForWorkspace(Long workspaceId) {
+    public String findBadgeOwnerForWorkspace(Long workspaceId) {
         return eventRepository.getProfilIdWhoHaveMaxEventType(workspaceId, EventType.COMMIT);
     }
 }

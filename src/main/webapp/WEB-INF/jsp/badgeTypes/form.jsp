@@ -61,8 +61,8 @@
             <td><form:select path="workspaceId" itemLabel="name" itemValue="id" items="${badgeTypeFormModel.workspaces}" /></td>
         </tr>
         <tr>
-            <td>Badge Owner : <form:errors path="profile" cssClass="errors" /></td>
-            <td><c:out value="${badgeTypeFormModel.profile.nickname}" /></td>
+            <td>Badge Owner : <form:errors path="gravatarUrl" cssClass="errors" /></td>
+            <td><img src="${badgeTypeFormModel.gravatarUrl}"/></td>
         </tr>
         <tr>
             <td></td>

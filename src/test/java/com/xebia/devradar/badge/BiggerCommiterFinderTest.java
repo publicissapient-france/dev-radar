@@ -42,10 +42,10 @@ public class BiggerCommiterFinderTest {
 
     @Test
     public void should_find_badge_owner_for_workspace() {
-        Mockito.when(eventRepository.getProfilIdWhoHaveMaxEventType(1L, EventType.COMMIT)).thenReturn(42L);
+        Mockito.when(eventRepository.getProfilIdWhoHaveMaxEventType(1L, EventType.COMMIT)).thenReturn("GOOD GRAV URL");
 
-        Long profilId = biggerCommiterFinder.findBadgeOwnerForWorkspace(1L);
+        String gravUrl = biggerCommiterFinder.findBadgeOwnerForWorkspace(1L);
         
-        assertThat(profilId, is(42L));
+        assertThat(gravUrl, is("GOOD GRAV URL"));
     }
 }

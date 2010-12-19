@@ -19,7 +19,6 @@
 package com.xebia.devradar.web.controller;
 
 import com.xebia.devradar.domain.BadgeType;
-import com.xebia.devradar.domain.Profile;
 import com.xebia.devradar.domain.Workspace;
 import com.xebia.devradar.domain.dao.BadgeTypeRepository;
 import com.xebia.devradar.web.WorkspaceRepository;
@@ -43,11 +42,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Matchers.isNull;
 import static org.mockito.Mockito.*;
 
 public class BadgeTypesControllerTest {
@@ -98,16 +94,16 @@ public class BadgeTypesControllerTest {
         badgeTypeFormModel.setTestMode(true);
         badgeTypeFormModel.setWorkspaceId(1L);
         Workspace workspace = new Workspace();
-        Profile profile = new Profile();
+        String gravatarUrl = "gravatarUrl";
         BindingResult result = new MapBindingResult(new HashMap<Object, Object>(), "bindingResult");
         SessionStatus status = new SimpleSessionStatus();
 
         when(workspaceRepository.getWorkspaceById(1L)).thenReturn(workspace);
-        when(badgeTypeFormModel.getBadgeType().getBadgeOwnerOfWorkspace(workspace)).thenReturn(profile);
+        when(badgeTypeFormModel.getBadgeType().getBadgeOwnerOfWorkspace(workspace)).thenReturn(gravatarUrl);
 
         String view = badgeTypesController.createBadgeType(badgeTypeFormModel, result, status);
 
-        assertThat(badgeTypeFormModel.getProfile(), is(profile));
+        assertThat(badgeTypeFormModel.getGravatarUrl(), is(gravatarUrl));
         assertThat(status.isComplete(), is(false));
         assertThat(view, is(BadgeTypeFormModel.NAME));
     }
@@ -119,7 +115,6 @@ public class BadgeTypesControllerTest {
         badgeTypeFormModel.setTestMode(true);
         badgeTypeFormModel.setWorkspaceId(1L);
         Workspace workspace = new Workspace();
-        Profile profile = new Profile();
         BindingResult result = new MapBindingResult(new HashMap<Object, Object>(), "bindingResult");
         SessionStatus status = new SimpleSessionStatus();
 
@@ -129,8 +124,8 @@ public class BadgeTypesControllerTest {
         String view = badgeTypesController.createBadgeType(badgeTypeFormModel, result, status);
 
         assertThat(result.getErrorCount(), is(1));
-        assertThat(result.getFieldError("profile").getDefaultMessage(), is("task; bad SQL grammar [sql query]; nested exception is java.sql.SQLException: error msg"));
-        Assert.assertNull(badgeTypeFormModel.getProfile());
+        assertThat(result.getFieldError("gravatarUrl").getDefaultMessage(), is("task; bad SQL grammar [sql query]; nested exception is java.sql.SQLException: error msg"));
+        Assert.assertNull(badgeTypeFormModel.getGravatarUrl());
         assertThat(status.isComplete(), is(false));
         assertThat(view, is(BadgeTypeFormModel.NAME));
     }
@@ -223,16 +218,16 @@ public class BadgeTypesControllerTest {
         badgeTypeFormModel.setTestMode(true);
         badgeTypeFormModel.setWorkspaceId(1L);
         Workspace workspace = new Workspace();
-        Profile profile = new Profile();
+        String gravatarUrl = "gravatarUrl";
         BindingResult result = new MapBindingResult(new HashMap<Object, Object>(), "bindingResult");
         SessionStatus status = new SimpleSessionStatus();
 
         when(workspaceRepository.getWorkspaceById(1L)).thenReturn(workspace);
-        when(badgeTypeFormModel.getBadgeType().getBadgeOwnerOfWorkspace(workspace)).thenReturn(profile);
+        when(badgeTypeFormModel.getBadgeType().getBadgeOwnerOfWorkspace(workspace)).thenReturn(gravatarUrl);
 
         String view = badgeTypesController.editBadgeType(badgeTypeFormModel, result, status);
 
-        assertThat(badgeTypeFormModel.getProfile(), is(profile));
+        assertThat(badgeTypeFormModel.getGravatarUrl(), is(gravatarUrl));
         assertThat(status.isComplete(), is(false));
         assertThat(view, is(BadgeTypeFormModel.NAME));
     }
@@ -244,7 +239,6 @@ public class BadgeTypesControllerTest {
         badgeTypeFormModel.setTestMode(true);
         badgeTypeFormModel.setWorkspaceId(1L);
         Workspace workspace = new Workspace();
-        Profile profile = new Profile();
         BindingResult result = new MapBindingResult(new HashMap<Object, Object>(), "bindingResult");
         SessionStatus status = new SimpleSessionStatus();
 
@@ -254,8 +248,8 @@ public class BadgeTypesControllerTest {
         String view = badgeTypesController.editBadgeType(badgeTypeFormModel, result, status);
 
         assertThat(result.getErrorCount(), is(1));
-        assertThat(result.getFieldError("profile").getDefaultMessage(), is("task; bad SQL grammar [sql query]; nested exception is java.sql.SQLException: error msg"));
-        Assert.assertEquals(badgeTypeFormModel.getProfile(), null);
+        assertThat(result.getFieldError("gravatarUrl").getDefaultMessage(), is("task; bad SQL grammar [sql query]; nested exception is java.sql.SQLException: error msg"));
+        Assert.assertEquals(badgeTypeFormModel.getGravatarUrl(), null);
         assertThat(status.isComplete(), is(false));
         assertThat(view, is(BadgeTypeFormModel.NAME));
     }

@@ -35,7 +35,7 @@ public class BadgeRefreshingTest extends AbstractRepositoryTests {
         Badge badge = entityManager.find(Badge.class, 1L);
 
         badge.refreshBadgeOwner();
-        assertThat(badge.getProfile().getId(), is(2L));
+        assertThat(badge.getGravatarUrl(), is("GOOD GRAV URL"));
     }
 
     @Test
@@ -44,7 +44,7 @@ public class BadgeRefreshingTest extends AbstractRepositoryTests {
         Badge badge = entityManager.find(Badge.class, 1L);
 
         badge.refreshBadgeOwner();
-        assertThat(badge.getProfile().getId(), is(2L));
+        assertThat(badge.getGravatarUrl(), is("GOOD GRAV URL"));
     }
 
     @Test
@@ -53,7 +53,7 @@ public class BadgeRefreshingTest extends AbstractRepositoryTests {
         Badge badge = entityManager.find(Badge.class, 1L);
 
         badge.refreshBadgeOwner();
-        assertThat(badge.getProfile(), nullValue());
+        assertThat(badge.getGravatarUrl(), nullValue());
     }
 
     @Test
@@ -62,6 +62,6 @@ public class BadgeRefreshingTest extends AbstractRepositoryTests {
         Badge badge = entityManager.find(Badge.class, 1L);
 
         badge.refreshBadgeOwner();
-        assertThat(badge.getProfile(), nullValue());
+        assertThat(badge.getGravatarUrl(), nullValue());
     }
 }

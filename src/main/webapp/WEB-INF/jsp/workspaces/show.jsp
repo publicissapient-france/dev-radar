@@ -48,11 +48,11 @@
         </form:form></td>
     </tr>
     <tr>
-        <td>Badge :</td>
+        <td>Badges :</td>
         <td>
             <c:forEach var="badge" items="${workspace.badges}">
-                <c:if test="${badge.profile != null}">
-                    <c:out value="${badge.badgeType.name}" />(<c:out value="${badge.profile.nickname}" />)
+                <c:if test="${badge.gravatarUrl != null}">
+                    <c:out value="${badge.badgeType.name}" />(<img src="${badge.gravatarUrl}"/>)
                 </c:if>
             </c:forEach>
         </td>
@@ -100,18 +100,20 @@
 
 <h2>Events</h2>
 <table>
-    <tr>
-        <td><b>Type</b></td>
-        <td><b>Message</b></td>
-        <td><b>Date</b></td>
-    </tr>
-    <c:forEach var="event" items="${workspace.events}">
-        <tr>
-            <td><c:out value="${event.source.description}" /></td>
-            <td><pre><c:out value="${event.message}" /></pre></td>
-            <td><c:out value="${event.date}" /></td>
-        </tr>
-    </c:forEach>
+	<tr>
+		<td><b>Gravatar</b></td>
+		<td><b>Type</b></td>
+		<td><b>Message</b></td>
+		<td><b>Date</b></td>
+	</tr>
+	<c:forEach var="event" items="${workspace.events}">
+		<tr>
+			<td><img src="${event.gravatarUrl}"/></td>
+			<td><c:out value="${event.source.description}" /></td>
+			<td><pre><c:out value="${event.message}" /></pre></td>
+			<td><c:out value="${event.date}" /></td>
+		</tr>
+	</c:forEach>
 </table>
 
 <%@ include file="/WEB-INF/jsp/footer.jsp"%>

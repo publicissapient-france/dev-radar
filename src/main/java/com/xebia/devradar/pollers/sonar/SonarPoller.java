@@ -85,7 +85,8 @@ public class SonarPoller implements Poller {
                      */
                     final String name = measure.getChildTextNormalize("name");
                     final String alertText = measure.getChildTextNormalize("alert_text");
-                    final Event event = new Event(source, name + " " + alertText, date, null, null);
+                    final Event event = new Event(source, name + " " + alertText, date, null, "sonar");
+
                     events.add(event);
                 }
 

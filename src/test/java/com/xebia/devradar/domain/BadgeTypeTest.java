@@ -41,28 +41,23 @@ public class BadgeTypeTest {
 
         BadgeType badgeType = new BadgeType();
         badgeType.setEntityManager(entityManager);
-        badgeType.setDslQuery("select e.profile.id from Event e where e.workspace.id = :workspaceId and e.eventType = 'COMMIT' group by e.profile.id order by count(e.id) desc");
+        badgeType.setDslQuery("select e.gravatarUrl from Event e where e.workspace.id = :workspaceId and e.eventType = 'COMMIT' group by e.gravatarUrl order by count(e.id) desc");
         badgeType.setName("badgeTypeName");
 
         Workspace workspace = new Workspace();
         workspace.setId(12L);
 
-        Profile profileExpected = new Profile();
-        profileExpected.setId(21L);
-        profileExpected.setNickname("bill");
+        String expectedGravUrl = "GOOD GRAV URL";
 
-        List<Long> profiles = Arrays.asList(profileExpected.getId());
+        List<String> gravUrls = Arrays.asList(expectedGravUrl);
 
         when(entityManager.createQuery(badgeType.getDslQuery())).thenReturn(query);
         when(query.setParameter("workspaceId", 12L)).thenReturn(query);
         when(query.setMaxResults(1)).thenReturn(query);
-        when(query.getResultList()).thenReturn(profiles);
-        when(entityManager.find(Profile.class, 21L)).thenReturn(profileExpected);
+        when(query.getResultList()).thenReturn(gravUrls);
 
-        Profile profileActual = badgeType.getBadgeOwnerOfWorkspace(workspace);
+        String gravUrlActual = badgeType.getBadgeOwnerOfWorkspace(workspace);
 
-        assertThat(profileActual, is(profileExpected));
-        assertThat(profileActual.getId(), is(21L));
-        assertThat(profileActual.getNickname(), is("bill"));
+        assertThat(gravUrlActual, is(gravUrlActual));
     }
 }

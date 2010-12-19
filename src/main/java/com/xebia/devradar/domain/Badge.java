@@ -34,8 +34,7 @@ public class Badge extends AbstractEntity {
     @ManyToOne(optional = false)
     private BadgeType badgeType;
 
-    @ManyToOne
-    private Profile profile;
+    private String gravatarUrl;
 
     @ManyToOne(optional = false)
     private Workspace workspace;
@@ -56,12 +55,12 @@ public class Badge extends AbstractEntity {
         this.badgeType = badgeType;
     }
 
-    public Profile getProfile() {
-        return profile;
+    public String getGravatarUrl() {
+        return gravatarUrl;
     }
 
-    public void setProfile(Profile profil) {
-        this.profile = profil;
+    public void setGravatarUrl(String gravatarUrl) {
+        this.gravatarUrl = gravatarUrl;
     }
 
     public Workspace getWorkspace() {
@@ -74,7 +73,7 @@ public class Badge extends AbstractEntity {
     }
 
     public void refreshBadgeOwner() {
-        setProfile(badgeType.getBadgeOwnerOfWorkspace(workspace));
+        setGravatarUrl(badgeType.getBadgeOwnerOfWorkspace(workspace));
     }
 
     public void delete() {

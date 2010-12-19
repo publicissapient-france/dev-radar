@@ -18,7 +18,6 @@
  */
 package com.xebia.devradar.domain;
 
-import java.net.URL;
 import java.util.*;
 
 import javax.persistence.*;
@@ -35,7 +34,7 @@ import com.xebia.devradar.pollers.Poller;
  * <li>A <code>{@link PollerDescriptor}</code> object describing which <code>{@link Poller}</code>
  * should be used to poll the source;<li>
  * <li>Any network connection information necessary to interrogate the source,
- * such as the source URL, proxy settings, authentication, etc.</li>
+ * such as the source String, proxy settings, authentication, etc.</li>
  * </ol>
  * 
  * @author Alexandre Dutra
@@ -50,7 +49,7 @@ public class EventSource extends AbstractEntity {
 
     @Basic(optional = false)
     @Column(length = 4096)
-    private URL url;
+    private String url;
 
     @Basic(optional = false)
     @Column(length = 500)
@@ -89,7 +88,7 @@ public class EventSource extends AbstractEntity {
 
     public EventSource(
             final PollerDescriptor pollerDescriptor,
-            final URL url,
+            final String url,
             final String description) {
         super();
         this.pollerDescriptor = pollerDescriptor;
@@ -114,11 +113,11 @@ public class EventSource extends AbstractEntity {
         this.lastPollDate = lastPollDate;
     }
 
-    public URL getUrl() {
+    public String getUrl() {
         return this.url;
     }
 
-    public void setUrl(final URL url) {
+    public void setUrl(final String url) {
         this.url = url;
     }
 
@@ -184,6 +183,7 @@ public class EventSource extends AbstractEntity {
         return new ToStringBuilder(this) //
                 .append("id", this.getId()) //
                 .append("url", this.url) //
+                .append("lastPollDate", this.lastPollDate) //
                 .toString();
     }
 }

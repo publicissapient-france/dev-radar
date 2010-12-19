@@ -71,9 +71,9 @@ public class GitHubPoller implements Poller {
                 final Date date = ISODateTimeFormat.dateTimeNoMillis().parseDateTime(
                         ((Element)XPath.selectSingleNode(commit, "committed-date")).getValue()).toDate();
 
-                 Profile profil = getProfile(commiter);
+                final Event event = new Event(
+                        source, commiter + " commited something.", date, EventType.COMMIT, commiter);
 
-                final Event event = new Event(source, commiter + " commited something.", date, EventType.COMMIT, profil);
 
                 events.add(event);
             }
@@ -86,24 +86,5 @@ public class GitHubPoller implements Poller {
 
     }
 
-    /*
-     * TODO temporary method
-     */
-    private Profile getProfile(String commiter) {
-        Profile profil = new Profile();
 
-        profil.setNickname(commiter);
-        if (commiter.equals("mrenou")) {
-            profil.setId(1L);
-        } else if (commiter.equals("adutra")) {
-            profil.setId(2L);
-        } else {
-            profil.setId(3L);
-            profil.setNickname("default");
-        }
-        profil.setEmail("test@xebia.com");
-        profil.setGravatarUrl("http://www.google.com/pouet");
-        profil.setAliasSCM("aliasScm");
-        return profil;
-    }
 }

@@ -18,9 +18,9 @@
  */
 package com.xebia.devradar.web.controller;
 
-import com.xebia.devradar.domain.Event;
 import com.xebia.devradar.domain.Workspace;
 import com.xebia.devradar.pollers.PollException;
+import com.xebia.devradar.pollers.PollersInvoker;
 import com.xebia.devradar.utils.Pom;
 import com.xebia.devradar.utils.PomLoaderUtils;
 import com.xebia.devradar.utils.WorkspaceFactory;
@@ -51,14 +51,18 @@ public class WorkspacesController {
     @Autowired
     private WorkspaceRepository workspaceRepository;
 
+    @Autowired
+    private PollersInvoker pollersInvoker;
+
     private WorkspaceFactory workspaceFactory = new WorkspaceFactory();
 
     public WorkspacesController() {
     }
 
-    public WorkspacesController(WorkspaceRepository workspaceRepository, WorkspaceFactory workspaceFactory) {
+    public WorkspacesController(WorkspaceRepository workspaceRepository, WorkspaceFactory workspaceFactory, PollersInvoker pollersInvoker) {
         this.workspaceRepository = workspaceRepository;
         this.workspaceFactory = workspaceFactory;
+        this.pollersInvoker = pollersInvoker;
     }
 
     @RequestMapping(value = "/new", method = RequestMethod.GET)
@@ -152,10 +156,7 @@ public class WorkspacesController {
         Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
         Date end = new Date();
         Date start = DateUtils.addDays(end, -7);
-        List<Event> events = workspace.poll(start, end);
-        for (Event event : events) {
-            workspace.addEvent(event);
-        }
+        this.pollersInvoker.pollWorkspace(start, end, workspace);
         model.addAttribute("workspace", workspace);
         return "workspaces/show";
     }

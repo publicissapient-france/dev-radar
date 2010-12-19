@@ -48,9 +48,9 @@ public class SvnPoller implements Poller {
         SVNLogClient logClient = SVNClientManager.newInstance().getLogClient();
         SVNURL svnUrl;
         try {
-            svnUrl = SVNURL.parseURIDecoded(source.getUrl().toExternalForm());
+            svnUrl = SVNURL.parseURIDecoded(source.getUrl());
         } catch (final SVNException e) {
-            throw new PollException("Bad url: " + source.getUrl().toExternalForm(), e);
+            throw new PollException("Bad url: " + source.getUrl(), e);
         }
         try {
             final List<Event> events = new ArrayList<Event>();
@@ -72,14 +72,16 @@ public class SvnPoller implements Poller {
                         if(logEntry.getRevision() != -1L) {
                             //TODO trim
                             final String message = logEntry.toString();
-                            final Event event = new Event(source, message, logEntry.getDate(), null, null);
+
+                            final String author = logEntry.getAuthor();
+                            final Event event = new Event(source, message, logEntry.getDate(), null, author);
                             events.add(event);
                         }
                     }
                 });
             return events;
         } catch (final SVNException e) {
-            throw new PollException("Could not poll url: " + source.getUrl().toExternalForm(), e);
+            throw new PollException("Could not poll url: " + source.getUrl(), e);
         }
     }
 

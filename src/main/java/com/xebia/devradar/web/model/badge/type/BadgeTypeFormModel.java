@@ -30,13 +30,13 @@ public class BadgeTypeFormModel {
     public static final String BADGE_TYPE_FORM_MODEL = "badgeTypeFormModel";
     static final public String BADGE_TYPE_ID = "badgeTypeId";
     static final public String NAME = "badgeTypes/form";
-    static final public String PROFILE = "profile";
+    static final public String GRAVATAR_URL = "gravatarUrl";
 
     private BadgeType badgeType;
 
     private Long workspaceId;
 
-    private Profile profile;
+    private String gravatarUrl;
 
     private List<Workspace> workspaces;
 
@@ -61,7 +61,7 @@ public class BadgeTypeFormModel {
     public List<Workspace> getWorkspaces() {
         return workspaces;
     }
-
+                              
     public void setWorkspaces(List<Workspace> workspaces) {
         this.workspaces = workspaces;
     }
@@ -74,11 +74,11 @@ public class BadgeTypeFormModel {
         this.testMode = testMode;
     }
 
-    public Profile getProfile() {
-        return profile;
+    public String getGravatarUrl() {
+        return gravatarUrl;
     }
 
-    public void setProfile(Profile profile) {
-        this.profile = profile;
+    public void setGravatarUrl(String gravatarUrl) {
+        this.gravatarUrl = gravatarUrl;
     }
 }

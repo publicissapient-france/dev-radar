@@ -20,7 +20,6 @@ package com.xebia.devradar.pollers.hudson;
 
 
 import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.Date;
 import java.util.List;
 
@@ -56,7 +55,7 @@ public class HudsonPollerTest {
     @Before
     public void setUp() throws PollException, MalformedURLException {
         this.eventSource = new EventSource();
-        this.eventSource.setUrl(new URL(DEV_RADAR_HUDSON_URL));
+        this.eventSource.setUrl(DEV_RADAR_HUDSON_URL);
         this.eventSource.setProxy(
                 new Proxy("proxy.gicm.net", 3128, new Authentication("continuum", "continuum".toCharArray())));
         this.poller = new HudsonPoller();

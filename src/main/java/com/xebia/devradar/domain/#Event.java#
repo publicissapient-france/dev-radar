@@ -48,23 +48,32 @@ public class Event extends AbstractEntity {
     @ManyToOne(optional = false)
     private EventSource source;
 
-
+<<<<<<< HEAD
     @ManyToOne(optional = false)
     private Workspace workspace;
 
     @Basic(optional = true)
     @Column(length = 500)
     private String gravatarUrl;
+>>>>>>> iteration3
 
     public Event() {
     }
 
-    public Event(final EventSource source, final String message, final Date date, final EventType eventType, final String author) {
+<<<<<<< HEAD
+    public Event(final EventSource source, final String message, final Date date, EventType eventType, Profile profile) {
         this.source = source;
         this.setMessage(message);
         this.date = date;
         this.eventType = eventType;
+        this.profile = profile;
+=======
+    public Event(final EventSource source, final String message, final Date date, final String author) {
+        this.source = source;
+        this.setMessage(message);
+        this.date = date;
         this.gravatarUrl = mappingsGravatarUrl.get(author);
+>>>>>>> iteration3
     }
 
     public String getMessage() {
@@ -83,6 +92,7 @@ public class Event extends AbstractEntity {
         return this.source;
     }
 
+<<<<<<< HEAD
     public EventType getEventType() {
         return eventType;
     }
@@ -93,11 +103,10 @@ public class Event extends AbstractEntity {
 
     public void setSource(final EventSource source) {
         this.source = source;
-    }
-
+=======
     public String getGravatarUrl() {
         return this.gravatarUrl;
-
+>>>>>>> iteration3
     }
 
     public Workspace getWorkspace() {
@@ -109,12 +118,20 @@ public class Event extends AbstractEntity {
         workspace.internalAddEvent(this);
     }
 
+    public Profile getProfile() {
+        return profile;
+    }
+
+    public void setProfile(Profile profile) {
+        this.profile = profile;
+    }
+
     @Override
     public String toString() {
         return new ToStringBuilder(this) //
                 .append("date", this.date) //
                 .append("message", StringUtils.abbreviate(this.message, 10)) //
-                .append("gravatarUrl", this.gravatarUrl) //
+                .append("profile", this.profile) //
                 .append("source", this.source) //
                 .toString();
     }
@@ -122,13 +139,12 @@ public class Event extends AbstractEntity {
     private static final Map<String, String> mappingsGravatarUrl = new HashMap<String, String>(){{
         put("Cyrille Le Clerc", "http://www.gravatar.com/avatar/fd83e4fbdb11f925603ef60d25efcbb4");
         put("Jean-Laurent de Morlhon", "http://www.gravatar.com/avatar/649d3668d3ba68e75a3441dec9eac26e");
-        put("mrenou", "http://www.gravatar.com/avatar/8c92fcdb7c7abc1a50732a93bc361b5e.png");
+        put("mrenou", "");
         put("simcap", "http://www.gravatar.com/avatar/740b1444a71181776c42130408a4b848");
         put("adutra", "http://www.gravatar.com/avatar/e96398d35fcd2cb3df072bcb28c9c917");
-        put("pvardanega", "http://www.gravatar.com/avatar/8c92fcdb7c7abc1a50732a93bc361b5e.png");
-        put("jsmadja", "http://www.gravatar.com/avatar/8c92fcdb7c7abc1a50732a93bc361b5e.png");
+        put("pvardanega", "");
+        put("jsmadja", "");
         put("Nicolas Griso", "http://www.gravatar.com/avatar/4a89258a4759e47dab3266e9b9d76065.png");
-        put("Benoit Guerout", "http://www.gravatar.com/avatar/8c92fcdb7c7abc1a50732a93bc361b5e.png");
     }};
 
 }

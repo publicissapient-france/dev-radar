@@ -19,7 +19,7 @@
 package com.xebia.devradar.utils;
 
 import java.io.IOException;
-import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.apache.commons.httpclient.Credentials;
@@ -44,44 +44,8 @@ import com.xebia.devradar.pollers.PollException;
  */
 public class HttpUtils {
 
-    public static InputStream getResponseAsStream(
-            final URL url,
-            final Authentication authentication,
-            final Proxy proxy)
-    throws PollException {
-
-        final HttpClient client = new HttpClient();
-
-        setAuthentication(url, authentication, client);
-
-        setProxy(proxy, client);
-
-        final GetMethod get = new GetMethod(url.toExternalForm());
-
-        try {
-            // execute the GET
-            final int status = client.executeMethod(get);
-
-            if (status != HttpStatus.SC_OK) {
-                throw new PollException("Wrong HTTP status: " + status);
-            }
-
-            return get.getResponseBodyAsStream();
-
-        } catch (final HttpException e) {
-            throw new PollException("Unknown IO error while polling URL: " + url, e);
-        } catch (final IOException e) {
-            throw new PollException("Unknown IO error while polling URL: " + url, e);
-        } finally {
-            // release any connection resources used by the method
-            get.releaseConnection();
-        }
-    }
-
-
-
     public static Document getResponseAsDocument(
-            final URL url,
+            final String url,
             final Authentication authentication,
             final Proxy proxy) throws PollException {
 
@@ -90,11 +54,50 @@ public class HttpUtils {
         //TODO configure
         client.getParams().setSoTimeout(5*1000);
 
-        setAuthentication(url, authentication, client);
+        if (authentication != null) {
+        
+            client.getParams().setAuthenticationPreemptive(true);
+        
+            final Credentials defaultcreds = new UsernamePasswordCredentials(
+                    authentication.getUsername(),
+                    String.copyValueOf(authentication.getPassword()));
+        
+            URL javaNetUrl;
+            try {
+                javaNetUrl = new URL(url);
+            } catch (MalformedURLException e) {
+                throw new PollException("Exception parsing URL: " + url, e);
+            }
+            final AuthScope authScope = new AuthScope(
+                    javaNetUrl.getHost(),
+                    javaNetUrl.getPort(),
+                    AuthScope.ANY_REALM);
+        
+            client.getState().setCredentials(authScope, defaultcreds);
+        }
 
-        setProxy(proxy, client);
+        if(proxy != null) {
+        
+            client.getHostConfiguration().setProxy(proxy.getHost(), proxy.getPort());
+        
+            final Authentication proxyAuthentication = proxy.getAuthentication();
+        
+            if (proxyAuthentication != null) {
+        
+                final Credentials defaultcreds = new UsernamePasswordCredentials(
+                        proxyAuthentication.getUsername(),
+                        String.copyValueOf(proxyAuthentication.getPassword()));
+        
+                final AuthScope authScope = new AuthScope(
+                        proxy.getHost(),
+                        proxy.getPort(),
+                        AuthScope.ANY_REALM);
+        
+                client.getState().setProxyCredentials(authScope, defaultcreds);
+            }
+        }
 
-        final GetMethod get = new GetMethod(url.toExternalForm());
+        final GetMethod get = new GetMethod(url);
 
         try {
             // execute the GET
@@ -118,48 +121,6 @@ public class HttpUtils {
         } finally {
             // release any connection resources used by the method
             get.releaseConnection();
-        }
-    }
-
-    private static void setProxy(final Proxy proxy, final HttpClient client) {
-        if(proxy != null) {
-
-            client.getHostConfiguration().setProxy(proxy.getHost(), proxy.getPort());
-
-            final Authentication proxyAuthentication = proxy.getAuthentication();
-
-            if (proxyAuthentication != null) {
-
-                final Credentials defaultcreds = new UsernamePasswordCredentials(
-                        proxyAuthentication.getUsername(),
-                        String.copyValueOf(proxyAuthentication.getPassword()));
-
-                final AuthScope authScope = new AuthScope(
-                        proxy.getHost(),
-                        proxy.getPort(),
-                        AuthScope.ANY_REALM);
-
-                client.getState().setProxyCredentials(authScope, defaultcreds);
-            }
-        }
-    }
-
-
-    private static void setAuthentication(final URL url, final Authentication authentication, final HttpClient client) {
-        if (authentication != null) {
-
-            client.getParams().setAuthenticationPreemptive(true);
-
-            final Credentials defaultcreds = new UsernamePasswordCredentials(
-                    authentication.getUsername(),
-                    String.copyValueOf(authentication.getPassword()));
-
-            final AuthScope authScope = new AuthScope(
-                    url.getHost(),
-                    url.getPort(),
-                    AuthScope.ANY_REALM);
-
-            client.getState().setCredentials(authScope, defaultcreds);
         }
     }
 

@@ -53,8 +53,8 @@ public class EventRepositoryTest extends AbstractRepositoryTests {
     @Test
     @DbUnitDataset("com/xebia/devradar/getProfilWhoHaveMaxEventTypeShouldReturnBill.xml")
     public void getProfilWhoHaveMaxEventTypeShouldReturnBill() {
-        final Long  profil = this.repository.getProfilIdWhoHaveMaxEventType(1L, EventType.COMMIT);
-        Assert.assertThat(profil, CoreMatchers.is(2L));
+        final String  gravatarUrl = this.repository.getProfilIdWhoHaveMaxEventType(1L, EventType.COMMIT);
+        Assert.assertThat(gravatarUrl, CoreMatchers.is("GOOD GRAV URL"));
     }
 
 }

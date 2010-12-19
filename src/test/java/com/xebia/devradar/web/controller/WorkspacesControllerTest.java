@@ -20,6 +20,7 @@ package com.xebia.devradar.web.controller;
 
 import com.xebia.devradar.domain.Event;
 import com.xebia.devradar.domain.Workspace;
+import com.xebia.devradar.pollers.PollersInvoker;
 import com.xebia.devradar.utils.PomLoaderUtils;
 import com.xebia.devradar.utils.WorkspaceFactory;
 import com.xebia.devradar.web.WorkspaceRepository;
@@ -50,13 +51,16 @@ public class WorkspacesControllerTest {
 
     private WorkspacesController workspacesController;
 
+    private PollersInvoker pollersInvoker;
+
     private WorkspaceFactory workspaceFactory;
 
     @Before
     public void init() {
         workspaceRepository = mock(WorkspaceRepository.class);
         workspaceFactory = mock(WorkspaceFactory.class);
-        workspacesController = new WorkspacesController(workspaceRepository, workspaceFactory);
+        pollersInvoker = mock(PollersInvoker.class);
+        workspacesController = new WorkspacesController(workspaceRepository, workspaceFactory, pollersInvoker);
     }
 
     @Test
@@ -221,11 +225,7 @@ public class WorkspacesControllerTest {
 
         String view = workspacesController.poll(1L, model);
 
-        Set<Event> eventsInModel = ((Workspace)model.asMap().get("workspace")).getEvents();
-
-        verify(workspace).addEvent(events.get(0));
-        verify(workspace).addEvent(events.get(1));
-        verify(workspace).addEvent(events.get(2));
+        verify(pollersInvoker).pollWorkspace(any(Date.class), any(Date.class), eq(workspace));
 
         assertThat(view, is("workspaces/show"));
 

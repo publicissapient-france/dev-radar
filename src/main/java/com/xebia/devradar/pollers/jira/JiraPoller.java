@@ -18,6 +18,8 @@
  */
 package com.xebia.devradar.pollers.jira;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -39,11 +41,11 @@ import com.xebia.devradar.pollers.jira.generated.RemoteIssue;
  * This client is built following the indications given here:
  * http://confluence.atlassian.com/display/JIRA/Creating+a+SOAP+Client
  * http://confluence.atlassian.com/display/JIRA/Remote+API+%28SOAP%29+Examples
- * 
+ *
  * FIXME this works only for Jira > 4.0
  * A possible lead for a more generic client:
  * http://stackoverflow.com/questions/764282/how-can-jira-soap-api-not-have-this-method
- * 
+ *
  * @author Alexandre Dutra
  *
  */
@@ -64,7 +66,13 @@ public class JiraPoller implements Poller {
 
             LOGGER.info("polling source: " + source);
 
-            final JiraSOAPSession soapSession = new JiraSOAPSession(source.getUrl());
+            URL url;
+            try {
+                url = new URL(source.getUrl());
+            } catch (MalformedURLException e) {
+                throw new PollException("Failure to parse URL: " + source.getUrl(), e);
+            }
+            final JiraSOAPSession soapSession = new JiraSOAPSession(url);
 
             soapSession.connect(
                     source.getAuthentication().getUsername(),
@@ -94,7 +102,9 @@ public class JiraPoller implements Poller {
                         issue.getId(),
                         updated
                 );
-                final Event event = new Event(source, message, updated, null, null);
+                final String reporter = issue.getReporter();
+                final Event event = new Event(source, message, updated, null, reporter);
+
                 events.add(event);
             }
 
@@ -111,7 +121,7 @@ public class JiraPoller implements Poller {
         }
 
     }
-    
+
     private String buildJQLQuery(final String projectKey, final Date start, final Date end) {
         //http://confluence.atlassian.com/display/JIRA/Advanced+Searching
         return MessageFormat.format(

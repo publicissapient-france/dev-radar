@@ -18,6 +18,7 @@
  */
 package com.xebia.devradar.persistence;
 
+
 import com.xebia.devradar.domain.*;
 import com.xebia.devradar.pollers.PollerServiceLocator;
 import com.xebia.devradar.pollers.git.GitHubPoller;
@@ -29,9 +30,8 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.*;
+import java.util.List;
+import java.util.Set;
 
 /**
  * @author Alexandre Dutra
@@ -82,7 +82,7 @@ public class DatabaseInitializerImpl implements DatabaseInitializer {
         defaultWorkspace.setName(DEVRADAR_WORKSPACE_NAME);
         
         BadgeType biggerCommiter = new BadgeType();
-        biggerCommiter.setDslQuery("select e.profile.id from Event e where e.workspace.id = :workspaceId and e.eventType = 'COMMIT' group by e.profile.id order by count(e.id) desc");
+        biggerCommiter.setDslQuery("select e.gravatarUrl from Event e where e.workspace.id = :workspaceId and e.eventType = 'COMMIT' group by e.gravatarUrl order by count(e.id) desc");
         biggerCommiter.setName("Bigger Commiter");
 
         entityManager.persist(biggerCommiter);
@@ -94,21 +94,17 @@ public class DatabaseInitializerImpl implements DatabaseInitializer {
             this.entityManager.persist(pollerDescriptor);
         }
 
-        try {
-            Query query = this.entityManager.createQuery("from PollerDescriptor pd where pd.pollerClass = :pollerClass");
-            query.setParameter("pollerClass", HudsonPoller.class);
-            PollerDescriptor pollerDescriptor = (PollerDescriptor) query.getSingleResult();
-            EventSource source = new EventSource(pollerDescriptor, new URL(DEV_RADAR_HUDSON_URL), "Hudson nightly build");
-            //defaultWorkspace.addEventSource(source);
+        Query query = this.entityManager.createQuery("from PollerDescriptor pd where pd.pollerClass = :pollerClass");
+        query.setParameter("pollerClass", HudsonPoller.class);
+        PollerDescriptor pollerDescriptor = (PollerDescriptor) query.getSingleResult();
+        EventSource source = new EventSource(pollerDescriptor, DEV_RADAR_HUDSON_URL, "Hudson nightly build");
+        //defaultWorkspace.addEventSource(source);
 
-            query = this.entityManager.createQuery("from PollerDescriptor pd where pd.pollerClass = :pollerClass");
-            query.setParameter("pollerClass", GitHubPoller.class);
-            pollerDescriptor = (PollerDescriptor) query.getSingleResult();
-            source = new EventSource(pollerDescriptor, new URL(DEV_RADAR_GIT_HUB_URL), "GitHub master branch");
-            defaultWorkspace.addEventSource(source);
-        } catch (final MalformedURLException e) {
-            //should not occur
-        }
+        query = this.entityManager.createQuery("from PollerDescriptor pd where pd.pollerClass = :pollerClass");
+        query.setParameter("pollerClass", GitHubPoller.class);
+        pollerDescriptor = (PollerDescriptor) query.getSingleResult();
+        source = new EventSource(pollerDescriptor, DEV_RADAR_GIT_HUB_URL, "GitHub master branch");
+        defaultWorkspace.addEventSource(source);
 
         this.entityManager.persist(defaultWorkspace);
     }

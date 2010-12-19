@@ -92,43 +92,34 @@ public class BadgeType extends AbstractEntity  implements ApplicationContextAwar
         entityManager.remove(this);
     }
 
-    public Profile getBadgeOwnerOfWorkspace(Workspace workspace) {
-        Long profileId;
+    public String getBadgeOwnerOfWorkspace(Workspace workspace) {
+        String gravatarUrl = null;
 
         if (getDslQuery() != null) {
-            profileId = refreshWithDsl(workspace);
+            gravatarUrl = refreshWithDsl(workspace);
         } else {
-            profileId = refreshWithOwnerFinder(workspace);
+            gravatarUrl = refreshWithOwnerFinder(workspace);
         }
-        if (profileId != null) {
-            Profile profile = entityManager.find(Profile.class, profileId);
-
-            if (profile == null) {
-                throw new IllegalStateException("the dsl query doesn't return a valid profile.");
-            }
-            return profile;
-        } else {
-            return null;
-        }
+        return gravatarUrl;
     }
 
-    private Long refreshWithOwnerFinder(Workspace workspace) {
+    private String refreshWithOwnerFinder(Workspace workspace) {
         BadgeOwnerFinder badgeOwnerFinder = (BadgeOwnerFinder) BeanFactoryUtils.beanOfType(applicationContext, getOwnerFinderClass());
 
         return badgeOwnerFinder.findBadgeOwnerForWorkspace(workspace.getId());
     }
 
-    private Long refreshWithDsl(Workspace workspace) {
+    private String refreshWithDsl(Workspace workspace) {
         Query query = entityManager.createQuery(getDslQuery());
 
         query.setParameter("workspaceId", workspace.getId());
-        List<Long> profilIds = query.setMaxResults(1).getResultList();
+        List<String> gravatarUrls = query.setMaxResults(1).getResultList();
 
 
-        if (profilIds.size() == 0) {
+        if (gravatarUrls.size() == 0) {
             return null;
         } else {
-            return profilIds.get(0);
+            return gravatarUrls.get(0);
         }
     }
 

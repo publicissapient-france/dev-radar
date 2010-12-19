@@ -50,17 +50,17 @@ public class EventRepository {
         return workspace.getEvents();
     }
 
-    public Long getProfilIdWhoHaveMaxEventType(final Long workspaceId, final EventType eventType) {
-        List<Long> profils = (List<Long>) this.entityManager
-                .createQuery("select e.profile.id from Event e where e.workspace.id = :workspaceId and e.eventType = :eventType group by e.profile.id order by count(e.id) desc")
+    public String getProfilIdWhoHaveMaxEventType(final Long workspaceId, final EventType eventType) {
+        List<String> gravatarUrls = (List<String>) this.entityManager
+                .createQuery("select e.gravatarUrl from Event e where e.workspace.id = :workspaceId and e.eventType = :eventType group by e.gravatarUrl order by count(e.id) desc")
                 .setParameter("workspaceId", workspaceId)
                 .setParameter("eventType", eventType)
                 .setMaxResults(1)
                 .getResultList();
 
-        if (profils.size() == 0) {
+        if (gravatarUrls.size() == 0) {
             return null;
         }
-        return profils.get(0);
+        return gravatarUrls.get(0);
     }
 }

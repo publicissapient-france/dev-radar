@@ -35,6 +35,16 @@ import com.xebia.devradar.domain.Workspace;
 @Repository
 public class WorkspaceRepository {
 
+    
+    public WorkspaceRepository() {
+        super();
+    }
+
+    public WorkspaceRepository(EntityManager entityManager) {
+        this();
+        this.entityManager = entityManager;
+    }
+
     @PersistenceContext
     private EntityManager entityManager;
 
