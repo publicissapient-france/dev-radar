@@ -20,13 +20,13 @@ package com.xebia.devradar;
 
 public class Event {
 
-    public final String date;
+    public final long timestamp;
     public final String author;
     public final String message;
     public final String gravatarUrl;
 
-    public Event(String date, String author, String message, String gravatarUrl) {
-        this.date = date;
+    public Event(long timestamp, String author, String message, String gravatarUrl) {
+        this.timestamp = timestamp;
         this.author = author;
         this.message = message;
         this.gravatarUrl = gravatarUrl;

@@ -62,7 +62,7 @@
         $(document).ready(function() {
             $.getJSON("/resources/workspace", function(workspace) {
                 $.each(workspace.events, function (i, event) {
-                    $('#events').append('<div class="event"><div class="commit-picture"><img class="' + event.author + ' author" src="' + event.gravatarUrl + '"/>' + '<br/>' + event.author + '</div><div class="commit-date">' + event.date + '</div><div class="commit-text">' + event.message + '</div>')
+                    $('#events').append('<div class="event"><div class="commit-picture"><img class="' + event.author + ' author" src="' + event.gravatarUrl + '"/>' + '<br/>' + event.author + '</div><div class="commit-date">' + event.timestamp + '</div><div class="commit-text">' + event.message + '</div>')
                 });
             });
         });

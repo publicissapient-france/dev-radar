@@ -18,33 +18,46 @@
  */
 package com.xebia.devradar;
 
+import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
 public class Workspace {
+    static final int max_retain_size = 10;
 
+    /**
+     * Set d'événements trié par date décroissante.
+     */
     Set<Event> events = new TreeSet<Event>(new Comparator<Event>() {
         @Override
         public int compare(Event event, Event event1) {
-            return event1.date.compareTo(event.date);
+            return new Long(event1.timestamp - event.timestamp).intValue();
         }
     });
 
+    Fetcher fetcher;
+
     public Workspace() {
-        this.events.add(new Event("01/01/2010", "nicolas", "nicolas a committé qqqch", "http://www.gravatar.com/avatar/4a89258a4759e47dab3266e9b9d76065.png"));
-        this.events.add(new Event("02/01/2010", "cyrille", "cyille a committé qqqch", "http://www.gravatar.com/avatar/fd83e4fbdb11f925603ef60d25efcbb4"));
-        this.events.add(new Event("03/01/2010", "jean-laurent", "jean-laurent a committé qqqch", "http://www.gravatar.com/avatar/649d3668d3ba68e75a3441dec9eac26e"));
-        this.events.add(new Event("04/01/2010", "simon", "simon a committé qqqch", "http://www.gravatar.com/avatar/740b1444a71181776c42130408a4b848"));
-        this.events.add(new Event("05/01/2010", "alexandre", "alexandre a committé qqqch", "http://www.gravatar.com/avatar/e96398d35fcd2cb3df072bcb28c9c917"));
-        this.events.add(new Event("06/01/2010", "nicolas", "nicolas a committé qqqch", "http://www.gravatar.com/avatar/4a89258a4759e47dab3266e9b9d76065.png"));
-        this.events.add(new Event("07/01/2010", "cyrille", "cyrille a committé qqqch", "http://www.gravatar.com/avatar/fd83e4fbdb11f925603ef60d25efcbb4"));
-        this.events.add(new Event("08/01/2010", "jean-laurent", "jean-laurent a committé qqqch", "http://www.gravatar.com/avatar/649d3668d3ba68e75a3441dec9eac26e"));
-        this.events.add(new Event("09/01/2010", "simon", "simon a committé qqqch", "http://www.gravatar.com/avatar/740b1444a71181776c42130408a4b848"));
-        this.events.add(new Event("10/01/2010", "alexandre", "alexandre a committé qqqch", "http://www.gravatar.com/avatar/e96398d35fcd2cb3df072bcb28c9c917"));
+        this(new Fetcher());
     }
 
-    public Set<Event> getEvents() {
-        return events;
+    public Workspace(Fetcher fetcher) {
+        this.fetcher = fetcher;
+    }
+
+    void poll() {
+        Set<Event> fetchedEvents = this.fetcher.fetch();
+        this.events.addAll(fetchedEvents);
+    }
+
+    public List<Event> getEvents() {
+        poll();
+
+        if (this.events.size() < max_retain_size) {
+            return new ArrayList<Event>(this.events);
+        }
+        return new ArrayList<Event>(this.events).subList(0, max_retain_size);
     }
 }
