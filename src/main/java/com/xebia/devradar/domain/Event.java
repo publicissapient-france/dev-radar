@@ -125,10 +125,10 @@ public class Event extends AbstractEntity {
         put("mrenou", "http://www.gravatar.com/avatar/8c92fcdb7c7abc1a50732a93bc361b5e.png");
         put("simcap", "http://www.gravatar.com/avatar/740b1444a71181776c42130408a4b848");
         put("adutra", "http://www.gravatar.com/avatar/e96398d35fcd2cb3df072bcb28c9c917");
-        put("pvardanega", "http://www.gravatar.com/avatar/8c92fcdb7c7abc1a50732a93bc361b5e.png");
-        put("jsmadja", "http://www.gravatar.com/avatar/8c92fcdb7c7abc1a50732a93bc361b5e.png");
+        put("pvardanega", "http://www.gravatar.com/avatar/fd83e4fbdb11f925603ef60d25efcbb4");
+        put("jsmadja", "http://www.gravatar.com/avatar/fd83e4fbdb11f925603ef60d25efcbb4");
         put("Nicolas Griso", "http://www.gravatar.com/avatar/4a89258a4759e47dab3266e9b9d76065.png");
-        put("Benoit Guerout", "http://www.gravatar.com/avatar/8c92fcdb7c7abc1a50732a93bc361b5e.png");
+        put("Benoit Guerout", "http://www.gravatar.com/avatar/fd83e4fbdb11f925603ef60d25efcbb4");
     }};
 
 }
