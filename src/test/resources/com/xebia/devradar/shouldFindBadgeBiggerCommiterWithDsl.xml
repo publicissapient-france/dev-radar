@@ -41,9 +41,7 @@
     <EVENT ID="3" SOURCE_ID="1" VERSION="21" MESSAGE="Dummy SVN event" DATE="2010-10-31 18:31:22"  EVENTTYPE="COMMIT" WORKSPACE_ID="1" PROFILE_ID="1" />
     <EVENT ID="4" SOURCE_ID="2" VERSION="21" MESSAGE="Dummy JIRA event" DATE="2010-10-31 18:31:22"  EVENTTYPE="CREATE_JIRA" WORKSPACE_ID="1" PROFILE_ID="1" />
 
-    <BADGETYPE ID="1" NAME="BIGGER_COMMITER" DSLQUERY="select e.profile.id from Event e where e.workspace.id = :workspaceId and e.eventType = :eventType group by e.profile.id order by count(e.id) desc" />
-
-    <DSLPARAMETER ID="1" NAME="eventType" TYPE="EVENT_TYPE" VALUE="COMMIT" BADGETYPE_ID="1" />
+    <BADGETYPE ID="1" NAME="BIGGER_COMMITER" DSLQUERY="select e.profile.id from Event e where e.workspace.id = :workspaceId and e.eventType = 'COMMIT' group by e.profile.id order by count(e.id) desc" />
 
     <BADGE ID="1" WORKSPACE_ID="1" BADGETYPE_ID="1" />
 </dataset>

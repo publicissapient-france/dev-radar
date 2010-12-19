@@ -35,12 +35,15 @@
         http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd
         ">
 
+    <context:spring-configured/>
+
+    <context:component-scan base-package="com.xebia.devradar.domain"/>
     <context:component-scan base-package="com.xebia.devradar.web"/>
     <context:component-scan base-package="com.xebia.devradar.badge"/>
 
-<!--
-    <bean class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping" />
--->
+    <!--
+        <bean class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping" />
+    -->
     <!-- Allowing JSR 303 (Bean validation) -->
     <mvc:annotation-driven />
 

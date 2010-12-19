@@ -18,7 +18,6 @@
  */
 package com.xebia.devradar.web.controller;
 
-import com.xebia.devradar.badge.BadgesOwnersRefresher;
 import com.xebia.devradar.domain.Event;
 import com.xebia.devradar.domain.Workspace;
 import com.xebia.devradar.utils.PomLoaderUtils;
@@ -53,14 +52,11 @@ public class WorkspacesControllerTest {
 
     private WorkspaceFactory workspaceFactory;
 
-    private BadgesOwnersRefresher badgesOwnersRefresher;
-
     @Before
     public void init() {
         workspaceRepository = mock(WorkspaceRepository.class);
         workspaceFactory = mock(WorkspaceFactory.class);
-        badgesOwnersRefresher = mock(BadgesOwnersRefresher.class);
-        workspacesController = new WorkspacesController(workspaceRepository, workspaceFactory, badgesOwnersRefresher);
+        workspacesController = new WorkspacesController(workspaceRepository, workspaceFactory);
     }
 
     @Test
@@ -244,13 +240,13 @@ public class WorkspacesControllerTest {
     @Test
     public void should_refresh_badges_owners() throws Exception {
         Model model = new ExtendedModelMap();
-        Workspace workspace = getWorkspace();
+        Workspace workspace = mock(Workspace.class);
 
         when(workspaceRepository.getWorkspaceById(1L)).thenReturn(workspace);
 
         String view = workspacesController.refreshBadgesOwners(1L, model);
 
-        verify(badgesOwnersRefresher, times(1)).refreshBadgesToWorkspace(workspace);
+        verify(workspace, times(1)).refreshBadges();
 
         assertThat(((Workspace)model.asMap().get("workspace")), is(workspace));
         assertThat(view, is("workspaces/show"));

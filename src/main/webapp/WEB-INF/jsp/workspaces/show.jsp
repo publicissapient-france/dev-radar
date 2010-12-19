@@ -23,41 +23,44 @@
 
 <h2>Workspace <c:out value="${workspace.name}" /></h2>
 <table>
-	<tr>
-		<td>Id:</td>
-		<td><c:out value="${workspace.id}" /></td>
-	</tr>
-	<tr>
-		<td>POM url :</td>
-		<td><a href='<c:out value="${workspace.pomUrl}"/>'><c:out
-			value="${workspace.pomUrl}" /></a></td>
-	</tr>
-	<tr>
-		<td>Name :</td>
-		<td><c:out value="${workspace.name}" /></td>
-	</tr>
-	<tr>
-		<td>Description :</td>
-		<td><c:out value="${workspace.description}" /></td>
-	</tr>
-	<tr>
-		<td><a class="submit"
-			href="<spring:url value="/workspaces/${workspace.id}/edit.html" htmlEscape="true" />">Edit</a></td>
-		<td><form:form action="./${workspace.id}/delete.html" method="delete">
-			<p class="submit"><input type="submit" value="Delete Workspace" /></p>
-		</form:form></td>
-	</tr>
     <tr>
-		<td>Badge :</td>
-		<td>
-        <c:forEach var="badge" items="${workspace.badges}">
-            <c:if test="${badge.profile != null}">
-                <c:out value="${badge.badgeType.name}" />(<c:out value="${badge.profile.nickname}" />)    
-            </c:if>
-        </c:forEach>
+        <td>Id:</td>
+        <td><c:out value="${workspace.id}" /></td>
+    </tr>
+    <tr>
+        <td>POM url :</td>
+        <td><a href='<c:out value="${workspace.pomUrl}"/>'><c:out
+                value="${workspace.pomUrl}" /></a></td>
+    </tr>
+    <tr>
+        <td>Name :</td>
+        <td><c:out value="${workspace.name}" /></td>
+    </tr>
+    <tr>
+        <td>Description :</td>
+        <td><c:out value="${workspace.description}" /></td>
+    </tr>
+    <tr>
+        <td><a class="submit"
+               href="<spring:url value="/workspaces/${workspace.id}/edit.html" htmlEscape="true" />">Edit</a></td>
+        <td><form:form action="./${workspace.id}/delete.html" method="delete">
+            <p class="submit"><input type="submit" value="Delete Workspace" /></p>
+        </form:form></td>
+    </tr>
+    <tr>
+        <td>Badge :</td>
+        <td>
+            <c:forEach var="badge" items="${workspace.badges}">
+                <c:if test="${badge.profile != null}">
+                    <c:out value="${badge.badgeType.name}" />(<c:out value="${badge.profile.nickname}" />)
+                </c:if>
+            </c:forEach>
         </td>
-
-	</tr>
+    </tr>
+    <tr>
+        <td></td>
+        <td><a href="<spring:url value="/workspaces/${workspace.id}/badges/associate.html" htmlEscape="true" />">Update Badges</a></td>        
+    </tr>
 </table>
 
 <h2>Event Sources</h2>
@@ -76,39 +79,39 @@
             <td><c:out value="${eventSource.url}" /></td>
             <td><c:out value="${eventSource.proxy.host}" /></td>
             <td><a class="submit"
-            href="<spring:url value="/workspaces/${workspace.id}/eventSources/${eventSource.id}/edit.html" htmlEscape="true" />">
-            Edit</a></td>
+                   href="<spring:url value="/workspaces/${workspace.id}/eventSources/${eventSource.id}/edit.html" htmlEscape="true" />">
+                Edit</a></td>
         </tr>
     </c:forEach>
     <tr>
-    <td colspan="5"><a class="submit"
-            href="<spring:url value="/workspaces/${workspace.id}/eventSources/new.html" htmlEscape="true" />">Add Event Source</a></td>
+        <td colspan="5"><a class="submit"
+                           href="<spring:url value="/workspaces/${workspace.id}/eventSources/new.html" htmlEscape="true" />">Add Event Source</a></td>
     </tr>
 </table>
 
 <p>
+    <a class="submit"
+       href="<spring:url value="/workspaces/${workspace.id}/refreshBadgesOwners.html" htmlEscape="true" />">
+        Refresh Badges</a></p>
 <a class="submit"
-href="<spring:url value="/workspaces/${workspace.id}/refreshBadgesOwners.html" htmlEscape="true" />">
-Refresh Badges</a></p>
-<a class="submit"
-href="<spring:url value="/workspaces/${workspace.id}/poll.html" htmlEscape="true" />">
-Poll 7 last days</a></p>
+   href="<spring:url value="/workspaces/${workspace.id}/poll.html" htmlEscape="true" />">
+    Poll 7 last days</a></p>
 
 
 <h2>Events</h2>
 <table>
-	<tr>
-		<td><b>Type</b></td>
-		<td><b>Message</b></td>
-		<td><b>Date</b></td>
-	</tr>
-	<c:forEach var="event" items="${workspace.events}">
-		<tr>
-			<td><c:out value="${event.source.description}" /></td>
-			<td><pre><c:out value="${event.message}" /></pre></td>
-			<td><c:out value="${event.date}" /></td>
-		</tr>
-	</c:forEach>
+    <tr>
+        <td><b>Type</b></td>
+        <td><b>Message</b></td>
+        <td><b>Date</b></td>
+    </tr>
+    <c:forEach var="event" items="${workspace.events}">
+        <tr>
+            <td><c:out value="${event.source.description}" /></td>
+            <td><pre><c:out value="${event.message}" /></pre></td>
+            <td><c:out value="${event.date}" /></td>
+        </tr>
+    </c:forEach>
 </table>
 
 <%@ include file="/WEB-INF/jsp/footer.jsp"%>

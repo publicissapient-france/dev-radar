@@ -36,5 +36,7 @@
             <td><a href="<spring:url value="/workspaces/new.html" htmlEscape="true" />">Create a new workspace</a></td>
             <td><a href="<spring:url value="/workspaces/list.html" htmlEscape="true" />">View workspaces</a></td>
             <td><a href="<spring:url value="/profiles/list.html" htmlEscape="true" />">View profiles</a></td>
+            <td><a href="<spring:url value="/badgeTypes/new.html" htmlEscape="true" />">Create a new badge</a></td>
+            <td><a href="<spring:url value="/badgeTypes/list.html" htmlEscape="true" />">View badge's types</a></td>
         </tr>
     </table>

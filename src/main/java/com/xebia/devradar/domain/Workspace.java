@@ -24,24 +24,19 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.persistence.Access;
-import javax.persistence.AccessType;
-import javax.persistence.Basic;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 
+import com.xebia.devradar.domain.dao.BadgeTypeRepository;
 import org.apache.commons.lang.builder.ToStringBuilder;
 
 import com.xebia.devradar.pollers.PollException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
 
-import javax.persistence.*;
 import java.util.*;
 
 
+@Configurable
 @Entity
 @Access(AccessType.FIELD)
 @NamedQueries({
@@ -49,6 +44,14 @@ import java.util.*;
         @NamedQuery(name="orderByName", query="from Workspace w order by w.name")
 })
 public class Workspace extends AbstractEntity {
+
+    @Transient
+    @PersistenceContext
+    private EntityManager entityManager;
+
+    @Transient
+    @Autowired
+    private BadgeTypeRepository badgeTypeRepository;
 
     @Basic(optional = false)
     @Column(length = 50, unique=true)
@@ -148,11 +151,32 @@ public class Workspace extends AbstractEntity {
         return events;
     }
 
+    public void refreshBadges() {
+        for (Badge badge : badges) {
+            badge.refreshBadgeOwner();
+        }
+    }
+
+    public void updateBadges(Long[] badgeTypeIds) {
+        badges.clear();
+        entityManager.flush();
+
+        for (Long badgeTypeId : badgeTypeIds) {
+            BadgeType badgeType = badgeTypeRepository.getBadgeTypeById(badgeTypeId);
+
+
+            Badge badge = new Badge();
+            badge.setBadgeType(badgeType);
+            badge.setWorkspace(this);
+            addBadge(badge);
+        }
+    }
+
     @Override
     public String toString() {
         return new ToStringBuilder(this) //
-        .append("id", this.getId())
-        .append("name", this.name) //
-        .toString();
+                .append("id", this.getId())
+                .append("name", this.name) //
+                .toString();
     }
 }

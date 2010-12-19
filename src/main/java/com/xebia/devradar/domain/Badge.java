@@ -18,14 +18,18 @@
  */
 package com.xebia.devradar.domain;
 
-import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
+import org.springframework.beans.factory.annotation.Configurable;
 
+import javax.persistence.*;
+
+@Configurable
 @Entity
 @Table(uniqueConstraints=@UniqueConstraint(columnNames={"BADGETYPE_ID", "WORKSPACE_ID"}))
 public class Badge extends AbstractEntity {
+
+    @Transient
+    @PersistenceContext
+    private EntityManager entityManager;
 
     @ManyToOne(optional = false)
     private BadgeType badgeType;
@@ -67,5 +71,17 @@ public class Badge extends AbstractEntity {
     public void setWorkspace(Workspace workspace) {
         this.workspace = workspace;
         workspace.internalAddBadge(this);
+    }
+
+    public void refreshBadgeOwner() {
+        setProfile(badgeType.getBadgeOwnerOfWorkspace(workspace));
+    }
+
+    public void delete() {
+        entityManager.remove(this);
+    }
+
+    public void create() {
+        entityManager.persist(this);
     }
 }

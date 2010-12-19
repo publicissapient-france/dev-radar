@@ -18,8 +18,6 @@
  */
 package com.xebia.devradar.persistence;
 
-import com.xebia.devradar.EventType;
-import com.xebia.devradar.badge.dsl.DslParameterType;
 import com.xebia.devradar.domain.*;
 import com.xebia.devradar.pollers.PollerServiceLocator;
 import com.xebia.devradar.pollers.git.GitHubPoller;
@@ -33,10 +31,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author Alexandre Dutra
@@ -85,16 +80,10 @@ public class DatabaseInitializerImpl implements DatabaseInitializer {
 
         final Workspace defaultWorkspace = new Workspace();
         defaultWorkspace.setName(DEVRADAR_WORKSPACE_NAME);
-
-        DslParameter dslParameter = new DslParameter();
-        dslParameter.setName("eventType");
-        dslParameter.setType(DslParameterType.EVENT_TYPE);
-        dslParameter.setValue(EventType.COMMIT.name());
-
+        
         BadgeType biggerCommiter = new BadgeType();
-        biggerCommiter.setDslQuery("select e.profile.id from Event e where e.workspace.id = :workspaceId and e.eventType = :eventType group by e.profile.id order by count(e.id) desc");
+        biggerCommiter.setDslQuery("select e.profile.id from Event e where e.workspace.id = :workspaceId and e.eventType = 'COMMIT' group by e.profile.id order by count(e.id) desc");
         biggerCommiter.setName("Bigger Commiter");
-        biggerCommiter.setDslParameters(new HashSet<DslParameter>(Arrays.asList(dslParameter)));
 
         entityManager.persist(biggerCommiter);
 
@@ -110,7 +99,7 @@ public class DatabaseInitializerImpl implements DatabaseInitializer {
             query.setParameter("pollerClass", HudsonPoller.class);
             PollerDescriptor pollerDescriptor = (PollerDescriptor) query.getSingleResult();
             EventSource source = new EventSource(pollerDescriptor, new URL(DEV_RADAR_HUDSON_URL), "Hudson nightly build");
-            defaultWorkspace.addEventSource(source);
+            //defaultWorkspace.addEventSource(source);
 
             query = this.entityManager.createQuery("from PollerDescriptor pd where pd.pollerClass = :pollerClass");
             query.setParameter("pollerClass", GitHubPoller.class);

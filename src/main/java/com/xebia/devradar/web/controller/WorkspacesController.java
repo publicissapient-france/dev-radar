@@ -18,7 +18,6 @@
  */
 package com.xebia.devradar.web.controller;
 
-import com.xebia.devradar.badge.BadgesOwnersRefresher;
 import com.xebia.devradar.domain.Event;
 import com.xebia.devradar.domain.Workspace;
 import com.xebia.devradar.pollers.PollException;
@@ -52,18 +51,14 @@ public class WorkspacesController {
     @Autowired
     private WorkspaceRepository workspaceRepository;
 
-    @Autowired
-    private BadgesOwnersRefresher badgesOwnersRefresher;
-
     private WorkspaceFactory workspaceFactory = new WorkspaceFactory();
 
     public WorkspacesController() {
     }
 
-    public WorkspacesController(WorkspaceRepository workspaceRepository, WorkspaceFactory workspaceFactory, BadgesOwnersRefresher badgesOwnersRefresher) {
+    public WorkspacesController(WorkspaceRepository workspaceRepository, WorkspaceFactory workspaceFactory) {
         this.workspaceRepository = workspaceRepository;
         this.workspaceFactory = workspaceFactory;
-        this.badgesOwnersRefresher = badgesOwnersRefresher;
     }
 
     @RequestMapping(value = "/new", method = RequestMethod.GET)
@@ -168,8 +163,7 @@ public class WorkspacesController {
     @RequestMapping(value = "/{workspaceId}/refreshBadgesOwners", method = RequestMethod.GET)
     public String refreshBadgesOwners(@PathVariable("workspaceId") Long workspaceId, Model model) {
         Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
-
-        badgesOwnersRefresher.refreshBadgesToWorkspace(workspace);
+        workspace.refreshBadges();
         model.addAttribute("workspace", workspace);
         return "workspaces/show";
     }

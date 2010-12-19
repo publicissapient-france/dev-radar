@@ -18,12 +18,32 @@
  */
 package com.xebia.devradar.domain;
 
+import com.xebia.devradar.badge.BadgeOwnerFinder;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.BeanFactoryUtils;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+import org.springframework.util.Assert;
+
 import javax.persistence.*;
-import java.util.Set;
+import java.util.List;
 
+@Configurable
 @Entity
+public class BadgeType extends AbstractEntity  implements ApplicationContextAware, InitializingBean {
 
-public class BadgeType extends AbstractEntity {
+    private static final Log LOGGER = LogFactory.getLog(BadgeType.class);
+
+    @Transient
+    @PersistenceContext
+    private EntityManager entityManager;
+
+    @Transient
+    private ApplicationContext applicationContext;
 
     @Basic(optional = false)
     @Column(unique = true)
@@ -31,11 +51,10 @@ public class BadgeType extends AbstractEntity {
 
     private String dslQuery;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "BADGETYPE_ID")
-    private Set<DslParameter> dslParameters;
-
     private Class ownerFinderClass;
+
+    public BadgeType() {
+    }
 
     public String getName() {
         return name;
@@ -53,19 +72,78 @@ public class BadgeType extends AbstractEntity {
         this.dslQuery = dslQuery;
     }
 
-    public Set<DslParameter> getDslParameters() {
-        return dslParameters;
-    }
-
-    public void setDslParameters(Set<DslParameter> dslParameters) {
-        this.dslParameters = dslParameters;
-    }
-
     public Class getOwnerFinderClass() {
         return ownerFinderClass;
     }
 
     public void setOwnerFinderClass(Class ownerFinderClass) {
         ownerFinderClass = ownerFinderClass;
+    }
+
+    public void create() {
+        entityManager.persist(this);
+    }
+
+    public void update() {
+        entityManager.merge(this);
+    }
+
+    public void delete() {
+        entityManager.remove(this);
+    }
+
+    public Profile getBadgeOwnerOfWorkspace(Workspace workspace) {
+        Long profileId;
+
+        if (getDslQuery() != null) {
+            profileId = refreshWithDsl(workspace);
+        } else {
+            profileId = refreshWithOwnerFinder(workspace);
+        }
+        if (profileId != null) {
+            Profile profile = entityManager.find(Profile.class, profileId);
+
+            if (profile == null) {
+                throw new IllegalStateException("the dsl query doesn't return a valid profile.");
+            }
+            return profile;
+        } else {
+            return null;
+        }
+    }
+
+    private Long refreshWithOwnerFinder(Workspace workspace) {
+        BadgeOwnerFinder badgeOwnerFinder = (BadgeOwnerFinder) BeanFactoryUtils.beanOfType(applicationContext, getOwnerFinderClass());
+
+        return badgeOwnerFinder.findBadgeOwnerForWorkspace(workspace.getId());
+    }
+
+    private Long refreshWithDsl(Workspace workspace) {
+        Query query = entityManager.createQuery(getDslQuery());
+
+        query.setParameter("workspaceId", workspace.getId());
+        List<Long> profilIds = query.setMaxResults(1).getResultList();
+
+
+        if (profilIds.size() == 0) {
+            return null;
+        } else {
+            return profilIds.get(0);
+        }
+    }
+
+    public void setEntityManager(EntityManager entityManager) {
+        this.entityManager = entityManager;
+    }
+
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.applicationContext = applicationContext;
+    }
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        Assert.notNull(entityManager);
+        Assert.notNull(applicationContext);
     }
 }
