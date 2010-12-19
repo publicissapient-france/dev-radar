@@ -62,7 +62,14 @@
         $(document).ready(function() {
             $.getJSON("/resources/workspace", function(workspace) {
                 $.each(workspace.events, function (i, event) {
-                    $('#events').append('<div class="event"><div class="commit-picture"><img class="' + event.author + ' author" src="' + event.gravatarUrl + '"/>' + '<br/>' + event.author + '</div><div class="commit-date">' + event.timestamp + '</div><div class="commit-text">' + event.message + '</div>')
+                    var date = new Date(event.timestamp);
+                    var day = date.getDate();
+                    var month = date.getMonth() + 1;
+                    var year = date.getFullYear();
+                    var hour = date.getHours();
+                    var minute = date.getMinutes();
+                    var formattedDate = day + "/" + month + "/" + year + " " + hour + ":" + minute;
+                    $('#events').append('<div class="event"><div class="commit-picture"><img class="' + event.author + ' author" src="' + event.gravatarUrl + '"/>' + '<br/>' + event.author + '</div><div class="commit-date">' + formattedDate + '</div><div class="commit-text">' + event.message + '</div>')
                 });
             });
         });
