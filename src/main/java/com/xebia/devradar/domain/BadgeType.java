@@ -31,12 +31,11 @@ import org.springframework.util.Assert;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Set;
 
 @Configurable
 @Entity
 public class BadgeType extends AbstractEntity  implements ApplicationContextAware, InitializingBean {
-
-    private static final Log LOGGER = LogFactory.getLog(BadgeType.class);
 
     @Transient
     @PersistenceContext
@@ -52,6 +51,9 @@ public class BadgeType extends AbstractEntity  implements ApplicationContextAwar
     private String dslQuery;
 
     private Class ownerFinderClass;
+
+    @OneToMany(mappedBy = "badgeType", cascade = CascadeType.ALL)
+    private Set<Badge> badges;
 
     public BadgeType() {
     }
