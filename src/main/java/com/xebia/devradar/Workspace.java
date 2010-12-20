@@ -20,17 +20,29 @@ package com.xebia.devradar;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
+import java.util.SortedSet;
 import java.util.TreeSet;
 
+import org.apache.commons.lang.builder.CompareToBuilder;
+
+/*
+ * make fields visible for tests.
+ */
 public class Workspace {
-    static final int max_retain_size = 10;
+    static final int MAX_RETAIN_SIZE = 10;
 
     /**
      * Set d'événements trié par date décroissante.
      */
-    Set<Event> events = new TreeSet<Event>(Collections.reverseOrder());
+    SortedSet<Event> events = new TreeSet<Event>(Collections.reverseOrder(new Comparator<Event>() {
+        @Override
+        public int compare(Event o1, Event o2) {
+            return new CompareToBuilder().append(o1.timestamp, o2.timestamp).toComparison();
+        }
+    }));
 
     Fetcher fetcher;
 
@@ -50,9 +62,9 @@ public class Workspace {
     public List<Event> getEvents() {
         poll();
 
-        if (this.events.size() < max_retain_size) {
+        if (this.events.size() < MAX_RETAIN_SIZE) {
             return new ArrayList<Event>(this.events);
         }
-        return new ArrayList<Event>(this.events).subList(0, max_retain_size);
+        return new ArrayList<Event>(this.events).subList(0, MAX_RETAIN_SIZE);
     }
 }

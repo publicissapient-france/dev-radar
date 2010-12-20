@@ -20,9 +20,10 @@ package com.xebia.devradar;
 
 import java.util.Date;
 
-import org.apache.commons.lang.builder.CompareToBuilder;
-
-public class Event implements Comparable<Event> {
+/*
+ * Use public field instead of private+getter&setter for immutable fields
+ */
+public class Event {
 
     public final long timestamp;
     public final String author;
@@ -35,13 +36,9 @@ public class Event implements Comparable<Event> {
         this.message = message;
         this.gravatarUrl = gravatarUrl;
     }
-    
+
     public Event(Date date, String author, String message, String gravatarUrl) {
         this(date.getTime(), author, message, gravatarUrl);
     }
 
-    @Override
-    public int compareTo(Event o) {
-        return new CompareToBuilder().append(this.timestamp, o.timestamp).toComparison();
-    }
 }

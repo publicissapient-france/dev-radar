@@ -24,7 +24,17 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 /**
+ * <p>
  * Resource jax-rs permettant d'exposer un workspace.
+ * </p>
+ * <p>
+ * Implementation mono-workspace pour le moment. Une evolution multi-workspace (/workspace/${id}) est vraisemblable. 
+ * Une temporary redirect 307
+ * </p>
+ * 
+ */
+/*
+ * make fields visible for tests.
  */
 @Path("/workspace")
 public class WorkspaceResource {

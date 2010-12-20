@@ -72,7 +72,7 @@ public class WorkspaceTest {
     @Test
     public void getEvents_should_returns_list_which_size_is_egal_to_max_retain_size() {
         final Set<Event> fetchedEvents = new HashSet<Event>();
-        for (int i=0; i<Workspace.max_retain_size*2; i++) {
+        for (int i=0; i<Workspace.MAX_RETAIN_SIZE*2; i++) {
             fetchedEvents.add(new Event(System.currentTimeMillis() + i, "joe", "committed smthg", "url gravatar"));
         }
 
@@ -84,13 +84,13 @@ public class WorkspaceTest {
         };
 
         List<Event> events = workspace.getEvents();
-        assertThat(events.size(), equalTo(Workspace.max_retain_size));
+        assertThat(events.size(), equalTo(Workspace.MAX_RETAIN_SIZE));
     }
 
     @Test
     public void getEvents_should_returns_list_which_size_is_less_to_max_retain_size() {
         final Set<Event> fetchedEvents = new HashSet<Event>();
-        int nbFetchedEvents = Workspace.max_retain_size - 3;
+        int nbFetchedEvents = Workspace.MAX_RETAIN_SIZE - 3;
         for (int i=0; i< nbFetchedEvents; i++) {
             fetchedEvents.add(new Event(new Date().getTime() + i, "joe", "committed smthg", "url gravatar"));
         }
