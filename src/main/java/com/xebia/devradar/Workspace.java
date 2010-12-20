@@ -19,7 +19,7 @@
 package com.xebia.devradar;
 
 import java.util.ArrayList;
-import java.util.Comparator;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
@@ -30,12 +30,7 @@ public class Workspace {
     /**
      * Set d'événements trié par date décroissante.
      */
-    Set<Event> events = new TreeSet<Event>(new Comparator<Event>() {
-        @Override
-        public int compare(Event event, Event event1) {
-            return new Long(event1.timestamp - event.timestamp).intValue();
-        }
-    });
+    Set<Event> events = new TreeSet<Event>(Collections.reverseOrder());
 
     Fetcher fetcher;
 

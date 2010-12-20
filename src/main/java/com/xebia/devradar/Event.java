@@ -18,7 +18,11 @@
  */
 package com.xebia.devradar;
 
-public class Event {
+import java.util.Date;
+
+import org.apache.commons.lang.builder.CompareToBuilder;
+
+public class Event implements Comparable<Event> {
 
     public final long timestamp;
     public final String author;
@@ -30,5 +34,14 @@ public class Event {
         this.author = author;
         this.message = message;
         this.gravatarUrl = gravatarUrl;
+    }
+    
+    public Event(Date date, String author, String message, String gravatarUrl) {
+        this(date.getTime(), author, message, gravatarUrl);
+    }
+
+    @Override
+    public int compareTo(Event o) {
+        return new CompareToBuilder().append(this.timestamp, o.timestamp).toComparison();
     }
 }

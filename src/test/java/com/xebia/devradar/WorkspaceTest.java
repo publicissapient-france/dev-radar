@@ -24,7 +24,7 @@ public class WorkspaceTest {
 
     @Test
     public void events_with_same_timestamp_are_equals_for_a_workspace() {
-        long timestamp = new Date().getTime();
+        long timestamp = System.currentTimeMillis();
         Event event1 = new Event(timestamp, "joe", "msg de joe", "gravatarJoe");
         Event event2 = new Event(timestamp, "Nico", "msg de Nico", "gravatarNico");
 
@@ -73,7 +73,7 @@ public class WorkspaceTest {
     public void getEvents_should_returns_list_which_size_is_egal_to_max_retain_size() {
         final Set<Event> fetchedEvents = new HashSet<Event>();
         for (int i=0; i<Workspace.max_retain_size*2; i++) {
-            fetchedEvents.add(new Event(new Date().getTime() + i, "joe", "committed smthg", "url gravatar"));
+            fetchedEvents.add(new Event(System.currentTimeMillis() + i, "joe", "committed smthg", "url gravatar"));
         }
 
         workspace = new Workspace() {
