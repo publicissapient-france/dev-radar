@@ -60,7 +60,7 @@
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
     <script type="text/javascript">
         $(document).ready(function() {
-            $.getJSON("/resources/workspace", function(workspace) {
+            $.getJSON("/resources/workspaces/1", function(workspace) {
                 $.each(workspace.events, function (i, event) {
                     var date = new Date(event.timestamp);
                     var day = date.getDate();

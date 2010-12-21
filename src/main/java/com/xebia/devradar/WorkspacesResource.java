@@ -18,24 +18,19 @@
  */
 package com.xebia.devradar;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 
 /**
- * JAX-RS SUb-Resource to handle a Workspace.
+ * JAX-RS Root Resource to handle workspaces.
  */
-public class WorkspaceResource {
+@Path("/workspaces")
+public class WorkspacesResource {
 
-    private Workspace workspace;
+    @Path("{id}")
+    public WorkspaceResource getWorkspace(@PathParam("id") Long id) {
 
-    public WorkspaceResource(Workspace workspace) {
-        this.workspace = workspace;
-    }
-
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    public Workspace getWorkspace() {
-        return workspace;
+        Workspace workspace = new Workspace();
+        return new WorkspaceResource(workspace);
     }
 }
