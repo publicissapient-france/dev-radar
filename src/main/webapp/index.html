@@ -61,7 +61,7 @@
     <script type="text/javascript">
         $(document).ready(function() {
             $.getJSON("/resources/workspaces/1", function(workspace) {
-                $.each(workspace.events, function (i, event) {
+                $.each(workspace.timeline.events, function (i, event) {
                     var date = new Date(event.timestamp);
                     var day = date.getDate();
                     var month = date.getMonth() + 1;
