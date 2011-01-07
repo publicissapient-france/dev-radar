@@ -1,6 +1,7 @@
+
 <html>
 <head>
-    <title>Dev Radar</title>
+    <title></title>
     <style type="text/css">
         body {
             margin: 0;
@@ -8,14 +9,14 @@
         }
 
         .event {
-            width: 600px;
-            margin-top: 20px;
+            width: 90%;
+            margin-top: 10px;
             margin-left: auto;
             margin-right: auto;
             background-color: #66CC33;
             border-radius: 10px;
             text-align: left;
-            padding: 15px;
+            padding: 5px;
             -moz-box-shadow: 1px 1px 12px #555;
             -webkit-box-shadow: 1px 1px 12px #555;
             box-shadow: 1px 1px 12px #555;
@@ -24,23 +25,24 @@
 
         .commit-picture {
             float: left;
-            width: 80px;
+            width: 150px;
             text-align: center;
-            font-size: 1.2em;
         }
 
         .commit-text {
-            font-size: 1.4em;
             margin-left: 100px;
             text-align: right;
+            font-family:"Comic Sans MS", cursive, sans-serif;
+            font-size: 2em;
         }
 
         .commit-date {
-            font-style: italic;
-            font-size: 0.9em;
             margin-bottom: 20px;
             margin-left: 100px;
             text-align: left;
+            font-family:"Comic Sans MS", cursive, sans-serif;
+            font-size: 1.5em;
+            font-style: italic;
         }
 
         .author {
@@ -52,15 +54,19 @@
         }
 
         #workspace {
-            font-size: 1.5em;
-            text-align: left;
-            padding-left: 25px;
+            text-align: center;
+            font-family:"Comic Sans MS", cursive, sans-serif;
+            font-size: 2.5em;
+            font-weight: bold;
+            font-variant: small-caps;
         }
     </style>
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
     <script type="text/javascript">
         $(document).ready(function() {
             $.getJSON("/resources/workspaces/1", function(workspace) {
+                $('#workspace').append('<div class="workspace">' + workspace.name + '</div>');
+                $('title').append(workspace.name);
                 $.each(workspace.timeline.events, function (i, event) {
                     var date = new Date(event.timestamp);
                     var day = date.getDate();
@@ -69,7 +75,7 @@
                     var hour = date.getHours();
                     var minute = date.getMinutes();
                     var formattedDate = day + "/" + month + "/" + year + " " + hour + ":" + minute;
-                    $('#events').append('<div class="event"><div class="commit-picture"><img class="' + event.author + ' author" src="' + event.gravatarUrl + '"/>' + '<br/>' + event.author + '</div><div class="commit-date">' + formattedDate + '</div><div class="commit-text">' + event.message + '</div>')
+                    $('#events').append('<div class="event"><div class="commit-picture"><img class="' + event.author + ' author" src="' + event.gravatarUrl + '?s=140" title="' + event.author + '"/></div><div class="commit-date">' + formattedDate + '</div><div class="commit-text">' + event.message + '</div>')
                 });
             });
         });
@@ -78,7 +84,7 @@
 
 <body>
 
-<h1>Dev Radar</h1>
+<div id="workspace"></div>
 
 <div id="events"></div>
 

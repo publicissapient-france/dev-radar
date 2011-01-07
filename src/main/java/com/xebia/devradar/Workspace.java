@@ -27,6 +27,7 @@ import java.util.Set;
  */
 public class Workspace {
 
+    String name;
     List<Event> events = new ArrayList<Event>();
     Timeline timeline;
     Fetcher fetcher;
@@ -35,15 +36,21 @@ public class Workspace {
         this(new Fetcher(), new Timeline());
     }
 
+
     public Workspace(Fetcher fetcher, Timeline timeline) {
         this.fetcher = fetcher;
         this.timeline = timeline;
+        this.name = "Dev Radar";
     }
 
     void poll() {
         Set<Event> fetchedEvents = this.fetcher.fetch();
         this.events.addAll(fetchedEvents);
         this.timeline.update(this.events);
+    }
+
+    public String getName() {
+        return name;
     }
 
     public Timeline getTimeline() {
