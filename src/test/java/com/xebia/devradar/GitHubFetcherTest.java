@@ -104,7 +104,8 @@ public class GitHubFetcherTest {
     }
 
     private void initJerseyForTest(String path) {
-        try {URL url = this.getClass().getResource(path);
+        try {
+            URL url = this.getClass().getResource(path);
             URL urlSpied = PowerMockito.spy(url);
             URI uri = url.toURI();
             URI uriSpied = PowerMockito.spy(uri);
