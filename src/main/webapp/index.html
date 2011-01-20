@@ -72,7 +72,7 @@
                     var hour = date.getHours();
                     var minute = date.getMinutes();
                     var formattedDate = day + "/" + month + "/" + year + " " + hour + ":" + minute;
-                    $('#events').append('<div class="event"><div class="commit-picture"><img class="' + event.author + ' author" src="' + event.gravatarUrl + '?s=140" title="' + event.author + '"/></div><div class="commit-date">' + formattedDate + '</div><div class="commit-text">' + event.message + '</div>')
+                    $('#events').append('<div class="event"><div class="commit-picture"><img class="' + event.author + ' author" src="' + event.gravatarUrl + '&s=140" title="' + event.author + '"/></div><div class="commit-date">' + formattedDate + '</div><div class="commit-text">' + event.message + '</div>')
                 });
             });
         });

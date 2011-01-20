@@ -18,6 +18,8 @@
  */
 package com.xebia.devradar;
 
+import org.apache.commons.codec.digest.DigestUtils;
+
 import java.util.Date;
 
 /*
@@ -25,20 +27,30 @@ import java.util.Date;
  */
 public class Event {
 
+    private static final String GRAVATAR_URL = "http://www.gravatar.com/avatar/";
+    private static final String DEFAULT_IMAGE = "?d=mm";
+
     public final long timestamp;
     public final String author;
     public final String message;
     public final String gravatarUrl;
 
-    public Event(long timestamp, String author, String message, String gravatarUrl) {
+    public Event(long timestamp, String author, String message, String email) {
         this.timestamp = timestamp;
         this.author = author;
         this.message = message;
-        this.gravatarUrl = gravatarUrl;
+        this.gravatarUrl = getGravatarUrl(email);
     }
 
-    public Event(Date date, String author, String message, String gravatarUrl) {
-        this(date.getTime(), author, message, gravatarUrl);
+    public Event(Date date, String author, String message, String email) {
+        this(date.getTime(), author, message, email);
     }
 
+    private String getGravatarUrl(String email) {
+        StringBuilder builder = new StringBuilder(GRAVATAR_URL);
+
+        builder.append(DigestUtils.md5Hex(email));
+        builder.append(DEFAULT_IMAGE);
+        return builder.toString();
+    }
 }
