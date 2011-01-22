@@ -61,9 +61,13 @@ public class GitHubFetcher {
         ClientConfig clientConfig = new DefaultClientConfig();
         clientConfig.getFeatures().put(COM_SUN_JERSEY_API_JSON_POJOMAPPING_FEATURE, true);
 
-        GithubCommitsDTO githubCommitsDTO = Client.create(clientConfig)
+        GithubCommitsDTO githubCommitsDTO = buildJerseyClient(clientConfig)
                 .resource(url).get(GithubCommitsDTO.class);
         return githubCommitsDTO;
+    }
+
+    Client buildJerseyClient(ClientConfig clientConfig) {
+        return Client.create(clientConfig);
     }
 
     /*
