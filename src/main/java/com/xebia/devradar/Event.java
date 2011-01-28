@@ -48,7 +48,7 @@ public class Event {
 
     private String getGravatarUrl(String email) {
         if (email == null) {
-            return null;
+            email = "";
         }
         StringBuilder builder = new StringBuilder(GRAVATAR_URL);
 

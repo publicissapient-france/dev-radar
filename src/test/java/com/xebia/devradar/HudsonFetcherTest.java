@@ -20,17 +20,12 @@ package com.xebia.devradar;
 
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientHandler;
+import com.sun.jersey.api.client.ClientHandlerException;
 import com.sun.jersey.api.client.config.ClientConfig;
-import com.sun.jersey.client.urlconnection.HttpURLConnectionFactory;
-import com.sun.jersey.client.urlconnection.URLConnectionClientHandler;
 import org.hamcrest.CoreMatchers;
 import org.junit.Test;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.*;
 
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -52,12 +47,12 @@ public class HudsonFetcherTest {
         }
     };
 
-    /*  @Test(expected = ClientHandlerException.class)
-   public void should_throw_a_runtime_exception_if_cannot_get_commits() {
-       String resource = getUriFromResourceAsString("/github/json/github-rest-stream-invalid.json");
+    @Test(expected = ClientHandlerException.class)
+    public void should_throw_a_runtime_exception_if_cannot_get_builds() {
+        String resource = getUriFromResourceAsString("/github/json/github-rest-stream-invalid.json");
 
-       fetcher.fetch(resource);
-   } */
+        fetcher.fetch(resource);
+    }
 
     @Test
     public void should_return_an_empty_set_if_no_builds_exist() {
@@ -101,7 +96,7 @@ public class HudsonFetcherTest {
         assertThat(event.timestamp, equalTo(1295779740666L));
         assertThat(event.author, nullValue());
         assertThat(event.message, equalTo("Build SUCCESS"));
-        assertThat(event.gravatarUrl, nullValue());
+        assertThat(event.gravatarUrl, equalTo("http://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?d=mm"));
     }
 
     @Test
@@ -129,7 +124,7 @@ public class HudsonFetcherTest {
         assertThat(event.timestamp, equalTo(1295779740666L));
         assertThat(event.author, equalTo("Nicolas Griso"));
         assertThat(event.message, equalTo("Build SUCCESS"));
-        assertThat(event.gravatarUrl, nullValue());
+        assertThat(event.gravatarUrl, equalTo("http://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?d=mm"));
     }
 
     @Test
