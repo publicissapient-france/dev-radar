@@ -47,6 +47,9 @@ public class Event {
     }
 
     private String getGravatarUrl(String email) {
+        if (email == null) {
+            return null;
+        }
         StringBuilder builder = new StringBuilder(GRAVATAR_URL);
 
         builder.append(DigestUtils.md5Hex(email));

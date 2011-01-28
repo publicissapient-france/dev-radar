@@ -30,21 +30,23 @@ public class Workspace {
     String name;
     List<Event> events = new ArrayList<Event>();
     Timeline timeline;
-    GitHubFetcher fetcher;
+    //GitHubFetcher fetcher;
+    HudsonFetcher fetcher;
 
     public Workspace() {
-        this(new GitHubFetcher(), new Timeline());
+        this(new HudsonFetcher(), new Timeline());
     }
 
 
-    public Workspace(GitHubFetcher fetcher, Timeline timeline) {
+    public Workspace(HudsonFetcher fetcher, Timeline timeline) {
         this.fetcher = fetcher;
         this.timeline = timeline;
         this.name = "Dev Radar";
     }
 
     void poll() {
-        Set<Event> fetchedEvents = this.fetcher.fetch("http://github.com/api/v2/json/commits/list/xebia-france/dev-radar/master");
+        //Set<Event> fetchedEvents = this.fetcher.fetch("http://github.com/api/v2/json/commits/list/xebia-france/dev-radar/master");
+        Set<Event> fetchedEvents = this.fetcher.fetch("http://fluxx.fr.cr:8080/hudson/job/dev-radar/api/json?tree=builds[result,culprits[fullName,absoluteUrl],timestamp]");
         this.events.addAll(fetchedEvents);
         this.timeline.update(this.events);
     }
