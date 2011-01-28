@@ -19,50 +19,56 @@
 package com.xebia.devradar;
 
 import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.ClientHandler;
 import com.sun.jersey.api.client.ClientHandlerException;
+import com.sun.jersey.api.client.config.ClientConfig;
+import com.sun.jersey.client.urlconnection.HttpURLConnectionFactory;
 import com.sun.jersey.client.urlconnection.URLConnectionClientHandler;
 import org.hamcrest.CoreMatchers;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Matchers;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 
-import java.io.*;
-import java.net.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.*;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({Client.class, URLConnectionClientHandler.class})
 public class GitHubFetcherTest {
 
-    private GitHubFetcher fetcher = new GitHubFetcher();
+    private static GitHubFetcher fetcher = new GitHubFetcher() {
+        @Override
+        Client buildJerseyClient(ClientConfig clientConfig) {
+            ClientHandler clientHandler = FileClientHandlerBuilder.newFileClientHandler()
+                    .withHeader("Content-Type", "application/json; charset=utf-8")
+                    .create();return new Client(clientHandler, clientConfig);
+        }
+    };
 
     @Test(expected = ClientHandlerException.class)
     public void should_throw_a_runtime_exception_if_cannot_get_commits() {
-        initJerseyForTest("/github/json/github-rest-stream-invalid.json");
+        String resource = getUriFromResourceAsString("/github/json/github-rest-stream-invalid.json");
 
-        fetcher.fetch("");
+        fetcher.fetch(resource);
     }
 
     @Test
     public void should_return_an_empty_set_if_no_commits_exist() {
-        initJerseyForTest("/github/json/github-rest-stream-0-commit.json");
+        String resource = getUriFromResourceAsString("/github/json/github-rest-stream-0-commit.json");
 
-        Set<Event> events = fetcher.fetch("");
+        Set<Event> events = fetcher.fetch(resource);
 
         assertThat(events.isEmpty(), CoreMatchers.is(true));
     }
 
     @Test
     public void should_return_an_1_event_set_if_1_commit_exists() {
-        initJerseyForTest("/github/json/github-rest-stream-1-commit.json");
+        String resource = getUriFromResourceAsString("/github/json/github-rest-stream-1-commit.json");
 
-        Set<Event> events = fetcher.fetch("");
+        Set<Event> events = fetcher.fetch(resource);
 
         assertThat(events.size(), CoreMatchers.is(1));
         Event event = events.iterator().next();
@@ -74,9 +80,9 @@ public class GitHubFetcherTest {
 
     @Test
     public void should_return_an_2_event_set_if_2_commit_exists() {
-        initJerseyForTest("/github/json/github-rest-stream-2-commit.json");
+        String resource = getUriFromResourceAsString("/github/json/github-rest-stream-2-commit.json");
 
-        Set<Event> events = fetcher.fetch("");
+        Set<Event> events = fetcher.fetch(resource);
 
         assertThat(events.size(), CoreMatchers.is(2));
         for (Event event : events) {
@@ -96,93 +102,18 @@ public class GitHubFetcherTest {
 
     @Test
     public void should_return_35_event_set_if_35_commits_exist() {
-        initJerseyForTest("/github/json/github-rest-stream-35-commits.json");
+        String resource = getUriFromResourceAsString("/github/json/github-rest-stream-35-commits.json");
 
-        Set<Event> events = fetcher.fetch("");
+        Set<Event> events = fetcher.fetch(resource);
 
         assertThat(events.size(), CoreMatchers.is(35));
     }
 
-    private void initJerseyForTest(String path) {
+    private String getUriFromResourceAsString(String path) {
         try {
-            URL url = this.getClass().getResource(path);
-            URL urlSpied = PowerMockito.spy(url);
-            URI uri = url.toURI();
-            URI uriSpied = PowerMockito.spy(uri);
-            PowerMockito.when(uriSpied.toURL()).thenReturn(urlSpied);
-            PowerMockito.when(urlSpied.openConnection()).thenReturn((URLConnection)new HttpURLConnectionFromFile(url));
-            PowerMockito.mockStatic(URI.class);
-            PowerMockito.when(URI.create(Matchers.anyString())).thenReturn(uriSpied);
+            return getClass().getResource(path).toURI().toString();
         } catch (URISyntaxException e) {
-            throw new RuntimeException("Jersey initialisation for test failed", e);
-        } catch (MalformedURLException e) {
-            throw new RuntimeException("Jersey initialisation for test failed", e);
-        } catch (IOException e) {
-            throw new RuntimeException("Jersey initialisation for test failed", e);
-        }
-    }
-
-    class HttpURLConnectionFromFile extends HttpURLConnection {
-
-        protected HttpURLConnectionFromFile(URL url) {
-            super(url);
-        }
-
-        @Override
-        public int getResponseCode() throws IOException {
-            return HTTP_OK;
-        }
-
-        @Override
-        public String getContentType() {
-            return super.getContentType();
-        }
-
-        @Override
-        public Object getContent(Class[] classes) throws IOException {
-            return super.getContent(classes);
-        }
-
-        @Override
-        public Map<String, List<String>> getHeaderFields() {
-            Map<String, List<String>> map = new HashMap<String, List<String>>();
-
-            map.put(null, Arrays.asList("HTTP/1.1 200 OK"));
-            map.put("Status", Arrays.asList("200 OK"));
-            map.put("X-Runtime", Arrays.asList("61ms"));
-            map.put("Etag", Arrays.asList("\"fe6b16385459c031ea491fa831a72583\""));
-            map.put("Date", Arrays.asList("Sun, 16 Jan 2011 10:48:47 GMT"));
-            map.put("Content-Length", Arrays.asList(new Integer(url.getFile().length()).toString()));
-            map.put("Content-Type", Arrays.asList("application/json; charset=utf-8"));
-            map.put("Connection", Arrays.asList("keep-alive"));
-            map.put("Server", Arrays.asList("nginx/0.7.67"));
-            map.put("Cache-Control", Arrays.asList("private, max-age=0, must-revalidate"));
-            return map;
-        }
-
-        @Override
-        public InputStream getInputStream() throws IOException {
-            return new FileInputStream(url.getFile());
-        }
-
-        @Override
-        public void disconnect() {
-
-        }
-
-        @Override
-        public boolean usingProxy() {
-            return false;
-        }
-
-        @Override
-        public void connect() throws IOException {
-
-        }
-
-        @Override
-        public OutputStream getOutputStream() throws IOException {
-            return new ByteArrayOutputStream();
+            throw new IllegalArgumentException(e);
         }
     }
 }

@@ -42,7 +42,12 @@ public class HudsonFetcherTest {
     private HudsonFetcher fetcher = new HudsonFetcher() {
         @Override
         Client buildJerseyClient(ClientConfig clientConfig) {
-            ClientHandler clientHandler = new URLConnectionClientHandler(new CustomHttpURLConnectionFactory());
+            ClientHandler clientHandler = FileClientHandlerBuilder.newFileClientHandler()
+                    .withFile("http://fluxx.fr.cr:8080/hudson/user/Nicolas%20Griso/api/json?tree=property%5Baddress%5D", "/hudson/json/hudson-rest-stream-user-ngriso.json")
+                    .withFile("http://fluxx.fr.cr:8080/hudson/user/mrenou/api/json?tree=property%5Baddress%5D", "/hudson/json/hudson-rest-stream-user-mrenou.json")
+                    .withFile("http://fluxx.fr.cr:8080/hudson/user/nomail/api/json?tree=property%5Baddress%5D", "/hudson/json/hudson-rest-stream-user-nomail.json")
+                    .withHeader("Content-Type", "application/javascript; charset=utf-8")
+                    .create();
             return new Client(clientHandler, clientConfig);
         }
     };
@@ -191,68 +196,12 @@ public class HudsonFetcherTest {
 
     }
 
-
     private String getUriFromResourceAsString(String path) {
         try {
             return getClass().getResource(path).toURI().toString();
         } catch (URISyntaxException e) {
             throw new IllegalArgumentException(e);
         }
-    }
-
-    class CustomHttpURLConnectionFactory implements HttpURLConnectionFactory {
-
-        @Override
-        public HttpURLConnection getHttpURLConnection(URL url) throws IOException {
-            if (url.toString().equals("http://fluxx.fr.cr:8080/hudson/user/Nicolas%20Griso/api/json?tree=property%5Baddress%5D")) {
-                url = getClass().getResource("/hudson/json/hudson-rest-stream-user-ngriso.json");
-            }
-            if (url.toString().equals("http://fluxx.fr.cr:8080/hudson/user/mrenou/api/json?tree=property%5Baddress%5D")) {
-                url = getClass().getResource("/hudson/json/hudson-rest-stream-user-mrenou.json");
-            }
-            if (url.toString().equals("http://fluxx.fr.cr:8080/hudson/user/nomail/api/json?tree=property%5Baddress%5D")) {
-                url = getClass().getResource("/hudson/json/hudson-rest-stream-user-nomail.json");
-            }
-            return new HttpURLConnectionFromFile(url);
-        }
-    }
-
-    static class HttpURLConnectionFromFile extends HttpURLConnection {
-
-        protected HttpURLConnectionFromFile(URL url) {
-            super(url);
-        }
-
-        @Override
-        public int getResponseCode() throws IOException {
-            return HTTP_OK;
-        }
-
-        @Override
-        public Map<String, List<String>> getHeaderFields() {
-            Map<String, List<String>> map = new HashMap<String, List<String>>();
-            map.put("Content-Type", Arrays.asList("application/javascript; charset=utf-8"));
-            return map;
-        }
-
-        @Override
-        public InputStream getInputStream() throws IOException {
-            return url.openStream();
-        }
-
-        @Override
-        public void disconnect() {
-        }
-
-        @Override
-        public boolean usingProxy() {
-            return false;
-        }
-
-        @Override
-        public void connect() throws IOException {
-        }
-
     }
 }
 
