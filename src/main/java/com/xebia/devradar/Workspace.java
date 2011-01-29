@@ -18,9 +18,7 @@
  */
 package com.xebia.devradar;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /*
  * make fields visible for tests.
@@ -30,24 +28,23 @@ public class Workspace {
     String name;
     List<Event> events = new ArrayList<Event>();
     Timeline timeline;
-    //GitHubFetcher fetcher;
-    HudsonFetcher fetcher;
+    Collection<Pollable> fetchers;
 
     public Workspace() {
-        this(new HudsonFetcher(), new Timeline());
+        this(Arrays.asList(new HudsonFetcher("http://fluxx.fr.cr:8080/hudson/job/dev-radar/api/json?tree=builds[result,culprits[fullName,absoluteUrl],timestamp,building]"), new GitHubFetcher("http://github.com/api/v2/json/commits/list/xebia-france/dev-radar/master")), new Timeline());
     }
 
 
-    public Workspace(HudsonFetcher fetcher, Timeline timeline) {
-        this.fetcher = fetcher;
+    public Workspace(Collection<Pollable> fetchers, Timeline timeline) {
+        this.fetchers = fetchers;
         this.timeline = timeline;
         this.name = "Dev Radar";
     }
 
     void poll() {
-        //Set<Event> fetchedEvents = this.fetcher.fetch("http://github.com/api/v2/json/commits/list/xebia-france/dev-radar/master");
-        Set<Event> fetchedEvents = this.fetcher.fetch("http://fluxx.fr.cr:8080/hudson/job/dev-radar/api/json?tree=builds[result,culprits[fullName,absoluteUrl],timestamp]");
-        this.events.addAll(fetchedEvents);
+        for (Pollable fetcher : fetchers) {
+            this.events.addAll(fetcher.fetch());
+        }
         this.timeline.update(this.events);
     }
 

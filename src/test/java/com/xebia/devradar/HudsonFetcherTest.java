@@ -34,7 +34,7 @@ import static org.junit.Assert.assertThat;
 
 public class HudsonFetcherTest {
 
-    private HudsonFetcher fetcher = new HudsonFetcher() {
+    private HudsonFetcher fetcher = new HudsonFetcher("") {
         @Override
         Client buildJerseyClient(ClientConfig clientConfig) {
             ClientHandler clientHandler = FileClientHandlerBuilder.newFileClientHandler()
@@ -49,47 +49,61 @@ public class HudsonFetcherTest {
 
     @Test(expected = ClientHandlerException.class)
     public void should_throw_a_runtime_exception_if_cannot_get_builds() {
-        String resource = getUriFromResourceAsString("/github/json/github-rest-stream-invalid.json");
+        fetcher.url = getUriFromResourceAsString("/github/json/github-rest-stream-invalid.json");
 
-        fetcher.fetch(resource);
+        fetcher.fetch();
     }
 
     @Test
     public void should_return_an_empty_set_if_no_builds_exist() {
-        String resource = getUriFromResourceAsString("/hudson/json/hudson-rest-stream-0-build.json");
+        fetcher.url = getUriFromResourceAsString("/hudson/json/hudson-rest-stream-0-build.json");
 
-        Set<Event> events = fetcher.fetch(resource);
+        Set<Event> events = fetcher.fetch();
 
         assertThat(events.isEmpty(), CoreMatchers.is(true));
     }
 
     @Test
-    public void should_return_success_message_if_build_is_success() {
-        String resource = getUriFromResourceAsString("/hudson/json/hudson-rest-stream-1-build-success.json");
+    public void should_return_success_message_and_level_info_if_build_is_success() {
+        fetcher.url = getUriFromResourceAsString("/hudson/json/hudson-rest-stream-1-build-success.json");
 
-        Set<Event> events = fetcher.fetch(resource);
+        Set<Event> events = fetcher.fetch();
 
         assertThat(events.size(), CoreMatchers.is(1));
         Event event = events.iterator().next();
         assertThat(event.message, equalTo("Build SUCCESS"));
+        assertThat(event.level, equalTo(EventLevel.INFO));
     }
 
     @Test
-    public void should_return_failure_message_if_build_is_failure() {
-        String resource = getUriFromResourceAsString("/hudson/json/hudson-rest-stream-1-build-failure.json");
+    public void should_return_failure_message_and_level_unstable_if_build_is_failure() {
+        fetcher.url = getUriFromResourceAsString("/hudson/json/hudson-rest-stream-1-build-unstable.json");
 
-        Set<Event> events = fetcher.fetch(resource);
+        Set<Event> events = fetcher.fetch();
+
+        assertThat(events.size(), CoreMatchers.is(1));
+        Event event = events.iterator().next();
+        assertThat(event.message, equalTo("Build UNSTABLE"));
+        assertThat(event.level, equalTo(EventLevel.WARNING));
+    }
+
+    @Test
+    public void should_return_failure_message_and_level_error_if_build_is_failure() {
+        fetcher.url = getUriFromResourceAsString("/hudson/json/hudson-rest-stream-1-build-failure.json");
+
+        Set<Event> events = fetcher.fetch();
 
         assertThat(events.size(), CoreMatchers.is(1));
         Event event = events.iterator().next();
         assertThat(event.message, equalTo("Build FAILURE"));
+        assertThat(event.level, equalTo(EventLevel.ERROR));
     }
 
     @Test
     public void should_return_1_event_set_if_1_build_exists_without_user() {
-        String resource = getUriFromResourceAsString("/hudson/json/hudson-rest-stream-1-build-without-user.json");
+        fetcher.url = getUriFromResourceAsString("/hudson/json/hudson-rest-stream-1-build-without-user.json");
 
-        Set<Event> events = fetcher.fetch(resource);
+        Set<Event> events = fetcher.fetch();
 
         assertThat(events.size(), CoreMatchers.is(1));
         Event event = events.iterator().next();
@@ -101,9 +115,9 @@ public class HudsonFetcherTest {
 
     @Test
     public void should_return_1_event_set_if_1_build_exists_with_1_user() {
-        String resource = getUriFromResourceAsString("/hudson/json/hudson-rest-stream-1-build-1-user.json");
+        fetcher.url = getUriFromResourceAsString("/hudson/json/hudson-rest-stream-1-build-1-user.json");
 
-        Set<Event> events = fetcher.fetch(resource);
+        Set<Event> events = fetcher.fetch();
 
         assertThat(events.size(), CoreMatchers.is(1));
         Event event = events.iterator().next();
@@ -115,9 +129,9 @@ public class HudsonFetcherTest {
 
     @Test
     public void should_return_1_event_set_if_1_build_exists_with_1_user_without_mail() {
-        String resource = getUriFromResourceAsString("/hudson/json/hudson-rest-stream-1-build-1-user-without-mail.json");
+        fetcher.url = getUriFromResourceAsString("/hudson/json/hudson-rest-stream-1-build-1-user-without-mail.json");
 
-        Set<Event> events = fetcher.fetch(resource);
+        Set<Event> events = fetcher.fetch();
 
         assertThat(events.size(), CoreMatchers.is(1));
         Event event = events.iterator().next();
@@ -129,9 +143,9 @@ public class HudsonFetcherTest {
 
     @Test
     public void should_return_2_events_set_if_1_build_exists_with_2_user() {
-        String resource = getUriFromResourceAsString("/hudson/json/hudson-rest-stream-1-build-2-users.json");
+        fetcher.url = getUriFromResourceAsString("/hudson/json/hudson-rest-stream-1-build-2-users.json");
 
-        List<Event> events  = new ArrayList<Event>(fetcher.fetch(resource));
+        List<Event> events  = new ArrayList<Event>(fetcher.fetch());
         Collections.sort(events, new Comparator<Event>() {
             @Override
             public int compare(Event event1, Event event2) {
@@ -156,9 +170,9 @@ public class HudsonFetcherTest {
 
     @Test
     public void should_return_2_events_set_if_2_build_exists() {
-        String resource = getUriFromResourceAsString("/hudson/json/hudson-rest-stream-2-builds.json");
+        fetcher.url = getUriFromResourceAsString("/hudson/json/hudson-rest-stream-2-builds.json");
 
-        List<Event> events  = new ArrayList<Event>(fetcher.fetch(resource));
+        List<Event> events  = new ArrayList<Event>(fetcher.fetch());
         Collections.sort(events, new Comparator<Event>() {
             @Override
             public int compare(Event event1, Event event2) {
@@ -182,12 +196,28 @@ public class HudsonFetcherTest {
     }
 
     @Test
+    public void should_not_return_event_if_build_is_building() {
+        fetcher.url = getUriFromResourceAsString("/hudson/json/hudson-rest-stream-2-builds-1-building.json");
+
+        Set<Event> events  = fetcher.fetch();
+
+        assertThat(events.size(), CoreMatchers.is(1));
+
+        Event event1 = events.iterator().next();
+        assertThat(event1.timestamp, equalTo(1295779740666L));
+        assertThat(event1.author, equalTo("Nicolas Griso"));
+        assertThat(event1.message, equalTo("Build SUCCESS"));
+        assertThat(event1.gravatarUrl, equalTo("http://www.gravatar.com/avatar/4a89258a4759e47dab3266e9b9d76065?d=mm"));
+    }
+
+
+    @Test
     public void should_return_11_events() {
-        String resource = getUriFromResourceAsString("/hudson/json/hudson-rest-stream-n-builds.json");
+        fetcher.url = getUriFromResourceAsString("/hudson/json/hudson-rest-stream-n-builds.json");
 
-        Set<Event> events  = fetcher.fetch(resource);
+        Set<Event> events  = fetcher.fetch();
 
-        assertThat(events.size(), CoreMatchers.is(11));
+        assertThat(events.size(), CoreMatchers.is(10));
 
     }
 

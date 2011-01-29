@@ -25,29 +25,38 @@ import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.config.ClientConfig;
 import com.sun.jersey.api.client.config.DefaultClientConfig;
 import com.sun.jersey.api.client.filter.ClientFilter;
-import com.sun.jersey.json.impl.provider.entity.JSONObjectProvider;
-import org.joda.time.DateTime;
-import org.joda.time.format.ISODateTimeFormat;
 
-import javax.ws.rs.core.MediaType;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 /**
  *  Fetch a list of commit from github and transform each of them into <code>com.xebia.devradar.Event</code>
  */
-public class HudsonFetcher {
+public class HudsonFetcher implements Pollable {
 
     private static final String COM_SUN_JERSEY_API_JSON_POJOMAPPING_FEATURE = "com.sun.jersey.api.json.POJOMappingFeature";
 
+    // default for test
+    String url;
+
+    private static final String BUILD_FAILURE = "FAILURE";
+
+    private static final String BUILD_UNSTABLE = "UNSTABLE";
+
+    private static final String BUILD_SUCCESS = "SUCCESS";
+
+    public HudsonFetcher(String url) {
+        this.url = url;
+    }
+
     /**
      * Fetch a set of events from a hudson job specified by an url.
-     * @param url
      * @return A set of <code>com.xebia.devradar.Event</code>
      */
-    public Set<Event> fetch(String url) {
+    @Override
+    public Set<Event> fetch() {
         ClientConfig clientConfig = new DefaultClientConfig();
 
         clientConfig.getFeatures().put(COM_SUN_JERSEY_API_JSON_POJOMAPPING_FEATURE, true);
@@ -69,9 +78,15 @@ public class HudsonFetcher {
         Set<Event> events = new HashSet<Event>();
 
         for (HudsonBuildDTO hudsonBuildDTO : hudsonBuildsDTO.builds) {
-            events.addAll(transformBuildToEvents(client, hudsonBuildDTO));
+            if (isValidBuild(hudsonBuildDTO)) {
+                events.addAll(transformBuildToEvents(client, hudsonBuildDTO));
+            }
         }
         return events;
+    }
+
+    private boolean isValidBuild(HudsonBuildDTO hudsonBuildDTO) {
+        return (hudsonBuildDTO.building == false);
     }
 
     private Event transformBuildToEvent(HudsonBuildDTO hudsonBuildDTO) {
@@ -79,10 +94,23 @@ public class HudsonFetcher {
     }
 
     private Event transformBuildToEvent(HudsonBuildDTO hudsonBuildDTO, Client client, HudsonUserDTO hudsonUserDTO) {
-        if (hudsonUserDTO == null) {
-            return new Event(hudsonBuildDTO.timestamp, null, "Build " + hudsonBuildDTO.result, null);
+        String author = null;
+        String usermail = null;
+
+        if (hudsonUserDTO != null) {
+            author = hudsonUserDTO.fullName;
+            usermail = getUserMail(client, hudsonUserDTO.absoluteUrl);
         }
-        return new Event(hudsonBuildDTO.timestamp, hudsonUserDTO.fullName, "Build " + hudsonBuildDTO.result, getUserMail(client, hudsonUserDTO.absoluteUrl));
+        if (BUILD_FAILURE.equals(hudsonBuildDTO.result)) {
+            return new Event(hudsonBuildDTO.timestamp, author, "Build " + hudsonBuildDTO.result, usermail, EventLevel.ERROR);
+        } else if (BUILD_UNSTABLE.equals(hudsonBuildDTO.result)) {
+            return new Event(hudsonBuildDTO.timestamp, author, "Build " + hudsonBuildDTO.result, usermail, EventLevel.WARNING);
+        } else if (BUILD_SUCCESS.equals(hudsonBuildDTO.result)) {
+            return new Event(hudsonBuildDTO.timestamp, author, "Build " + hudsonBuildDTO.result, usermail, EventLevel.INFO);
+        } else {
+            return new Event(hudsonBuildDTO.timestamp, author, "Build " + hudsonBuildDTO.result, usermail);
+        }
+
     }
 
     private Set<Event> transformBuildToEvents(Client client, HudsonBuildDTO hudsonBuildDTO) {
@@ -118,6 +146,7 @@ public class HudsonFetcher {
     }
 
     private static class HudsonBuildDTO {
+        public boolean building;
         public String result;
         public Long timestamp;
         public List<HudsonUserDTO> culprits;

@@ -34,16 +34,18 @@ public class Event {
     public final String author;
     public final String message;
     public final String gravatarUrl;
+    public final EventLevel level;
 
-    public Event(long timestamp, String author, String message, String email) {
+    public Event(long timestamp, String author, String message, String email, EventLevel level) {
         this.timestamp = timestamp;
         this.author = author;
         this.message = message;
         this.gravatarUrl = getGravatarUrl(email);
+        this.level = level;
     }
 
-    public Event(Date date, String author, String message, String email) {
-        this(date.getTime(), author, message, email);
+    public Event(long timestamp, String author, String message, String email) {
+        this(timestamp, author, message, email, EventLevel.UNDIFINED);
     }
 
     private String getGravatarUrl(String email) {

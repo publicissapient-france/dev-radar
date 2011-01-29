@@ -13,7 +13,6 @@
             margin-top: 10px;
             margin-left: auto;
             margin-right: auto;
-            background-color: #66CC33;
             border-radius: 10px;
             text-align: left;
             padding: 5px;
@@ -21,6 +20,22 @@
             -webkit-box-shadow: 1px 1px 12px #555;
             box-shadow: 1px 1px 12px #555;
             overflow: hidden;
+        }
+
+        .level-UNDIFINED {
+            background-color: #999999;
+        }
+
+        .level-INFO {
+            background-color: #66CC33;
+        }
+
+        .level-ERROR {
+            background-color: #FF0000;
+        }
+
+        .level-WARNING {
+            background-color: #FFBB00;
         }
 
         .commit-picture {
@@ -72,7 +87,7 @@
                     var hour = date.getHours();
                     var minute = date.getMinutes();
                     var formattedDate = day + "/" + month + "/" + year + " " + hour + ":" + minute;
-                    $('#events').append('<div class="event"><div class="commit-picture"><img class="' + event.author + ' author" src="' + event.gravatarUrl + '&s=140" title="' + event.author + '"/></div><div class="commit-date">' + formattedDate + '</div><div class="commit-text">' + event.message + '</div>')
+                    $('#events').append('<div class="event level-' + event.level + '"><div class="commit-picture"><img class="' + event.author + ' author" src="' + event.gravatarUrl + '&s=140" title="' + event.author + '"/></div><div class="commit-date">' + formattedDate + '</div><div class="commit-text">' + event.message + '</div>')
                 });
             });
         });

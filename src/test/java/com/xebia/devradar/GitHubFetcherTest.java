@@ -22,24 +22,18 @@ import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientHandler;
 import com.sun.jersey.api.client.ClientHandlerException;
 import com.sun.jersey.api.client.config.ClientConfig;
-import com.sun.jersey.client.urlconnection.HttpURLConnectionFactory;
-import com.sun.jersey.client.urlconnection.URLConnectionClientHandler;
 import org.hamcrest.CoreMatchers;
 import org.junit.Test;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
 import java.net.URISyntaxException;
-import java.net.URL;
-import java.util.*;
+import java.util.Set;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 
 public class GitHubFetcherTest {
 
-    private static GitHubFetcher fetcher = new GitHubFetcher() {
+    private static GitHubFetcher fetcher = new GitHubFetcher("") {
         @Override
         Client buildJerseyClient(ClientConfig clientConfig) {
             ClientHandler clientHandler = FileClientHandlerBuilder.newFileClientHandler()
@@ -50,25 +44,25 @@ public class GitHubFetcherTest {
 
     @Test(expected = ClientHandlerException.class)
     public void should_throw_a_runtime_exception_if_cannot_get_commits() {
-        String resource = getUriFromResourceAsString("/github/json/github-rest-stream-invalid.json");
+        fetcher.url = getUriFromResourceAsString("/github/json/github-rest-stream-invalid.json");
 
-        fetcher.fetch(resource);
+        fetcher.fetch();
     }
 
     @Test
     public void should_return_an_empty_set_if_no_commits_exist() {
-        String resource = getUriFromResourceAsString("/github/json/github-rest-stream-0-commit.json");
+        fetcher.url = getUriFromResourceAsString("/github/json/github-rest-stream-0-commit.json");
 
-        Set<Event> events = fetcher.fetch(resource);
+        Set<Event> events = fetcher.fetch();
 
         assertThat(events.isEmpty(), CoreMatchers.is(true));
     }
 
     @Test
     public void should_return_an_1_event_set_if_1_commit_exists() {
-        String resource = getUriFromResourceAsString("/github/json/github-rest-stream-1-commit.json");
+        fetcher.url = getUriFromResourceAsString("/github/json/github-rest-stream-1-commit.json");
 
-        Set<Event> events = fetcher.fetch(resource);
+        Set<Event> events = fetcher.fetch();
 
         assertThat(events.size(), CoreMatchers.is(1));
         Event event = events.iterator().next();
@@ -80,9 +74,9 @@ public class GitHubFetcherTest {
 
     @Test
     public void should_return_an_2_event_set_if_2_commit_exists() {
-        String resource = getUriFromResourceAsString("/github/json/github-rest-stream-2-commit.json");
+        fetcher.url = getUriFromResourceAsString("/github/json/github-rest-stream-2-commit.json");
 
-        Set<Event> events = fetcher.fetch(resource);
+        Set<Event> events = fetcher.fetch();
 
         assertThat(events.size(), CoreMatchers.is(2));
         for (Event event : events) {
@@ -102,9 +96,9 @@ public class GitHubFetcherTest {
 
     @Test
     public void should_return_35_event_set_if_35_commits_exist() {
-        String resource = getUriFromResourceAsString("/github/json/github-rest-stream-35-commits.json");
+        fetcher.url = getUriFromResourceAsString("/github/json/github-rest-stream-35-commits.json");
 
-        Set<Event> events = fetcher.fetch(resource);
+        Set<Event> events = fetcher.fetch();
 
         assertThat(events.size(), CoreMatchers.is(35));
     }

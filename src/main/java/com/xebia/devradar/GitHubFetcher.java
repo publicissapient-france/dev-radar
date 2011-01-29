@@ -21,8 +21,6 @@ package com.xebia.devradar;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.config.ClientConfig;
 import com.sun.jersey.api.client.config.DefaultClientConfig;
-import org.apache.commons.codec.digest.DigestUtils;
-import org.codehaus.jackson.map.util.StdDateFormat;
 import org.joda.time.DateTime;
 import org.joda.time.format.ISODateTimeFormat;
 
@@ -33,16 +31,23 @@ import java.util.Set;
 /**
  *  Fetch a list of commit from github and transform each of them into <code>com.xebia.devradar.Event</code>
  */
-public class GitHubFetcher {
+public class GitHubFetcher implements Pollable {
 
     private static final String COM_SUN_JERSEY_API_JSON_POJOMAPPING_FEATURE = "com.sun.jersey.api.json.POJOMappingFeature";
 
+    // default for test
+    String url;
+
+    public GitHubFetcher(String url) {
+        this.url = url;
+    }
+
     /**
      * Fetch a set of events from a github branch specified by an url.
-     * @param url
      * @return A set of <code>com.xebia.devradar.Event</code>
      */
-    public Set<Event> fetch(String url) {
+    @Override
+    public Set<Event> fetch() {
         GithubCommitsDTO githubCommitsDTO = getGitHubCommits(url);
         Set<Event> events = new HashSet<Event>();
 
