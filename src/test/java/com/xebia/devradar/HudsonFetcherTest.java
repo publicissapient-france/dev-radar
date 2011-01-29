@@ -108,7 +108,7 @@ public class HudsonFetcherTest {
         assertThat(events.size(), CoreMatchers.is(1));
         Event event = events.iterator().next();
         assertThat(event.timestamp, equalTo(1295779740666L));
-        assertThat(event.author, nullValue());
+        assertThat(event.author, equalTo("anonymous"));
         assertThat(event.message, equalTo("Build SUCCESS"));
         assertThat(event.gravatarUrl, equalTo("http://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?d=mm"));
     }
