@@ -41,6 +41,8 @@ public class HudsonFetcher implements Pollable {
     // default for test
     String url;
 
+    private static final String ANONYMOUS_USER = "anonymous";
+
     private static final String BUILD_FAILURE = "FAILURE";
 
     private static final String BUILD_UNSTABLE = "UNSTABLE";
@@ -94,13 +96,14 @@ public class HudsonFetcher implements Pollable {
     }
 
     private Event transformBuildToEvent(HudsonBuildDTO hudsonBuildDTO, Client client, HudsonUserDTO hudsonUserDTO) {
-        String author = null;
+        String author = ANONYMOUS_USER;
         String usermail = null;
 
         if (hudsonUserDTO != null) {
             author = hudsonUserDTO.fullName;
             usermail = getUserMail(client, hudsonUserDTO.absoluteUrl);
         }
+
         if (BUILD_FAILURE.equals(hudsonBuildDTO.result)) {
             return new Event(hudsonBuildDTO.timestamp, author, "Build " + hudsonBuildDTO.result, usermail, EventLevel.ERROR);
         } else if (BUILD_UNSTABLE.equals(hudsonBuildDTO.result)) {
@@ -110,7 +113,6 @@ public class HudsonFetcher implements Pollable {
         } else {
             return new Event(hudsonBuildDTO.timestamp, author, "Build " + hudsonBuildDTO.result, usermail);
         }
-
     }
 
     private Set<Event> transformBuildToEvents(Client client, HudsonBuildDTO hudsonBuildDTO) {
@@ -124,6 +126,7 @@ public class HudsonFetcher implements Pollable {
         return events;
     }
 
+    // get another rest ressource to get the email of a user
     private String getUserMail(Client client, String profilUrl) {
         HudsonUserDetailDTO hudsonUserDetailDTO = client.resource(profilUrl + "/api/json").queryParam("tree", "property[address]").get(HudsonUserDetailDTO.class);
         return hudsonUserDetailDTO.property.get(0).address;
