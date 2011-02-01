@@ -25,8 +25,14 @@ import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.config.ClientConfig;
 import com.sun.jersey.api.client.config.DefaultClientConfig;
 import com.sun.jersey.api.client.filter.ClientFilter;
+import org.apache.commons.lang.StringUtils;
 
-import java.util.Arrays;
+import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -37,6 +43,10 @@ import java.util.Set;
 public class HudsonFetcher implements Pollable {
 
     private static final String COM_SUN_JERSEY_API_JSON_POJOMAPPING_FEATURE = "com.sun.jersey.api.json.POJOMappingFeature";
+
+    private String hudsonUrl;
+
+    private String jobName;
 
     // default for test
     String url;
@@ -49,8 +59,10 @@ public class HudsonFetcher implements Pollable {
 
     private static final String BUILD_SUCCESS = "SUCCESS";
 
-    public HudsonFetcher(String url) {
-        this.url = url;
+    public HudsonFetcher(String host, String jobName) {
+        this.hudsonUrl = host;
+        this.jobName = jobName;
+        url = hudsonUrl + "/job/" + jobName + "/api/json?tree=builds[actions[causes[userName]],result,culprits[fullName,absoluteUrl],timestamp,building]";
     }
 
     /**
@@ -102,27 +114,55 @@ public class HudsonFetcher implements Pollable {
 
     private Set<Event> transformBuildToEvents(Client client, HudsonBuildDTO hudsonBuildDTO) {
         Set<Event> events = new HashSet<Event>();
-        if (hudsonBuildDTO.culprits.size() == 0) {
+        Set<String> userNames = getUserNames(hudsonBuildDTO);
+        if (userNames.size() == 0) {
             events.add(transformBuildToEvent(hudsonBuildDTO));
         }
-        for (HudsonUserDTO hudsonUserDTO : hudsonBuildDTO.culprits) {
-            events.add(transformBuildToEvent(hudsonBuildDTO, client, hudsonUserDTO));
+        for (String userName : userNames) {
+            events.add(transformBuildToEvent(hudsonBuildDTO, client, userName));
         }
         return events;
+    }
+
+    private Set<String> getUserNames(HudsonBuildDTO hudsonBuildDTO) {
+        Set<String> userNames = new HashSet<String>();
+
+        // commiter usernames
+        if (hudsonBuildDTO.culprits != null) {
+            for (HudsonUserDTO hudsonUserDTO : hudsonBuildDTO.culprits) {
+                if (StringUtils.isNotBlank(hudsonUserDTO.fullName)) {
+                    userNames.add(hudsonUserDTO.fullName);
+                }
+            }
+        }
+
+        // gui usernames
+        if (hudsonBuildDTO.actions != null) {
+            for (HudsonActionDTO hudsonActionDTO : hudsonBuildDTO.actions) {
+                if (hudsonActionDTO.causes != null) {
+                    for (HudsonCauseDTO hudsonCauseDTO : hudsonActionDTO.causes) {
+                        if (StringUtils.isNotBlank(hudsonCauseDTO.userName)) {
+                            userNames.add(hudsonCauseDTO.userName);
+                        }
+                    }
+                }
+            }
+        }
+        return userNames;
     }
 
     private Event transformBuildToEvent(HudsonBuildDTO hudsonBuildDTO) {
         return transformBuildToEvent(hudsonBuildDTO, null, null);
     }
 
-    private Event transformBuildToEvent(HudsonBuildDTO hudsonBuildDTO, Client client, HudsonUserDTO hudsonUserDTO) {
+    private Event transformBuildToEvent(HudsonBuildDTO hudsonBuildDTO, Client client, String userName) {
         String author = ANONYMOUS_USER;
         String usermail = null;
         EventLevel eventLevel = EventLevel.UNDIFINED;
 
-        if (hudsonUserDTO != null) {
-            author = hudsonUserDTO.fullName;
-            usermail = getUserMail(client, hudsonUserDTO.absoluteUrl);
+        if (userName != null) {
+            author = userName;
+            usermail = getUserMail(client, userName);
         }
 
         if (BUILD_FAILURE.equals(hudsonBuildDTO.result)) {
@@ -140,11 +180,18 @@ public class HudsonFetcher implements Pollable {
      * get another rest ressource to get the email of a user
      *
      * @param client
-     * @param profilUrl
+     * @param userName
      * @return
      */
-    private String getUserMail(Client client, String profilUrl) {
-        HudsonUserDetailDTO hudsonUserDetailDTO = client.resource(profilUrl + "/api/json").queryParam("tree", "property[address]").get(HudsonUserDetailDTO.class);
+    private String getUserMail(Client client, String userName) {
+        String profilUrl = null;
+        try {
+            profilUrl = hudsonUrl + "/user/" + URLEncoder.encode(userName, "utf-8").replaceAll("\\+", "%20") + "/api/json";
+        } catch (UnsupportedEncodingException e) {
+            throw new IllegalStateException("utf-8 is not supported", e);
+        }
+
+        HudsonUserDetailDTO hudsonUserDetailDTO = client.resource(profilUrl).queryParam("tree", "property[address]").get(HudsonUserDetailDTO.class);
         return hudsonUserDetailDTO.property.get(0).address;
     }
 
@@ -169,7 +216,16 @@ public class HudsonFetcher implements Pollable {
         public String result;
         public Long timestamp;
         public List<HudsonUserDTO> culprits;
+        public List<HudsonActionDTO> actions;
 
+    }
+
+    private static class HudsonActionDTO {
+        public List<HudsonCauseDTO> causes;
+    }
+
+    private static class HudsonCauseDTO {
+        public String userName;
     }
 
     private static class HudsonUserDTO {

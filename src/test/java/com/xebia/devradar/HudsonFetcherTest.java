@@ -34,7 +34,7 @@ import static org.junit.Assert.assertThat;
 
 public class HudsonFetcherTest {
 
-    private HudsonFetcher fetcher = new HudsonFetcher("") {
+    private HudsonFetcher fetcher = new HudsonFetcher("http://fluxx.fr.cr:8080/hudson", "dev-radar") {
         @Override
         Client buildJerseyClient(ClientConfig clientConfig) {
             ClientHandler clientHandler = FileClientHandlerBuilder.newFileClientHandler()
@@ -136,7 +136,7 @@ public class HudsonFetcherTest {
         assertThat(events.size(), CoreMatchers.is(1));
         Event event = events.iterator().next();
         assertThat(event.timestamp, equalTo(1295779740666L));
-        assertThat(event.author, equalTo("Nicolas Griso"));
+        assertThat(event.author, equalTo("nomail"));
         assertThat(event.message, equalTo("Build SUCCESS"));
         assertThat(event.gravatarUrl, equalTo("http://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?d=mm"));
     }
@@ -210,14 +210,56 @@ public class HudsonFetcherTest {
         assertThat(event1.gravatarUrl, equalTo("http://www.gravatar.com/avatar/4a89258a4759e47dab3266e9b9d76065?d=mm"));
     }
 
+    @Test
+    public void should_return_event_with_user_who_launch_build_by_gui() {
+        fetcher.url = getUriFromResourceAsString("/hudson/json/hudson-rest-stream-1-build-1-gui-user.json");
+
+        Set<Event> events  = fetcher.fetch();
+
+        assertThat(events.size(), CoreMatchers.is(1));
+
+        Event event1 = events.iterator().next();
+        assertThat(event1.timestamp, equalTo(1295779740666L));
+        assertThat(event1.author, equalTo("Nicolas Griso"));
+        assertThat(event1.message, equalTo("Build SUCCESS"));
+        assertThat(event1.gravatarUrl, equalTo("http://www.gravatar.com/avatar/4a89258a4759e47dab3266e9b9d76065?d=mm"));
+    }
 
     @Test
-    public void should_return_11_events() {
+    public void should_return_event_with_commiter_and_user_who_launch_build_by_gui() {
+        fetcher.url = getUriFromResourceAsString("/hudson/json/hudson-rest-stream-1-build-1-user-1-gui-user.json");
+
+        List<Event> events  = new ArrayList<Event>(fetcher.fetch());
+        Collections.sort(events, new Comparator<Event>() {
+            @Override
+            public int compare(Event event1, Event event2) {
+                return event1.author.compareTo(event2.author);
+            }
+        });
+
+        assertThat(events.size(), CoreMatchers.is(2));
+
+        Event event1 = events.get(0);
+        assertThat(event1.timestamp, equalTo(1295779740666L));
+        assertThat(event1.author, equalTo("Nicolas Griso"));
+        assertThat(event1.message, equalTo("Build SUCCESS"));
+        assertThat(event1.gravatarUrl, equalTo("http://www.gravatar.com/avatar/4a89258a4759e47dab3266e9b9d76065?d=mm"));
+
+        Event event2 = events.get(1);
+        assertThat(event2.timestamp, equalTo(1295779740666L));
+        assertThat(event2.author, equalTo("mrenou"));
+        assertThat(event2.message, equalTo("Build SUCCESS"));
+        assertThat(event2.gravatarUrl, equalTo("http://www.gravatar.com/avatar/8c92fcdb7c7abc1a50732a93bc361b5e?d=mm"));
+    }
+
+
+    @Test
+    public void should_return_n_events() {
         fetcher.url = getUriFromResourceAsString("/hudson/json/hudson-rest-stream-n-builds.json");
 
         Set<Event> events  = fetcher.fetch();
 
-        assertThat(events.size(), CoreMatchers.is(10));
+        assertThat(events.size(), CoreMatchers.is(11));
 
     }
 

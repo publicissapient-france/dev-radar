@@ -1,1 +1,1 @@
-{"builds":[{"building":false,"result":"SUCCESS","timestamp":1295779740666,"culprits":[{"absoluteUrl":"http://fluxx.fr.cr:8080/hudson/user/nomail","fullName":"Nicolas Griso"}]}]}
+{"builds":[{"actions":[{"causes":[{}]},{},{},{},{}],"building":false,"result":"SUCCESS","timestamp":1295779740666,"culprits":[{"absoluteUrl":"http://fluxx.fr.cr:8080/hudson/user/nomail","fullName":"nomail"}]}]}
