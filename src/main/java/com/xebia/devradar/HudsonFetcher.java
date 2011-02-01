@@ -51,6 +51,8 @@ public class HudsonFetcher implements Pollable {
     // default for test
     String url;
 
+    private Client client;
+
     private static final String ANONYMOUS_USER = "anonymous";
 
     private static final String BUILD_FAILURE = "FAILURE";
@@ -59,33 +61,22 @@ public class HudsonFetcher implements Pollable {
 
     private static final String BUILD_SUCCESS = "SUCCESS";
 
-    public HudsonFetcher(String host, String jobName) {
-        this.hudsonUrl = host;
+
+    public HudsonFetcher(String hudsonUrl, String jobName) {
+        this.hudsonUrl = hudsonUrl;
         this.jobName = jobName;
         url = hudsonUrl + "/job/" + jobName + "/api/json?tree=builds[actions[causes[userName]],result,culprits[fullName,absoluteUrl],timestamp,building]";
-    }
 
-    /**
-     * Fetch a set of events from a hudson job specified by an url.
-     * @return A set of <code>com.xebia.devradar.Event</code>
-     */
-    @Override
-    public Set<Event> fetch() {
         ClientConfig clientConfig = new DefaultClientConfig();
         clientConfig.getFeatures().put(COM_SUN_JERSEY_API_JSON_POJOMAPPING_FEATURE, true);
         clientConfig.getClasses();
 
-        Client client = buildJerseyClient(clientConfig);
+        client = buildJerseyClient(clientConfig);
         client.addFilter(getClientFilterSettingJsonContentType());
+    }
 
-        HudsonBuildsDTO hudsonBuildsDTO = getHudsonBuilds(client, url);
-        Set<Event> events = new HashSet<Event>();
-        for (HudsonBuildDTO hudsonBuildDTO : hudsonBuildsDTO.builds) {
-            if (isValidBuild(hudsonBuildDTO)) {
-                events.addAll(transformBuildToEvents(client, hudsonBuildDTO));
-            }
-        }
-        return events;
+    Client buildJerseyClient(ClientConfig clientConfig) {
+        return Client.create(clientConfig);
     }
 
     /**
@@ -108,18 +99,39 @@ public class HudsonFetcher implements Pollable {
         return clientFilter;
     }
 
+
+    /**
+     * Fetch a set of events from a hudson job specified by an url.
+     * @return A set of <code>com.xebia.devradar.Event</code>
+     */
+    @Override
+    public Set<Event> fetch() {
+        HudsonBuildsDTO hudsonBuildsDTO = getHudsonBuilds();
+        Set<Event> events = new HashSet<Event>();
+        for (HudsonBuildDTO hudsonBuildDTO : hudsonBuildsDTO.builds) {
+            if (isValidBuild(hudsonBuildDTO)) {
+                events.addAll(transformBuildToEvents(hudsonBuildDTO));
+            }
+        }
+        return events;
+    }
+
+    /*
+     * Transform Builds to Events
+     */
+
     private boolean isValidBuild(HudsonBuildDTO hudsonBuildDTO) {
         return (hudsonBuildDTO.building == false);
     }
 
-    private Set<Event> transformBuildToEvents(Client client, HudsonBuildDTO hudsonBuildDTO) {
+    private Set<Event> transformBuildToEvents(HudsonBuildDTO hudsonBuildDTO) {
         Set<Event> events = new HashSet<Event>();
         Set<String> userNames = getUserNames(hudsonBuildDTO);
         if (userNames.size() == 0) {
             events.add(transformBuildToEvent(hudsonBuildDTO));
         }
         for (String userName : userNames) {
-            events.add(transformBuildToEvent(hudsonBuildDTO, client, userName));
+            events.add(transformBuildToEvent(hudsonBuildDTO, userName));
         }
         return events;
     }
@@ -152,17 +164,17 @@ public class HudsonFetcher implements Pollable {
     }
 
     private Event transformBuildToEvent(HudsonBuildDTO hudsonBuildDTO) {
-        return transformBuildToEvent(hudsonBuildDTO, null, null);
+        return transformBuildToEvent(hudsonBuildDTO, null);
     }
 
-    private Event transformBuildToEvent(HudsonBuildDTO hudsonBuildDTO, Client client, String userName) {
+    private Event transformBuildToEvent(HudsonBuildDTO hudsonBuildDTO, String userName) {
         String author = ANONYMOUS_USER;
         String usermail = null;
         EventLevel eventLevel = EventLevel.UNDIFINED;
 
         if (userName != null) {
             author = userName;
-            usermail = getUserMail(client, userName);
+            usermail = getUserMail(userName);
         }
 
         if (BUILD_FAILURE.equals(hudsonBuildDTO.result)) {
@@ -176,14 +188,17 @@ public class HudsonFetcher implements Pollable {
         return new Event(hudsonBuildDTO.timestamp, author, "Build " + hudsonBuildDTO.result, usermail, eventLevel);
     }
 
+    /*
+     * Rest requests
+     */
+
     /**
      * get another rest ressource to get the email of a user
      *
-     * @param client
      * @param userName
      * @return
      */
-    private String getUserMail(Client client, String userName) {
+    private String getUserMail(String userName) {
         String profilUrl = null;
         try {
             profilUrl = hudsonUrl + "/user/" + URLEncoder.encode(userName, "utf-8").replaceAll("\\+", "%20") + "/api/json";
@@ -195,12 +210,8 @@ public class HudsonFetcher implements Pollable {
         return hudsonUserDetailDTO.property.get(0).address;
     }
 
-    private HudsonBuildsDTO getHudsonBuilds(Client client, String url) {
+    private HudsonBuildsDTO getHudsonBuilds() {
         return client.resource(url).get(HudsonBuildsDTO.class);
-    }
-
-    Client buildJerseyClient(ClientConfig clientConfig) {
-        return Client.create(clientConfig);
     }
 
     /*
