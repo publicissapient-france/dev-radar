@@ -41,17 +41,11 @@ import java.util.Set;
  *  Fetch a list of commit from github and transform each of them into <code>com.xebia.devradar.Event</code>
  */
 public class HudsonFetcher implements Pollable {
-
-    private static final String COM_SUN_JERSEY_API_JSON_POJOMAPPING_FEATURE = "com.sun.jersey.api.json.POJOMappingFeature";
-
-    private String hudsonUrl;
-
-    private String jobName;
-
+    
     // default for test
     String url;
-
-    private Client client;
+    String hudsonUrl;
+    Client client;
 
     private static final String ANONYMOUS_USER = "anonymous";
 
@@ -62,43 +56,12 @@ public class HudsonFetcher implements Pollable {
     private static final String BUILD_SUCCESS = "SUCCESS";
 
 
-    public HudsonFetcher(String hudsonUrl, String jobName) {
+    public HudsonFetcher(Client client, String hudsonUrl, String jobName) {
+        this.client = client;
         this.hudsonUrl = hudsonUrl;
-        this.jobName = jobName;
-        url = hudsonUrl + "/job/" + jobName + "/api/json?tree=builds[actions[causes[userName]],result,culprits[fullName,absoluteUrl],timestamp,building]";
-
-        ClientConfig clientConfig = new DefaultClientConfig();
-        clientConfig.getFeatures().put(COM_SUN_JERSEY_API_JSON_POJOMAPPING_FEATURE, true);
-        clientConfig.getClasses();
-
-        client = buildJerseyClient(clientConfig);
-        client.addFilter(getClientFilterSettingJsonContentType());
+        this.url = hudsonUrl + "/job/" + jobName + "/api/json?tree=builds[actions[causes[userName]],result,culprits[fullName,absoluteUrl],timestamp,building]";
     }
-
-    Client buildJerseyClient(ClientConfig clientConfig) {
-        return Client.create(clientConfig);
-    }
-
-    /**
-     * Hudson use the Content-Type : application/javascript which is not
-     * accepted by jersey as json deserializer. So, this filter will
-     * replace the existing content-type by "application/json;charset=UTF-8"
-     *
-     * @return client filter setting json content type
-     */
-    private ClientFilter getClientFilterSettingJsonContentType() {
-        ClientFilter clientFilter = new ClientFilter() {
-            @Override
-            public ClientResponse handle(ClientRequest cr) throws ClientHandlerException {
-                ClientResponse clientResponse = getNext().handle(cr);
-                clientResponse.getHeaders().remove("Content-Type");
-                clientResponse.getHeaders().add("Content-Type", "application/json;charset=UTF-8");
-                return clientResponse;
-            }
-        };
-        return clientFilter;
-    }
-
+    
 
     /**
      * Fetch a set of events from a hudson job specified by an url.

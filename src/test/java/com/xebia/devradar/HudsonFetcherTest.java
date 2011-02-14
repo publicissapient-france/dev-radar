@@ -34,18 +34,18 @@ import static org.junit.Assert.assertThat;
 
 public class HudsonFetcherTest {
 
-    private HudsonFetcher fetcher = new HudsonFetcher("http://fluxx.fr.cr:8080/hudson", "dev-radar") {
+    HudsonFetcher fetcher = new HudsonFetcherFactory() {
         @Override
         Client buildJerseyClient(ClientConfig clientConfig) {
             ClientHandler clientHandler = FileClientHandlerBuilder.newFileClientHandler()
-                    .withFile("http://fluxx.fr.cr:8080/hudson/user/Nicolas%20Griso/api/json?tree=property%5Baddress%5D", "/hudson/json/hudson-rest-stream-user-ngriso.json")
-                    .withFile("http://fluxx.fr.cr:8080/hudson/user/mrenou/api/json?tree=property%5Baddress%5D", "/hudson/json/hudson-rest-stream-user-mrenou.json")
-                    .withFile("http://fluxx.fr.cr:8080/hudson/user/nomail/api/json?tree=property%5Baddress%5D", "/hudson/json/hudson-rest-stream-user-nomail.json")
-                    .withHeader("Content-Type", "application/javascript; charset=utf-8")
-                    .create();
+                .withFile("http://fluxx.fr.cr:8080/hudson/user/Nicolas%20Griso/api/json?tree=property%5Baddress%5D", "/hudson/json/hudson-rest-stream-user-ngriso.json")
+                .withFile("http://fluxx.fr.cr:8080/hudson/user/mrenou/api/json?tree=property%5Baddress%5D", "/hudson/json/hudson-rest-stream-user-mrenou.json")
+                .withFile("http://fluxx.fr.cr:8080/hudson/user/nomail/api/json?tree=property%5Baddress%5D", "/hudson/json/hudson-rest-stream-user-nomail.json")
+                .withHeader("Content-Type", "application/javascript; charset=utf-8")
+                .create();
             return new Client(clientHandler, clientConfig);
         }
-    };
+    }.getHudsonFetcher("http://fluxx.fr.cr:8080/hudson", "dev-radar");
 
     @Test(expected = ClientHandlerException.class)
     public void should_throw_a_runtime_exception_if_cannot_get_builds() {

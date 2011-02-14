@@ -32,7 +32,7 @@ public class Workspace {
     Collection<Pollable> fetchers;
 
     public Workspace() {
-        this(Arrays.asList(new HudsonFetcher("http://fluxx.fr.cr:8080/hudson", "dev-radar"), new GitHubFetcher("http://github.com/api/v2/json/commits/list/xebia-france/dev-radar/master")), new Timeline());
+        this(Arrays.asList(new HudsonFetcherFactory().getHudsonFetcher("http://fluxx.fr.cr:8080/hudson", "dev-radar"), new GitHubFetcher("http://github.com/api/v2/json/commits/list/xebia-france/dev-radar/master")), new Timeline());
     }
 
 
