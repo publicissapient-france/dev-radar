@@ -7,15 +7,13 @@ import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.config.ClientConfig;
 import com.sun.jersey.api.client.config.DefaultClientConfig;
 import com.sun.jersey.api.client.filter.ClientFilter;
+import com.sun.jersey.api.json.JSONConfiguration;
 
 public class HudsonFetcherFactory {
 
-    private static final String COM_SUN_JERSEY_API_JSON_POJOMAPPING_FEATURE = "com.sun.jersey.api.json.POJOMappingFeature";
-
-
     public HudsonFetcher getHudsonFetcher(String hudsonUrl, String jobName) {
         ClientConfig clientConfig = new DefaultClientConfig();
-        clientConfig.getFeatures().put(COM_SUN_JERSEY_API_JSON_POJOMAPPING_FEATURE, true);
+        clientConfig.getFeatures().put(JSONConfiguration.FEATURE_POJO_MAPPING, true);
 
         Client client = buildJerseyClient(clientConfig);
         client.addFilter(getClientFilterSettingJsonContentType());
