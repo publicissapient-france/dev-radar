@@ -12,14 +12,29 @@ import com.sun.jersey.api.json.JSONConfiguration;
 public class HudsonFetcherFactory {
 
     public HudsonFetcher getHudsonFetcher(String hudsonUrl, String jobName) {
-        ClientConfig clientConfig = new DefaultClientConfig();
-        clientConfig.getFeatures().put(JSONConfiguration.FEATURE_POJO_MAPPING, true);
+        ClientConfig clientConfig = getClientConfig();
+        Client client = getClient(clientConfig);
 
-        Client client = buildJerseyClient(clientConfig);
-        client.addFilter(getClientFilterSettingJsonContentType());
         return new HudsonFetcher(client, hudsonUrl, jobName);
     }
 
+    private Client getClient(ClientConfig clientConfig) {
+        Client client = buildJerseyClient(clientConfig);
+        client.addFilter(getClientFilterSettingJsonContentType());
+        return client;
+    }
+
+    private ClientConfig getClientConfig() {
+        ClientConfig clientConfig = new DefaultClientConfig();
+        clientConfig.getFeatures().put(JSONConfiguration.FEATURE_POJO_MAPPING, true);
+        return clientConfig;
+    }
+
+    /**
+     * Build a jersey client. Defined with package visibility to be overriden in test.
+     * @param clientConfig
+     * @return A jersey client
+     */
     Client buildJerseyClient(ClientConfig clientConfig) {
         return Client.create(clientConfig);
     }

@@ -21,10 +21,10 @@ public class HudsonFetcherFactoryTest {
         HudsonFetcher fetcher = factory.getHudsonFetcher(hudsonUrl, jobName);
 
         //then
-        String buildsUrl = hudsonUrl + "/job/" + jobName + "/api/json?tree=builds[actions[causes[userName]],result,culprits[fullName,absoluteUrl],timestamp,building]";
+        String buildsUrl = hudsonUrl + "/job/" + jobName + "/api/json";
         assertThat(fetcher.url, equalTo(buildsUrl));
         assertThat(fetcher.hudsonUrl, equalTo(hudsonUrl));
-        assertThat(fetcher.client, notNullValue());
+        assertThat(fetcher.client.getProviders(), notNullValue());
     }
 
 }
