@@ -17,10 +17,36 @@ public class HudsonBuildDTO {
 
     private static final String BUILD_SUCCESS = "SUCCESS";
 
+    /**
+     * true if the build is in progress.
+     * One event will be create only if the build is finished.
+     */
     public boolean building;
+
+    /**
+     * build result : FAILURE|UNSTABLE|SUCCESS|ABORTED
+     * Used in the event description.
+     */
     public String result;
+
+    /**
+     * Timestamp when the build has been executed.
+     * Used to set event timestamp.
+     */
     public Long timestamp;
+
+    /**
+     * List of users who partipating to a build trigered by a commit
+     * Used to determine username(s) linked to a build. One Event for
+     * Each user will be create.
+     */
     public List<HudsonUserDTO> culprits;
+
+    /**
+     * Action which started a build.
+     * Used to determine username(s) linked to a build. One Event for
+     * Each user will be create.
+     */
     public List<HudsonActionDTO> actions;
 
     public Set<Event> toEvents(Map<String, String> defaultMails) {
